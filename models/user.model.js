@@ -21,9 +21,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        is: /^[0-9+\-() ]+$/i, 
+        is: /^[0-9+\-() ]+$/i,
       },
     },
+    isActive: {   // 👈 NEW FIELD
+      type: DataTypes.BOOLEAN,
+      defaultValue: true, // by default account is active
+    }
   });
 
   return User;
