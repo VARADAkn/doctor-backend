@@ -1,36 +1,31 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const db = require('./models');
+const express = require("express");
+const { sequelize } = require("./src/models");
+const routes = require("./src/routes");
 
 const app = express();
-const PORT = 3000;
+app.use(express.json());
 
-app.use(cors({ origin: 'http://localhost:4200' }));
-app.use(bodyParser.json());
+// Routes
+app.use("/api", routes);
 
-app.get('/', (req, res) => {
-  res.send('✅ Backend is running');
-});
+app.get("/", (_req, res) => res.json({ message: "API is running" }));
 
-app.use('/api/auth', require('./routes/auth.routes'));
+const PORT = 4000;
 
-db.sequelize.authenticate()
-  .then(() => {
-    console.log('✅ DB connected');
-    return db.sequelize.sync();
-  })
-  .then(() => {
-    console.log('✅ Database synced');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Failed to connect to DB or sync:', err);
-  });
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Database connected");
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Promise Rejection:', reason);
-  process.exit(1);
-});
+    // Debug log: check loaded models
+    console.log("Loaded models:", Object.keys(sequelize.models));
+
+    await sequelize.sync({ alter: true });
+    console.log("✅ Models synced");
+
+    app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+  } catch (err) {
+    console.error("❌ DB Error:", err);
+  }
+})();
+
