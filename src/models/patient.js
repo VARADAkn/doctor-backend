@@ -4,8 +4,11 @@ const sequelize = require("../config/db");
 const Patient = sequelize.define(
   "Patient",
   {
-    id: { type: DataTypes.INTEGER,autoIncrement:true,primaryKey:true },
-    companyId: { type: DataTypes.STRING },
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     name: { type: DataTypes.STRING },
     phoneNumber: { type: DataTypes.STRING },
     email: { type: DataTypes.STRING },
@@ -21,7 +24,13 @@ const Patient = sequelize.define(
     allergies: { type: DataTypes.TEXT },
     currentMedications: { type: DataTypes.TEXT },
     insuranceDetails: { type: DataTypes.TEXT },
-    workSpaceId: { type: DataTypes.INTEGER}, // FK
+    workSpaceId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'workspaces', // This is a reference to another model
+        key: 'id', // This is the column name of the referenced model
+      },
+    },
     createdBy: { type: DataTypes.STRING },
   },
   {
