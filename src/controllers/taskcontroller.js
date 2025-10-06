@@ -1,57 +1,46 @@
 const { models } = require('../models');
 const Task = models.Task;
+const service = require('../services/genericservice');
 
-// CREATE a new task
+/**
+ * Creates a new task.
+ */
 exports.createTask = async (req, res) => {
-  try {
-    const task = await Task.create(req.body);
-    res.status(201).json(task);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const task = await service.create(Task, req.body);
+  res.status(201).json(task);
 };
 
-// READ all tasks
+/**
+ * Retrieves all tasks.
+ */
 exports.getTasks = async (_req, res) => {
-  try {
-    const tasks = await Task.findAll();
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const tasks = await service.getAll(Task);
+  res.json(tasks);
 };
 
-// READ one task by ID
+/**
+ * Retrieves a single task by ID.
+ */
 exports.getTask = async (req, res) => {
-  try {
-    const task = await Task.findByPk(req.body.id);
-    if (!task) return res.status(404).json({ error: "Task not found" });
-    res.json(task);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const task = await service.getById(Task, req.params.id);
+  if (!task) return res.status(404).json({ error: 'Task not found' });
+  res.json(task);
 };
 
-// UPDATE a task by ID
+/**
+ * Updates a task by ID.
+ */
 exports.updateTask = async (req, res) => {
-  try {
-    const task = await Task.findByPk(req.body.id);
-    if (!task) return res.status(404).json({ error: "Task not found" });
-    await task.update(req.body);
-    res.json({ message: "Task updated successfully", task });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const updated = await service.update(Task, req.params.id, req.body);
+  if (!updated) return res.status(404).json({ error: 'Task not found' });
+  res.json({ message: 'Task updated successfully', task: updated });
 };
 
-// DELETE a task by ID
+/**
+ * Deletes a task by ID.
+ */
 exports.deleteTask = async (req, res) => {
-  try {
-    const task = await Task.findByPk(req.body.id);
-    if (!task) return res.status(404).json({ error: "Task not found" });
-    await task.destroy();
-    res.json({ message: "Task deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const deleted = await service.deleteById(Task, req.params.id);
+  if (!deleted) return res.status(404).json({ error: 'Task not found' });
+  res.json({ message: 'Task deleted successfully' });
 };
