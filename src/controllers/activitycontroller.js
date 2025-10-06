@@ -1,57 +1,46 @@
 const { models } = require('../models');
 const Activity = models.Activity;
+const service = require('../services/genericservice');
 
-// CREATE a new activity
+/**
+ * Creates a new activity record.
+ */
 exports.createActivity = async (req, res) => {
-  try {
-    const activity = await Activity.create(req.body);
-    res.status(201).json(activity);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const activity = await service.create(Activity, req.body);
+  res.status(201).json(activity);
 };
 
-// READ all activities
+/**
+ * Retrieves all activity records.
+ */
 exports.getActivities = async (_req, res) => {
-  try {
-    const activities = await Activity.findAll();
-    res.json(activities);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const activities = await service.getAll(Activity);
+  res.json(activities);
 };
 
-// READ one activity by ID
+/**
+ * Retrieves a single activity record by ID (from req.body.id).
+ */
 exports.getActivity = async (req, res) => {
-  try {
-    const activity = await Activity.findByPk(req.body.id);
-    if (!activity) return res.status(404).json({ error: "Activity not found" });
-    res.json(activity);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const activity = await service.getById(Activity, req.body.id);
+  if (!activity) return res.status(404).json({ error: 'Activity not found' });
+  res.json(activity);
 };
 
-// UPDATE an activity by ID
+/**
+ * Updates an activity record by ID (from req.body.id).
+ */
 exports.updateActivity = async (req, res) => {
-  try {
-    const activity = await Activity.findByPk(req.body.id);
-    if (!activity) return res.status(404).json({ error: "Activity not found" });
-    await activity.update(req.body);
-    res.json({ message: "Activity updated successfully", activity });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const updated = await service.update(Activity, req.body.id, req.body);
+  if (!updated) return res.status(404).json({ error: 'Activity not found' });
+  res.json({ message: 'Activity updated successfully', activity: updated });
 };
 
-// DELETE an activity by ID
+/**
+ * Deletes an activity record by ID (from req.body.id).
+ */
 exports.deleteActivity = async (req, res) => {
-  try {
-    const activity = await Activity.findByPk(req.body.id);
-    if (!activity) return res.status(404).json({ error: "Activity not found" });
-    await activity.destroy();
-    res.json({ message: "Activity deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const deleted = await service.deleteById(Activity, req.body.id);
+  if (!deleted) return res.status(404).json({ error: 'Activity not found' });
+  res.json({ message: 'Activity deleted successfully' });
 };
