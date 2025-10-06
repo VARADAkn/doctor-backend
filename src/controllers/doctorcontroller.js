@@ -1,57 +1,42 @@
 const { models } = require('../models');
 const Doctor = models.Doctor;
+const service = require('../services/genericservice');
 
-// CREATE a new doctor
+//Creates a new doctor record.
+ 
 exports.createDoctor = async (req, res) => {
-  try {
-    const doctor = await Doctor.create(req.body);
-    res.status(201).json(doctor);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const doctor = await service.create(Doctor, req.body);
+  res.status(201).json(doctor);
 };
 
-// READ all doctors
+// Retrieves all doctor records.
+
 exports.getDoctors = async (_req, res) => {
-  try {
-    const doctors = await Doctor.findAll();
-    res.json(doctors);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const doctors = await service.getAll(Doctor);
+  res.json(doctors);
 };
 
-// READ one doctor by ID
+// Retrieves a single doctor record by ID (from req.body.id).
 exports.getDoctor = async (req, res) => {
-  try {
-    const doctor = await Doctor.findByPk(req.body.id);
-    if (!doctor) return res.status(404).json({ error: "Doctor not found" });
-    res.json(doctor);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const doctor = await service.getById(Doctor, req.body.id);
+  if (!doctor) return res.status(404).json({ error: 'Doctor not found' });
+  res.json(doctor);
 };
 
-// UPDATE a doctor by ID
+
+ //Updates a doctor record by ID (from req.body.id).
+ 
 exports.updateDoctor = async (req, res) => {
-  try {
-    const doctor = await Doctor.findByPk(req.body.id);
-    if (!doctor) return res.status(404).json({ error: "Doctor not found" });
-    await doctor.update(req.body);
-    res.json({ message: "Doctor updated successfully", doctor });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const updated = await service.update(Doctor, req.body.id, req.body);
+  if (!updated) return res.status(404).json({ error: 'Doctor not found' });
+  res.json({ message: 'Doctor updated successfully', doctor: updated });
 };
 
-// DELETE a doctor by ID
+
+  //Deletes a doctor record by ID (from req.body.id).
+ 
 exports.deleteDoctor = async (req, res) => {
-  try {
-    const doctor = await Doctor.findByPk(req.body.id);
-    if (!doctor) return res.status(404).json({ error: "Doctor not found" });
-    await doctor.destroy();
-    res.json({ message: "Doctor deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const deleted = await service.deleteById(Doctor, req.body.id);
+  if (!deleted) return res.status(404).json({ error: 'Doctor not found' });
+  res.json({ message: 'Doctor deleted successfully' });
 };
