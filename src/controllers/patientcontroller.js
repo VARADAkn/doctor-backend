@@ -1,57 +1,46 @@
 const { models } = require('../models');
 const Patient = models.Patient;
+const service = require('../services/genericservice');
 
-// CREATE
+/**
+ * Creates a new patient record.
+ */
 exports.createPatient = async (req, res) => {
-  try {
-    const patient = await Patient.create(req.body);
-    res.json(patient);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const patient = await service.create(Patient, req.body);
+  res.status(201).json(patient);
 };
 
-// READ all
+/**
+ * Retrieves all patient records.
+ */
 exports.getPatients = async (_req, res) => {
-  try {
-    const data = await Patient.findAll();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const patients = await service.getAll(Patient);
+  res.json(patients);
 };
 
-// READ one (using body.id instead of params)
+/**
+ * Retrieves a single patient record by ID (from req.body.id).
+ */
 exports.getPatient = async (req, res) => {
-  try {
-    const patient = await Patient.findByPk(req.body.id);
-    if (!patient) return res.status(404).json({ error: "Not found" });
-    res.json(patient);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const patient = await service.getById(Patient, req.body.id);
+  if (!patient) return res.status(404).json({ error: 'Patient not found' });
+  res.json(patient);
 };
 
-// UPDATE (using body.id)
+/**
+ * Updates a patient record by ID (from req.body.id).
+ */
 exports.updatePatient = async (req, res) => {
-  try {
-    const patient = await Patient.findByPk(req.body.id);
-    if (!patient) return res.status(404).json({ error: "Not found" });
-    await patient.update(req.body);
-    res.json({ message: "Patient updated successfully", patient });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const updated = await service.update(Patient, req.body.id, req.body);
+  if (!updated) return res.status(404).json({ error: 'Patient not found' });
+  res.json({ message: 'Patient updated successfully', patient: updated });
 };
 
-// DELETE (using body.id)
+/**
+ * Deletes a patient record by ID (from req.body.id).
+ */
 exports.deletePatient = async (req, res) => {
-  try {
-    const patient = await Patient.findByPk(req.body.id);
-    if (!patient) return res.status(404).json({ error: "Not found" });
-    await patient.destroy();
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const deleted = await service.deleteById(Patient, req.body.id);
+  if (!deleted) return res.status(404).json({ error: 'Patient not found' });
+  res.json({ message: 'Patient deleted successfully' });
 };
