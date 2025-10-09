@@ -1,11 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
   const Doctor = sequelize.define("Doctor", {
     id: {
-  type: DataTypes.STRING,  
-  primaryKey: true,
-  allowNull: false
-},
-
+      type: DataTypes.STRING,  
+      primaryKey: true,
+      allowNull: false
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false
@@ -17,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     specialization: {
       type: DataTypes.STRING
@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
     role: {
       type: DataTypes.STRING,
       defaultValue: "doctor"
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true
     }
   });
 
