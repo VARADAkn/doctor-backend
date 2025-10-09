@@ -1,75 +1,109 @@
-// controllers/auth.controller.js
-const db = require("../models");   // load models/index.js
-const Doctor = db.Doctor;          // get the Doctor model
+const db = require("../models");
+const Doctor = db.Doctor;
+const { Op } = db.Sequelize;   // ✅ Destructure Op correctly
+const generateDoctorId = require('../utils/generateDoctorId');
 
-
-const generateDoctorId = require('../utils/generateDoctorId'); // your function
-
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
   try {
-    const { name, email, phone, password, role } = req.body;
+    const { name, email, phone, password, specialization } = req.body;
 
-    if (role === "doctor") {
-      const doctor = await db.Doctor.create({
-        id: generateDoctorId(),   // 👈 custom 13-digit ID here
-        name,
-        email,
-        phone,
-        password,
-        role
-      });
+    const doctorData = {
+      id: generateDoctorId(),
+      name,
+      email,
+      phone,
+      password,
+      specialization: specialization || null
+    };
 
-      return res.json({
-        message: "Doctor registered successfully",
-        doctor
-      });
+   const existingDoctor = await Doctor.findOne({
+  where: {
+    [Op.or]: [{ phone }, { email }]
+  }
+});
+
+
+    if (existingDoctor) {
+      const error = new Error("Doctor with this phone or email already exists");
+      error.statusCode = 400;
+      throw error;  // 👈 throw error instead of res.status
     }
 
-    // if not doctor → handle other roles
+    const doctor = await Doctor.create(doctorData);
+
+    return res.status(201).json({
+      message: "Doctor registered successfully",
+      doctor: {
+        id: doctor.id,
+        name: doctor.name,
+        email: doctor.email,
+        phone: doctor.phone,
+        specialization: doctor.specialization,
+        role: doctor.role,
+        isActive: doctor.isActive
+      }
+    });
+
   } catch (err) {
-    res.status(500).json({ message: "Signup failed", error: err.message });
+    next(err);  // 👈 Pass error to global handler
   }
 };
-
-
 
 
 exports.login = async (req, res) => {
   const { phone, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { phone } });
+    // Only check Doctor table
+    const doctor = await Doctor.findOne({ where: { phone } });
 
-    if (!user) {
+    if (!doctor) {
       return res.status(401).json({ message: 'Phone number not found' });
     }
 
-    if (!user.isActive) {   // check if account is disabled
-      return res.status(403).json({ message: 'Account is disabled. Please contact support.' });
+    if (!doctor.isActive) {
+      return res.status(403).json({ message: 'Account is disabled' });
     }
 
-    if (user.password !== password) {
+    if (doctor.password !== password) {
       return res.status(401).json({ message: 'Invalid password' });
     }
 
-    res.json({ message: 'Login successful', user });
+    
+    req.session.user = {
+      id: doctor.id,
+      role: doctor.role,
+      phone: doctor.phone,
+      name: doctor.name
+    };
+
+    res.json({ 
+      message: 'Login successful', 
+      user: req.session.user 
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Login failed', error: err.message });
+    next(err);
   }
 };
 
-// 👇 NEW CONTROLLER FUNCTION
-
 exports.disableUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const doctor = await Doctor.findByPk(req.params.id);
+    if (!doctor) return res.status(404).json({ message: 'Doctor not found' });
 
-    user.isActive = false;
-    await user.save();
+    doctor.isActive = false;
+    await doctor.save();
 
-    res.json({ message: 'User disabled successfully', user });
+    res.json({ message: 'Doctor disabled successfully', doctor });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to disable user', error: err.message });
+    next(err);
   }
+};
+
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return res.status(500).json({ message: 'Logout failed' });
+    res.clearCookie('connect.sid');
+    res.json({ message: 'Logout successful' });
+  });
 };
