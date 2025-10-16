@@ -12,3 +12,4 @@ router.post('/logout', authController.logout);
 router.put('/disable/:id', authSession, authController.disableUser);
 
 module.exports = router;
+

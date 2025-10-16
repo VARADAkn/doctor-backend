@@ -1,68 +1,68 @@
+// ✅ Load environment variables
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const db = require('./models');
-const errorHandler = require('./middlewares/errorHandler');
+const bodyParser = require('body-parser');
+const path = require('path');
 
+// Initialize Express
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// MIDDLEWARE
+// 🧩 MIDDLEWARES
 app.use(cors({
-  origin: 'http://localhost:4200',
-  credentials: true   
+  origin: true, // Allow all origins for testing
+  credentials: true
 }));
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// SESSION SETUP
-const store = new SequelizeStore({
-  db: db.sequelize,
+// Basic route to test if server is working
+app.get('/test', (req, res) => {
+  res.json({ message: '✅ Server is running!', timestamp: new Date() });
 });
 
+// 🗝️ SESSION SETUP (temporarily simplified for testing)
 app.use(session({
-  secret: 'supersecretkey',  
+  secret: 'test-secret-key',
   resave: false,
-  saveUninitialized: false,
-  store: store,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000, 
-    httpOnly: true,
-    secure: false
-  }
+  saveUninitialized: true,
+  cookie: { secure: false }
 }));
 
-store.sync(); 
+// Import routes
+const authRoutes = require('./routes/auth.routes');
+const routes = require('./routes');
 
-// ROUTES
-app.get('/', (req, res) => {
-  res.send('✅ Backend is running');
+// Mount API routes
+app.use('/api/auth', authRoutes);
+app.use('/api', routes);
+
+// Basic error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: err.message 
+  });
 });
 
-app.use('/api/auth', require('./routes/auth.routes'));
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
 
-// ERROR HANDLER
-app.use(errorHandler);
+// Start server without database connection for testing
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`📊 Test the server at: http://localhost:${PORT}/test`);
+});
 
-// DATABASE + SERVER START
-db.sequelize.authenticate()
-  .then(() => {
-    console.log('✅ DB connected');
-   return db.sequelize.sync(); // no { force: true }
-
-  })
-  .then(() => {
-    console.log('✅ Database synced');
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Failed to connect to DB or sync:', err);
-  });
-
-// UNHANDLED REJECTION HANDLER
-process.on('unhandledRejection', (reason, promise) => {
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason) => {
   console.error('Unhandled Promise Rejection:', reason);
 });
