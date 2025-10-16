@@ -5,7 +5,7 @@ const { Op } = db.Sequelize;
 const bcrypt = require('bcrypt');
 
 /**
- * Handles signup for DIFFERENT roles (patient, doctor).
+ * Handles signup for DIFFERENT roles (patient, doctor, admin).
  * Creates a central User record and a corresponding profile record.
  */
 exports.signup = async (req, res, next) => {
@@ -14,9 +14,9 @@ exports.signup = async (req, res, next) => {
 
   console.log('Signup request received:', { role, name, email, phone });
 
-  // 1. Validate the role
-  if (!role || !['patient', 'doctor'].includes(role)) {
-    return res.status(400).json({ message: "A valid role ('patient' or 'doctor') is required." });
+  // 1. Validate the role - ADDED 'admin' TO THE VALID ROLES
+  if (!role || !['patient', 'doctor', 'admin'].includes(role)) {
+    return res.status(400).json({ message: "A valid role ('patient', 'doctor', or 'admin') is required." });
   }
 
   // Validate required fields
@@ -54,13 +54,13 @@ exports.signup = async (req, res, next) => {
     console.log('User created:', user.id);
 
     // 5. Create the role-specific profile and link it to the User
-    if (role === 'doctor') {
+    if (role === 'doctor' || role === 'admin') {
       await Doctor.create({
         name,
-        specialization: profileData.specialization || null,
+        specialization: profileData.specialization || (role === 'admin' ? 'Administration' : null),
         userId: user.id, // This links the doctor profile to the user
       }, { transaction: t });
-      console.log('Doctor profile created');
+      console.log(`${role} profile created`);
     } else if (role === 'patient') {
       await Patient.create({
         name,
@@ -122,14 +122,16 @@ exports.login = async (req, res, next) => {
 
     // 3. Fetch the user's name from their specific profile
     let profileName = 'User';
-    if (user.role === 'doctor') {
+    let profileData = {};
+    
+    if (user.role === 'doctor' || user.role === 'admin') {
       const doctorProfile = await Doctor.findOne({ where: { userId: user.id } });
-      profileName = doctorProfile?.name || 'Doctor';
+      profileName = doctorProfile?.name || (user.role === 'admin' ? 'Admin' : 'Doctor');
+      profileData = doctorProfile || {};
     } else if (user.role === 'patient') {
       const patientProfile = await Patient.findOne({ where: { userId: user.id } });
       profileName = patientProfile?.name || 'Patient';
-    } else if (user.role === 'admin') {
-      profileName = 'Admin';
+      profileData = patientProfile || {};
     }
 
     // 4. Store essential, non-sensitive info in the session
@@ -138,10 +140,11 @@ exports.login = async (req, res, next) => {
       role: user.role,
       phone: user.phone,
       name: profileName,
-      email: user.email
+      email: user.email,
+      profileId: profileData.id // Store profile ID for easy access
     };
 
-    console.log('Login successful for user:', profileName);
+    console.log('Login successful for user:', profileName, 'Role:', user.role);
 
     res.json({
       message: 'Login successful',

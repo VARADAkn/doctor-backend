@@ -9,14 +9,24 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       name: DataTypes.STRING,
-      // REMOVED: phoneNumber, email
-      dob: DataTypes.DATEONLY, // Use DATEONLY for dates without time
-      age: DataTypes.INTEGER, // Use INTEGER for age
+      dob: DataTypes.DATEONLY,
+      age: DataTypes.INTEGER,
       gender: DataTypes.STRING,
       bloodGroup: DataTypes.STRING,
       address: DataTypes.STRING,
-      // ... (other medical fields)
-      // ADDED: Foreign key to link to the User table
+      phone: DataTypes.STRING,
+      email: DataTypes.STRING,
+      emergencyContact: DataTypes.STRING,
+      emergencyPhone: DataTypes.STRING,
+      // Medical fields
+      medicalHistory: DataTypes.TEXT,
+      allergies: DataTypes.TEXT,
+      currentMedications: DataTypes.TEXT,
+      chronicConditions: DataTypes.TEXT,
+      lastVisit: DataTypes.DATE,
+      nextAppointment: DataTypes.DATE,
+      notes: DataTypes.TEXT,
+      // Foreign keys
       userId: {
         type: DataTypes.UUID,
         allowNull: false,

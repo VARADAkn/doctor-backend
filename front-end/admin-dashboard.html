@@ -164,7 +164,7 @@
 
         .card-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
         }
@@ -196,6 +196,24 @@
             background-color: #1e5bb8;
         }
 
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c53030;
+        }
+
+        .btn-secondary {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4a5568;
+        }
+
         .list-item {
             display: flex;
             justify-content: space-between;
@@ -203,7 +221,6 @@
             padding: 1rem;
             border-bottom: 1px solid #e2e8f0;
             transition: background-color 0.2s;
-            cursor: pointer;
         }
 
         .list-item:hover {
@@ -222,6 +239,11 @@
         .item-info p {
             color: var(--gray);
             font-size: 0.9rem;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
         }
 
         .item-status {
@@ -244,6 +266,16 @@
         .status-completed {
             background-color: #bee3f8;
             color: var(--primary);
+        }
+
+        .owner-badge {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
         }
 
         .bottom-nav {
@@ -311,48 +343,48 @@
             cursor: pointer;
         }
 
-        .detail-view {
+        /* Modal Styles */
+        .modal {
             display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            margin-bottom: 1rem;
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .detail-header {
+        .modal-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
             margin-bottom: 1.5rem;
         }
 
-        .detail-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background-color: var(--primary-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .detail-info h2 {
+        .modal-title {
             font-size: 1.5rem;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
         }
 
-        .detail-info p {
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
             color: var(--gray);
         }
 
@@ -366,7 +398,7 @@
             font-weight: 500;
         }
 
-        .form-input {
+        .form-input, .form-textarea {
             width: 100%;
             padding: 0.8rem;
             border: 1px solid #cbd5e0;
@@ -375,36 +407,75 @@
         }
 
         .form-textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            min-height: 120px;
+            min-height: 100px;
             resize: vertical;
         }
 
-        .task-priority {
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .loading {
             display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .priority-high {
-            background-color: #fed7d7;
-            color: var(--danger);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .priority-medium {
-            background-color: #fef5e7;
-            color: var(--warning);
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
         }
 
-        .priority-low {
+        .alert-success {
             background-color: #c6f6d5;
             color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-error {
+            background-color: #fed7d7;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .permission-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        .permission-note i {
+            color: #f39c12;
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -415,43 +486,54 @@
             <h1>Doctor's Collaboration</h1>
         </div>
         <div class="user-info">
-            <div class="user-avatar">AD</div>
-            <span>Admin Doctor</span>
+            <div class="user-avatar" id="user-avatar">AD</div>
+            <span id="user-name">Admin Doctor</span>
+            <button class="btn btn-danger" onclick="logout()" style="margin-left: 1rem;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </div>
 
     <div class="main-content">
+        <!-- Alert Messages -->
+        <div class="alert alert-success" id="success-alert">
+            <i class="fas fa-check-circle"></i> <span id="success-message"></span>
+        </div>
+        <div class="alert alert-error" id="error-alert">
+            <i class="fas fa-exclamation-circle"></i> <span id="error-message"></span>
+        </div>
+
         <!-- Home/Wards View -->
         <div id="home-view" class="page-view">
             <h2 class="page-title"><i class="fas fa-home"></i> Dashboard</h2>
             
-            <div class="stats-container">
+            <div class="stats-container" id="stats-container">
                 <div class="stat-card">
                     <div class="stat-icon icon-ward">
                         <i class="fas fa-procedures"></i>
                     </div>
-                    <div class="stat-value">12</div>
+                    <div class="stat-value" id="wards-count">0</div>
                     <div class="stat-label">Virtual Wards</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon-patient">
                         <i class="fas fa-user-injured"></i>
                     </div>
-                    <div class="stat-value">84</div>
+                    <div class="stat-value" id="patients-count">0</div>
                     <div class="stat-label">Patients</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon-doctor">
                         <i class="fas fa-user-md"></i>
                     </div>
-                    <div class="stat-value">24</div>
+                    <div class="stat-value" id="doctors-count">0</div>
                     <div class="stat-label">Doctors</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon icon-task">
                         <i class="fas fa-tasks"></i>
                     </div>
-                    <div class="stat-value">36</div>
+                    <div class="stat-value" id="tasks-count">0</div>
                     <div class="stat-label">Active Tasks</div>
                 </div>
             </div>
@@ -459,39 +541,18 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Virtual Wards</h3>
-                    <button class="btn btn-primary" id="create-ward-btn">
+                    <button class="btn btn-primary" onclick="showCreateWardModal()">
                         <i class="fas fa-plus"></i> Create New Ward
                     </button>
                 </div>
                 
-                <div class="ward-list">
-                    <div class="list-item" data-ward="1">
-                        <div class="item-info">
-                            <h3>Cardiology Ward</h3>
-                            <p>5 Patients, 3 Doctors</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-ward="2">
-                        <div class="item-info">
-                            <h3>Oncology Ward</h3>
-                            <p>8 Patients, 4 Doctors</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-ward="3">
-                        <div class="item-info">
-                            <h3>Pediatrics Ward</h3>
-                            <p>12 Patients, 5 Doctors</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-ward="4">
-                        <div class="item-info">
-                            <h3>Neurology Ward</h3>
-                            <p>6 Patients, 3 Doctors</p>
-                        </div>
-                        <div class="item-status status-pending">Pending</div>
+                <div class="ward-list" id="ward-list">
+                    <div class="empty-state">
+                        <i class="fas fa-procedures"></i>
+                        <p>No wards created yet</p>
+                        <button class="btn btn-primary" onclick="showCreateWardModal()">
+                            <i class="fas fa-plus"></i> Create Your First Ward
+                        </button>
                     </div>
                 </div>
             </div>
@@ -501,27 +562,10 @@
                     <h3 class="card-title">Recent Tasks</h3>
                 </div>
                 
-                <div class="task-list">
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Review Patient MRI Results</h3>
-                            <p>Cardiology Ward • Due: Today</p>
-                        </div>
-                        <div class="task-priority priority-high">High</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Update Treatment Plan for John Doe</h3>
-                            <p>Oncology Ward • Due: Tomorrow</p>
-                        </div>
-                        <div class="task-priority priority-medium">Medium</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Schedule Follow-up Consultation</h3>
-                            <p>Pediatrics Ward • Due: 3 days</p>
-                        </div>
-                        <div class="task-priority priority-low">Low</div>
+                <div class="task-list" id="task-list">
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p>No tasks available</p>
                     </div>
                 </div>
             </div>
@@ -532,39 +576,15 @@
             <h2 class="page-title"><i class="fas fa-user-injured"></i> Patients</h2>
             
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search patients...">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
+                <input type="text" class="search-input" id="patient-search" placeholder="Search patients...">
+                <button class="search-btn" onclick="searchPatients()"><i class="fas fa-search"></i></button>
             </div>
             
             <div class="card">
-                <div class="patient-list">
-                    <div class="list-item" data-patient="1">
-                        <div class="item-info">
-                            <h3>John Doe</h3>
-                            <p>ID: P-7832 • Cardiology Ward</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-patient="2">
-                        <div class="item-info">
-                            <h3>Sarah Johnson</h3>
-                            <p>ID: P-4519 • Oncology Ward</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-patient="3">
-                        <div class="item-info">
-                            <h3>Michael Chen</h3>
-                            <p>ID: P-9267 • Pediatrics Ward</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-patient="4">
-                        <div class="item-info">
-                            <h3>Emma Wilson</h3>
-                            <p>ID: P-3381 • Neurology Ward</p>
-                        </div>
-                        <div class="item-status status-pending">Pending</div>
+                <div class="patient-list" id="patient-list">
+                    <div class="empty-state">
+                        <i class="fas fa-user-injured"></i>
+                        <p>No patients found</p>
                     </div>
                 </div>
             </div>
@@ -575,39 +595,15 @@
             <h2 class="page-title"><i class="fas fa-user-md"></i> Doctors</h2>
             
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search doctors...">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
+                <input type="text" class="search-input" id="doctor-search" placeholder="Search doctors...">
+                <button class="search-btn" onclick="searchDoctors()"><i class="fas fa-search"></i></button>
             </div>
             
             <div class="card">
-                <div class="doctor-list">
-                    <div class="list-item" data-doctor="1">
-                        <div class="item-info">
-                            <h3>Dr. Robert Smith</h3>
-                            <p>Cardiology • 8 Patients</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-doctor="2">
-                        <div class="item-info">
-                            <h3>Dr. Lisa Brown</h3>
-                            <p>Oncology • 12 Patients</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-doctor="3">
-                        <div class="item-info">
-                            <h3>Dr. James Wilson</h3>
-                            <p>Pediatrics • 15 Patients</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
-                    </div>
-                    <div class="list-item" data-doctor="4">
-                        <div class="item-info">
-                            <h3>Dr. Maria Garcia</h3>
-                            <p>Neurology • 6 Patients</p>
-                        </div>
-                        <div class="item-status status-active">Active</div>
+                <div class="doctor-list" id="doctor-list">
+                    <div class="empty-state">
+                        <i class="fas fa-user-md"></i>
+                        <p>No doctors found</p>
                     </div>
                 </div>
             </div>
@@ -618,46 +614,22 @@
             <h2 class="page-title"><i class="fas fa-tasks"></i> Tasks</h2>
             
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search tasks...">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
+                <input type="text" class="search-input" id="task-search" placeholder="Search tasks...">
+                <button class="search-btn" onclick="searchTasks()"><i class="fas fa-search"></i></button>
             </div>
             
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">All Tasks</h3>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" onclick="showCreateTaskModal()">
                         <i class="fas fa-plus"></i> Create New Task
                     </button>
                 </div>
                 
-                <div class="task-list">
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Review Patient MRI Results</h3>
-                            <p>Cardiology Ward • Dr. Robert Smith • Due: Today</p>
-                        </div>
-                        <div class="task-priority priority-high">High</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Update Treatment Plan for John Doe</h3>
-                            <p>Oncology Ward • Dr. Lisa Brown • Due: Tomorrow</p>
-                        </div>
-                        <div class="task-priority priority-medium">Medium</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Schedule Follow-up Consultation</h3>
-                            <p>Pediatrics Ward • Dr. James Wilson • Due: 3 days</p>
-                        </div>
-                        <div class="task-priority priority-low">Low</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h3>Prepare Surgical Report</h3>
-                            <p>Neurology Ward • Dr. Maria Garcia • Due: 5 days</p>
-                        </div>
-                        <div class="task-priority priority-medium">Medium</div>
+                <div class="task-list" id="all-task-list">
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p>No tasks created yet</p>
                     </div>
                 </div>
             </div>
@@ -668,8 +640,8 @@
             <h2 class="page-title"><i class="fas fa-search"></i> Search</h2>
             
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search patients, doctors, tasks, or wards...">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
+                <input type="text" class="search-input" id="global-search" placeholder="Search patients, doctors, tasks, or wards...">
+                <button class="search-btn" onclick="globalSearch()"><i class="fas fa-search"></i></button>
             </div>
             
             <div class="card">
@@ -677,12 +649,89 @@
                     <h3 class="card-title">Search Results</h3>
                 </div>
                 
-                <div class="search-results">
+                <div class="search-results" id="search-results">
                     <p class="no-results" style="text-align: center; padding: 2rem; color: var(--gray);">
                         Enter a search term to find patients, doctors, tasks, or wards
                     </p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Create Ward Modal -->
+    <div class="modal" id="create-ward-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Ward</h3>
+                <button class="close-btn" onclick="closeCreateWardModal()">&times;</button>
+            </div>
+            <form id="create-ward-form">
+                <div class="form-group">
+                    <label class="form-label" for="ward-name">Ward Name *</label>
+                    <input type="text" class="form-input" id="ward-name" placeholder="Enter ward name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ward-description">Description</label>
+                    <textarea class="form-textarea" id="ward-description" placeholder="Enter ward description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ward-address">Address</label>
+                    <input type="text" class="form-input" id="ward-address" placeholder="Enter ward address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ward-phone">Phone Number</label>
+                    <input type="tel" class="form-input" id="ward-phone" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ward-email">Email</label>
+                    <input type="email" class="form-input" id="ward-email" placeholder="Enter email address">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeCreateWardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="create-ward-submit">
+                        <i class="fas fa-plus"></i> Create Ward
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Ward Modal -->
+    <div class="modal" id="edit-ward-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Ward</h3>
+                <button class="close-btn" onclick="closeEditWardModal()">&times;</button>
+            </div>
+            <form id="edit-ward-form">
+                <input type="hidden" id="edit-ward-id">
+                <div class="form-group">
+                    <label class="form-label" for="edit-ward-name">Ward Name *</label>
+                    <input type="text" class="form-input" id="edit-ward-name" placeholder="Enter ward name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edit-ward-description">Description</label>
+                    <textarea class="form-textarea" id="edit-ward-description" placeholder="Enter ward description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edit-ward-address">Address</label>
+                    <input type="text" class="form-input" id="edit-ward-address" placeholder="Enter ward address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edit-ward-phone">Phone Number</label>
+                    <input type="tel" class="form-input" id="edit-ward-phone" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="edit-ward-email">Email</label>
+                    <input type="email" class="form-input" id="edit-ward-email" placeholder="Enter email address">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeEditWardModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="edit-ward-submit">
+                        <i class="fas fa-save"></i> Update Ward
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -710,55 +759,424 @@
     </div>
 
     <script>
-        // Navigation functionality
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                // Update active nav item
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let currentUser = null;
+        let currentEditingWorkspace = null;
+
+        // DOM Elements
+        const successAlert = document.getElementById('success-alert');
+        const errorAlert = document.getElementById('error-alert');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            loadDashboardData();
+            setupEventListeners();
+        });
+
+        // Check if user is authenticated
+        function checkAuthentication() {
+            const userData = localStorage.getItem('user');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = JSON.parse(userData);
+            document.getElementById('user-name').textContent = currentUser.name;
+            document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                await loadWorkspaces();
+                // TODO: Load other data (patients, doctors, tasks)
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Create ward form
+            document.getElementById('create-ward-form').addEventListener('submit', handleCreateWard);
+            
+            // Edit ward form
+            document.getElementById('edit-ward-form').addEventListener('submit', handleEditWard);
+            
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Show selected page
+                    const pageId = this.getAttribute('data-page');
+                    document.querySelectorAll('.page-view').forEach(page => {
+                        page.style.display = 'none';
+                    });
+                    document.getElementById(pageId).style.display = 'block';
                 });
-                this.classList.add('active');
+            });
+
+            // Create ward button
+            document.getElementById('create-ward-btn').addEventListener('click', showCreateWardModal);
+        }
+
+        // Show/hide alerts
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successAlert.style.display = 'block';
+            errorAlert.style.display = 'none';
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorAlert.style.display = 'block';
+            successAlert.style.display = 'none';
+            setTimeout(() => {
+                errorAlert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Modal functions
+        function showCreateWardModal() {
+            document.getElementById('create-ward-modal').style.display = 'flex';
+        }
+
+        function closeCreateWardModal() {
+            document.getElementById('create-ward-modal').style.display = 'none';
+            document.getElementById('create-ward-form').reset();
+        }
+
+        function showEditWardModal() {
+            document.getElementById('edit-ward-modal').style.display = 'flex';
+        }
+
+        function closeEditWardModal() {
+            document.getElementById('edit-ward-modal').style.display = 'none';
+            document.getElementById('edit-ward-form').reset();
+            currentEditingWorkspace = null;
+        }
+
+        // Workspace functions
+        async function loadWorkspaces() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch workspaces');
+                }
+
+                const workspaces = await response.json();
+                displayWorkspaces(workspaces);
+                updateStats('wards-count', workspaces.length);
+            } catch (error) {
+                console.error('Error loading workspaces:', error);
+                showError('Failed to load workspaces');
+            }
+        }
+
+        function displayWorkspaces(workspaces) {
+            const wardList = document.getElementById('ward-list');
+            
+            if (workspaces.length === 0) {
+                wardList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-procedures"></i>
+                        <p>No wards created yet</p>
+                        <button class="btn btn-primary" onclick="showCreateWardModal()">
+                            <i class="fas fa-plus"></i> Create Your First Ward
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            wardList.innerHTML = workspaces.map(workspace => {
+                const isOwner = workspace.createdBy === currentUser.name;
+                return `
+                <div class="list-item" data-ward="${workspace.id}">
+                    <div class="item-info">
+                        <h3>
+                            ${workspace.name}
+                            ${isOwner ? '<span class="owner-badge">Your Ward</span>' : ''}
+                        </h3>
+                        <p>${workspace.description || 'No description'}</p>
+                        <small>
+                            ${workspace.address ? `Address: ${workspace.address} • ` : ''}
+                            ${workspace.phoneNumber ? `Phone: ${workspace.phoneNumber} • ` : ''}
+                            Created by: ${workspace.createdBy || 'System'}
+                        </small>
+                    </div>
+                    <div class="item-actions">
+                        ${isOwner ? `
+                            <button class="btn btn-primary" onclick="editWorkspace('${workspace.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteWorkspace('${workspace.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        ` : `
+                            <button class="btn btn-secondary" onclick="viewWorkspaceDetails('${workspace.id}')" title="View Details">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <span style="color: var(--gray); font-size: 0.8rem;">Read Only</span>
+                        `}
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        async function handleCreateWard(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('create-ward-submit');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                submitBtn.innerHTML = '<div class="loading"></div> Creating...';
+                submitBtn.disabled = true;
+
+                const wardData = {
+                    name: document.getElementById('ward-name').value,
+                    description: document.getElementById('ward-description').value,
+                    address: document.getElementById('ward-address').value,
+                    phoneNumber: document.getElementById('ward-phone').value,
+                    email: document.getElementById('ward-email').value,
+                    createdBy: currentUser.name
+                };
+
+                const response = await fetch(`${API_BASE_URL}/workspaces/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(wardData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to create ward');
+                }
+
+                const newWorkspace = await response.json();
+                showSuccess('Ward created successfully!');
+                closeCreateWardModal();
+                await loadWorkspaces();
                 
-                // Show selected page
-                const pageId = this.getAttribute('data-page');
-                document.querySelectorAll('.page-view').forEach(page => {
-                    page.style.display = 'none';
+            } catch (error) {
+                console.error('Error creating ward:', error);
+                showError(error.message || 'Failed to create ward');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function handleEditWard(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('edit-ward-submit');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                submitBtn.innerHTML = '<div class="loading"></div> Updating...';
+                submitBtn.disabled = true;
+
+                const workspaceId = document.getElementById('edit-ward-id').value;
+                const wardData = {
+                    id: workspaceId,
+                    name: document.getElementById('edit-ward-name').value,
+                    description: document.getElementById('edit-ward-description').value,
+                    address: document.getElementById('edit-ward-address').value,
+                    phoneNumber: document.getElementById('edit-ward-phone').value,
+                    email: document.getElementById('edit-ward-email').value,
+                    createdBy: currentUser.name
+                };
+
+                const response = await fetch(`${API_BASE_URL}/workspaces/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(wardData)
                 });
-                document.getElementById(pageId).style.display = 'block';
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to update ward');
+                }
+
+                showSuccess('Ward updated successfully!');
+                closeEditWardModal();
+                await loadWorkspaces();
+                
+            } catch (error) {
+                console.error('Error updating ward:', error);
+                showError(error.message || 'Failed to update ward');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function deleteWorkspace(workspaceId) {
+            if (!confirm('Are you sure you want to delete this ward? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/workspaces/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ id: workspaceId })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to delete ward');
+                }
+
+                showSuccess('Ward deleted successfully!');
+                await loadWorkspaces();
+            } catch (error) {
+                console.error('Error deleting ward:', error);
+                showError(error.message || 'Failed to delete ward');
+            }
+        }
+
+        async function editWorkspace(workspaceId) {
+            try {
+                // Fetch workspace details
+                const response = await fetch(`${API_BASE_URL}/workspaces/find`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ id: workspaceId })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch workspace details');
+                }
+
+                const workspace = await response.json();
+                
+                // Check if current user is the owner
+                if (workspace.createdBy !== currentUser.name) {
+                    showError('You can only edit wards created by you');
+                    return;
+                }
+
+                currentEditingWorkspace = workspace;
+
+                // Populate the edit form
+                document.getElementById('edit-ward-id').value = workspace.id;
+                document.getElementById('edit-ward-name').value = workspace.name;
+                document.getElementById('edit-ward-description').value = workspace.description || '';
+                document.getElementById('edit-ward-address').value = workspace.address || '';
+                document.getElementById('edit-ward-phone').value = workspace.phoneNumber || '';
+                document.getElementById('edit-ward-email').value = workspace.email || '';
+
+                showEditWardModal();
+            } catch (error) {
+                console.error('Error fetching workspace details:', error);
+                showError('Failed to load workspace details');
+            }
+        }
+
+        function viewWorkspaceDetails(workspaceId) {
+            // Show view-only modal or details page
+            alert('View workspace details - Read only access');
+            // You can implement a view-only modal here if needed
+        }
+
+        // Update statistics - Fixed version
+        function updateStats(elementId, count) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                // Directly set the count without animation to avoid flickering
+                element.textContent = count;
+            }
+        }
+
+        // Search functions (to be implemented)
+        function searchPatients() {
+            const query = document.getElementById('patient-search').value;
+            alert(`Search patients: ${query} - To be implemented`);
+        }
+
+        function searchDoctors() {
+            const query = document.getElementById('doctor-search').value;
+            alert(`Search doctors: ${query} - To be implemented`);
+        }
+
+        function searchTasks() {
+            const query = document.getElementById('task-search').value;
+            alert(`Search tasks: ${query} - To be implemented`);
+        }
+
+        function globalSearch() {
+            const query = document.getElementById('global-search').value;
+            alert(`Global search: ${query} - To be implemented`);
+        }
+
+        function showCreateTaskModal() {
+            alert('Create task modal - To be implemented');
+        }
+
+        // Logout function
+        function logout() {
+            fetch(`${API_BASE_URL}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            })
+            .then(() => {
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+            })
+            .catch(error => {
+                console.error('Logout error:', error);
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
             });
-        });
-        
-        // Ward click functionality
-        document.querySelectorAll('.ward-list .list-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const wardId = this.getAttribute('data-ward');
-                alert(`Navigating to Ward ${wardId} detail page`);
-                // In a real app, you would navigate to the ward detail page
-            });
-        });
-        
-        // Patient click functionality
-        document.querySelectorAll('.patient-list .list-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const patientId = this.getAttribute('data-patient');
-                alert(`Navigating to Patient ${patientId} detail page`);
-                // In a real app, you would navigate to the patient detail page
-            });
-        });
-        
-        // Doctor click functionality
-        document.querySelectorAll('.doctor-list .list-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const doctorId = this.getAttribute('data-doctor');
-                alert(`Navigating to Doctor ${doctorId} detail page`);
-                // In a real app, you would navigate to the doctor detail page
-            });
-        });
-        
-        // Create ward button
-        document.getElementById('create-ward-btn').addEventListener('click', function() {
-            alert('Opening ward creation form');
-            // In a real app, you would show a form to create a new ward
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const createModal = document.getElementById('create-ward-modal');
+            const editModal = document.getElementById('edit-ward-modal');
+            
+            if (event.target === createModal) {
+                closeCreateWardModal();
+            }
+            if (event.target === editModal) {
+                closeEditWardModal();
+            }
         });
     </script>
 </body>
