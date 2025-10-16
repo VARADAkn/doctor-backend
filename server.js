@@ -56,6 +56,17 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
+const db = require("./models");
+
+// Sync database
+db.sequelize.sync({ alter: true }) // Use { force: true } if you want to drop & recreate all tables
+  .then(() => {
+    console.log("✅ Database synced successfully!");
+  })
+  .catch((err) => {
+    console.error("❌ Error syncing database:", err);
+  });
+
 // Start server without database connection for testing
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
