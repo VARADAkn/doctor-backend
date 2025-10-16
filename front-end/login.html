@@ -292,6 +292,21 @@
             animation: fadeIn 0.3s ease;
         }
 
+        .admin-note {
+            background-color: #e8f4fd;
+            border: 1px solid #b6e0fe;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #1e5bb8;
+        }
+
+        .admin-note i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
         .debug-info {
             background: #f7fafc;
             border: 1px solid #e2e8f0;
@@ -389,6 +404,13 @@
             <!-- Signup Form -->
             <div class="form-container" id="signup-form">
                 <h3 class="form-title">Create Account</h3>
+                
+                <!-- Admin Note -->
+                <div class="admin-note" id="admin-note" style="display: none;">
+                    <i class="fas fa-shield-alt"></i>
+                    <strong>Admin Doctor:</strong> Admin doctors have full system access including user management, workspace creation, and task assignment capabilities.
+                </div>
+
                 <form id="signupForm">
                     <div class="form-group">
                         <label class="form-label" for="signup-role">I am a</label>
@@ -398,6 +420,7 @@
                                 <option value="">Select Role</option>
                                 <option value="doctor">Doctor</option>
                                 <option value="patient">Patient</option>
+                                <option value="admin">Admin Doctor</option>
                             </select>
                         </div>
                     </div>
@@ -426,7 +449,7 @@
                         </div>
                     </div>
 
-                    <!-- Doctor-specific fields -->
+                    <!-- Doctor-specific fields (also used for Admin) -->
                     <div class="role-fields" id="doctor-fields">
                         <div class="form-group">
                             <label class="form-label" for="signup-specialization">Specialization</label>
@@ -508,6 +531,7 @@
         const signupRole = document.getElementById('signup-role');
         const doctorFields = document.getElementById('doctor-fields');
         const patientFields = document.getElementById('patient-fields');
+        const adminNote = document.getElementById('admin-note');
         const connectionStatus = document.getElementById('connection-status');
         
         // Check backend connection on page load
@@ -551,8 +575,9 @@
         // Role selection handler
         signupRole.addEventListener('change', (e) => {
             const role = e.target.value;
-            doctorFields.classList.toggle('active', role === 'doctor');
+            doctorFields.classList.toggle('active', role === 'doctor' || role === 'admin');
             patientFields.classList.toggle('active', role === 'patient');
+            adminNote.style.display = role === 'admin' ? 'block' : 'none';
         });
 
         function switchTab(tab) {
@@ -570,6 +595,7 @@
                 signupRole.value = '';
                 doctorFields.classList.remove('active');
                 patientFields.classList.remove('active');
+                adminNote.style.display = 'none';
             }
         }
 
@@ -691,8 +717,8 @@
             };
 
             // Add role-specific data
-            if (role === 'doctor') {
-                signupData.specialization = specialization;
+            if (role === 'doctor' || role === 'admin') {
+                signupData.specialization = specialization || 'General Medicine';
             } else if (role === 'patient') {
                 signupData.dob = dob;
             }
@@ -724,6 +750,7 @@
                         document.getElementById('signupForm').reset();
                         doctorFields.classList.remove('active');
                         patientFields.classList.remove('active');
+                        adminNote.style.display = 'none';
                     }, 2000);
                 } else {
                     showError(data.message || `Signup failed with status ${response.status}`);
