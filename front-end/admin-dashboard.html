@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Doctor's Collaboration App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2a6bc9;
+            --primary-light: #e8f1ff;
+            --secondary: #1a936f;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+            --gray: #718096;
+            --danger: #e53e3e;
+            --success: #38a169;
+            --warning: #dd6b20;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), #1e4a8b);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .icon-ward {
+            background-color: var(--primary);
+        }
+
+        .icon-patient {
+            background-color: var(--secondary);
+        }
+
+        .icon-doctor {
+            background-color: var(--warning);
+        }
+
+        .icon-task {
+            background-color: var(--danger);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e5bb8;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .list-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .item-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .item-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #c6f6d5;
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: #fed7d7;
+            color: var(--danger);
+        }
+
+        .status-completed {
+            background-color: #bee3f8;
+            color: var(--primary);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 0.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 80px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .search-container {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.2rem;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+        }
+
+        .detail-view {
+            display: none;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .detail-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .detail-info p {
+            color: var(--gray);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .task-priority {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background-color: #fed7d7;
+            color: var(--danger);
+        }
+
+        .priority-medium {
+            background-color: #fef5e7;
+            color: var(--warning);
+        }
+
+        .priority-low {
+            background-color: #c6f6d5;
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-stethoscope"></i>
+            <h1>Doctor's Collaboration</h1>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar">AD</div>
+            <span>Admin Doctor</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Home/Wards View -->
+        <div id="home-view" class="page-view">
+            <h2 class="page-title"><i class="fas fa-home"></i> Dashboard</h2>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon icon-ward">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Virtual Wards</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-patient">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+                    <div class="stat-value">84</div>
+                    <div class="stat-label">Patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-doctor">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-label">Doctors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-task">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-value">36</div>
+                    <div class="stat-label">Active Tasks</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Virtual Wards</h3>
+                    <button class="btn btn-primary" id="create-ward-btn">
+                        <i class="fas fa-plus"></i> Create New Ward
+                    </button>
+                </div>
+                
+                <div class="ward-list">
+                    <div class="list-item" data-ward="1">
+                        <div class="item-info">
+                            <h3>Cardiology Ward</h3>
+                            <p>5 Patients, 3 Doctors</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-ward="2">
+                        <div class="item-info">
+                            <h3>Oncology Ward</h3>
+                            <p>8 Patients, 4 Doctors</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-ward="3">
+                        <div class="item-info">
+                            <h3>Pediatrics Ward</h3>
+                            <p>12 Patients, 5 Doctors</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-ward="4">
+                        <div class="item-info">
+                            <h3>Neurology Ward</h3>
+                            <p>6 Patients, 3 Doctors</p>
+                        </div>
+                        <div class="item-status status-pending">Pending</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Tasks</h3>
+                </div>
+                
+                <div class="task-list">
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Review Patient MRI Results</h3>
+                            <p>Cardiology Ward • Due: Today</p>
+                        </div>
+                        <div class="task-priority priority-high">High</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Update Treatment Plan for John Doe</h3>
+                            <p>Oncology Ward • Due: Tomorrow</p>
+                        </div>
+                        <div class="task-priority priority-medium">Medium</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Schedule Follow-up Consultation</h3>
+                            <p>Pediatrics Ward • Due: 3 days</p>
+                        </div>
+                        <div class="task-priority priority-low">Low</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Patients View -->
+        <div id="patients-view" class="page-view" style="display: none;">
+            <h2 class="page-title"><i class="fas fa-user-injured"></i> Patients</h2>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search patients...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="card">
+                <div class="patient-list">
+                    <div class="list-item" data-patient="1">
+                        <div class="item-info">
+                            <h3>John Doe</h3>
+                            <p>ID: P-7832 • Cardiology Ward</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-patient="2">
+                        <div class="item-info">
+                            <h3>Sarah Johnson</h3>
+                            <p>ID: P-4519 • Oncology Ward</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-patient="3">
+                        <div class="item-info">
+                            <h3>Michael Chen</h3>
+                            <p>ID: P-9267 • Pediatrics Ward</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-patient="4">
+                        <div class="item-info">
+                            <h3>Emma Wilson</h3>
+                            <p>ID: P-3381 • Neurology Ward</p>
+                        </div>
+                        <div class="item-status status-pending">Pending</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Doctors View -->
+        <div id="doctors-view" class="page-view" style="display: none;">
+            <h2 class="page-title"><i class="fas fa-user-md"></i> Doctors</h2>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search doctors...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="card">
+                <div class="doctor-list">
+                    <div class="list-item" data-doctor="1">
+                        <div class="item-info">
+                            <h3>Dr. Robert Smith</h3>
+                            <p>Cardiology • 8 Patients</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-doctor="2">
+                        <div class="item-info">
+                            <h3>Dr. Lisa Brown</h3>
+                            <p>Oncology • 12 Patients</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-doctor="3">
+                        <div class="item-info">
+                            <h3>Dr. James Wilson</h3>
+                            <p>Pediatrics • 15 Patients</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                    <div class="list-item" data-doctor="4">
+                        <div class="item-info">
+                            <h3>Dr. Maria Garcia</h3>
+                            <p>Neurology • 6 Patients</p>
+                        </div>
+                        <div class="item-status status-active">Active</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks View -->
+        <div id="tasks-view" class="page-view" style="display: none;">
+            <h2 class="page-title"><i class="fas fa-tasks"></i> Tasks</h2>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search tasks...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Tasks</h3>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create New Task
+                    </button>
+                </div>
+                
+                <div class="task-list">
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Review Patient MRI Results</h3>
+                            <p>Cardiology Ward • Dr. Robert Smith • Due: Today</p>
+                        </div>
+                        <div class="task-priority priority-high">High</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Update Treatment Plan for John Doe</h3>
+                            <p>Oncology Ward • Dr. Lisa Brown • Due: Tomorrow</p>
+                        </div>
+                        <div class="task-priority priority-medium">Medium</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Schedule Follow-up Consultation</h3>
+                            <p>Pediatrics Ward • Dr. James Wilson • Due: 3 days</p>
+                        </div>
+                        <div class="task-priority priority-low">Low</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h3>Prepare Surgical Report</h3>
+                            <p>Neurology Ward • Dr. Maria Garcia • Due: 5 days</p>
+                        </div>
+                        <div class="task-priority priority-medium">Medium</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Search View -->
+        <div id="search-view" class="page-view" style="display: none;">
+            <h2 class="page-title"><i class="fas fa-search"></i> Search</h2>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search patients, doctors, tasks, or wards...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Search Results</h3>
+                </div>
+                
+                <div class="search-results">
+                    <p class="no-results" style="text-align: center; padding: 2rem; color: var(--gray);">
+                        Enter a search term to find patients, doctors, tasks, or wards
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="home-view">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item" data-page="patients-view">
+            <i class="fas fa-user-injured nav-icon"></i>
+            <span class="nav-label">Patients</span>
+        </div>
+        <div class="nav-item" data-page="doctors-view">
+            <i class="fas fa-user-md nav-icon"></i>
+            <span class="nav-label">Doctors</span>
+        </div>
+        <div class="nav-item" data-page="tasks-view">
+            <i class="fas fa-tasks nav-icon"></i>
+            <span class="nav-label">Tasks</span>
+        </div>
+        <div class="nav-item" data-page="search-view">
+            <i class="fas fa-search nav-icon"></i>
+            <span class="nav-label">Search</span>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show selected page
+                const pageId = this.getAttribute('data-page');
+                document.querySelectorAll('.page-view').forEach(page => {
+                    page.style.display = 'none';
+                });
+                document.getElementById(pageId).style.display = 'block';
+            });
+        });
+        
+        // Ward click functionality
+        document.querySelectorAll('.ward-list .list-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const wardId = this.getAttribute('data-ward');
+                alert(`Navigating to Ward ${wardId} detail page`);
+                // In a real app, you would navigate to the ward detail page
+            });
+        });
+        
+        // Patient click functionality
+        document.querySelectorAll('.patient-list .list-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const patientId = this.getAttribute('data-patient');
+                alert(`Navigating to Patient ${patientId} detail page`);
+                // In a real app, you would navigate to the patient detail page
+            });
+        });
+        
+        // Doctor click functionality
+        document.querySelectorAll('.doctor-list .list-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const doctorId = this.getAttribute('data-doctor');
+                alert(`Navigating to Doctor ${doctorId} detail page`);
+                // In a real app, you would navigate to the doctor detail page
+            });
+        });
+        
+        // Create ward button
+        document.getElementById('create-ward-btn').addEventListener('click', function() {
+            alert('Opening ward creation form');
+            // In a real app, you would show a form to create a new ward
+        });
+    </script>
+</body>
+</html>

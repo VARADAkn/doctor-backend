@@ -1,108 +1,185 @@
 const db = require("../models");
-const Doctor = db.Doctor;
-const { Op } = db.Sequelize;   // ✅ Destructure Op correctly
-const generateDoctorId = require('../utils/generateDoctorId');
+// Destructure all necessary models and sequelize for transactions
+const { User, Doctor, Patient, sequelize } = db;
+const { Op } = db.Sequelize;
+const bcrypt = require('bcrypt');
 
+/**
+ * Handles signup for DIFFERENT roles (patient, doctor).
+ * Creates a central User record and a corresponding profile record.
+ */
 exports.signup = async (req, res, next) => {
-  try {
-    const { name, email, phone, password, specialization } = req.body;
+  // Destructure all possible fields from the request body
+  const { role, name, email, phone, password, ...profileData } = req.body;
 
-    const doctorData = {
-      id: generateDoctorId(),
-      name,
-      email,
-      phone,
-      password,
-      specialization: specialization || null
-    };
+  console.log('Signup request received:', { role, name, email, phone });
 
-   const existingDoctor = await Doctor.findOne({
-  where: {
-    [Op.or]: [{ phone }, { email }]
+  // 1. Validate the role
+  if (!role || !['patient', 'doctor'].includes(role)) {
+    return res.status(400).json({ message: "A valid role ('patient' or 'doctor') is required." });
   }
-});
 
+  // Validate required fields
+  if (!name || !email || !phone || !password) {
+    return res.status(400).json({ message: "All fields (name, email, phone, password) are required." });
+  }
 
-    if (existingDoctor) {
-      const error = new Error("Doctor with this phone or email already exists");
-      error.statusCode = 400;
-      throw error;  // 👈 throw error instead of res.status
-    }
+  // Use a transaction to ensure both user and profile are created, or neither are.
+  const t = await sequelize.transaction();
 
-    const doctor = await Doctor.create(doctorData);
-
-    return res.status(201).json({
-      message: "Doctor registered successfully",
-      doctor: {
-        id: doctor.id,
-        name: doctor.name,
-        email: doctor.email,
-        phone: doctor.phone,
-        specialization: doctor.specialization,
-        role: doctor.role,
-        isActive: doctor.isActive
+  try {
+    // 2. Check if a user already exists in the central User table
+    const existingUser = await User.findOne({
+      where: { 
+        [Op.or]: [{ phone }, { email }] 
       }
     });
 
+    if (existingUser) {
+      await t.rollback();
+      return res.status(409).json({ message: "User with this phone or email already exists" });
+    }
+
+    // 3. Hash password before saving
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // 4. Create the main User record for authentication
+    const user = await User.create({
+      email,
+      phone,
+      password: hashedPassword,
+      role,
+    }, { transaction: t });
+
+    console.log('User created:', user.id);
+
+    // 5. Create the role-specific profile and link it to the User
+    if (role === 'doctor') {
+      await Doctor.create({
+        name,
+        specialization: profileData.specialization || null,
+        userId: user.id, // This links the doctor profile to the user
+      }, { transaction: t });
+      console.log('Doctor profile created');
+    } else if (role === 'patient') {
+      await Patient.create({
+        name,
+        dob: profileData.dob || null,
+        userId: user.id, // This links the patient profile to the user
+      }, { transaction: t });
+      console.log('Patient profile created');
+    }
+
+    // 6. If everything is successful, commit the transaction
+    await t.commit();
+
+    res.status(201).json({ 
+      message: `${role.charAt(0).toUpperCase() + role.slice(1)} registered successfully!`,
+      userId: user.id
+    });
+
   } catch (err) {
-    next(err);  // 👈 Pass error to global handler
+    // If any step fails, roll back all database changes
+    await t.rollback();
+    console.error('Signup error:', err);
+    
+    // Handle specific Sequelize errors
+    if (err.name === 'SequelizeValidationError') {
+      return res.status(400).json({ message: 'Validation error: ' + err.errors.map(e => e.message).join(', ') });
+    }
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({ message: 'User with this email or phone already exists' });
+    }
+    
+    next(err); // Pass the error to the global error handler
   }
 };
 
-
-exports.login = async (req, res) => {
+/**
+ * Handles login for ALL roles by checking the central User table.
+ */
+exports.login = async (req, res, next) => {
   const { phone, password } = req.body;
 
+  console.log('Login attempt for phone:', phone);
+
   try {
-    // Only check Doctor table
-    const doctor = await Doctor.findOne({ where: { phone } });
+    // 1. Find the user by phone number in the central User table
+    const user = await User.findOne({ where: { phone } });
 
-    if (!doctor) {
-      return res.status(401).json({ message: 'Phone number not found' });
+    if (!user) {
+      return res.status(401).json({ message: 'Authentication failed: User not found.' });
+    }
+    if (!user.isActive) {
+      return res.status(403).json({ message: 'Your account has been disabled.' });
     }
 
-    if (!doctor.isActive) {
-      return res.status(403).json({ message: 'Account is disabled' });
+    // 2. Compare the hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Authentication failed: Invalid credentials.' });
     }
 
-    if (doctor.password !== password) {
-      return res.status(401).json({ message: 'Invalid password' });
+    // 3. Fetch the user's name from their specific profile
+    let profileName = 'User';
+    if (user.role === 'doctor') {
+      const doctorProfile = await Doctor.findOne({ where: { userId: user.id } });
+      profileName = doctorProfile?.name || 'Doctor';
+    } else if (user.role === 'patient') {
+      const patientProfile = await Patient.findOne({ where: { userId: user.id } });
+      profileName = patientProfile?.name || 'Patient';
+    } else if (user.role === 'admin') {
+      profileName = 'Admin';
     }
 
-    
+    // 4. Store essential, non-sensitive info in the session
     req.session.user = {
-      id: doctor.id,
-      role: doctor.role,
-      phone: doctor.phone,
-      name: doctor.name
+      id: user.id,
+      role: user.role,
+      phone: user.phone,
+      name: profileName,
+      email: user.email
     };
 
-    res.json({ 
-      message: 'Login successful', 
-      user: req.session.user 
+    console.log('Login successful for user:', profileName);
+
+    res.json({
+      message: 'Login successful',
+      user: req.session.user,
     });
   } catch (err) {
+    console.error('Login error:', err);
     next(err);
   }
 };
 
-exports.disableUser = async (req, res) => {
-  try {
-    const doctor = await Doctor.findByPk(req.params.id);
-    if (!doctor) return res.status(404).json({ message: 'Doctor not found' });
+/**
+ * Disables a user in the central User table.
+ */
+exports.disableUser = async (req, res, next) => {
+ try {
+   const user = await User.findByPk(req.params.id);
+   if (!user) {
+     return res.status(404).json({ message: 'User not found' });
+   }
 
-    doctor.isActive = false;
-    await doctor.save();
+   user.isActive = false;
+   await user.save();
 
-    res.json({ message: 'Doctor disabled successfully', doctor });
-  } catch (err) {
-    next(err);
-  }
+   res.json({ message: `User ${user.email} disabled successfully.` });
+ } catch (err) {
+   next(err);
+ }
 };
 
+/**
+ * Destroys the user's session.
+ */
 exports.logout = (req, res) => {
   req.session.destroy((err) => {
-    if (err) return res.status(500).json({ message: 'Logout failed' });
+    if (err) {
+      return res.status(500).json({ message: 'Could not log out. Please try again.' });
+    }
     res.clearCookie('connect.sid');
     res.json({ message: 'Logout successful' });
   });
