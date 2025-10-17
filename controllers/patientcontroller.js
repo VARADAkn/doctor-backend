@@ -1,47 +1,74 @@
-const { models } = require('../models');
+// controllers/patientcontroller.js
+const db = require("../models");
+const { Patient } = db; // Import Patient from models
 const service = require('../services/genericservice');
 
 /**
  * Creates a new patient record.
  */
 exports.createPatient = async (req, res) => {
-  const patient = await service.create(Patient, req.body);
-  res.status(201).json(patient);
+  try {
+    const patient = await service.create(Patient, req.body);
+    res.status(201).json(patient);
+  } catch (error) {
+    console.error('Error creating patient:', error);
+    res.status(500).json({ error: 'Failed to create patient' });
+  }
 };
 
 /**
  * Retrieves all patient records.
  */
 exports.getPatients = async (_req, res) => {
-  const patients = await service.getAll(Patient);
-  res.json(patients);
+  try {
+    const patients = await service.getAll(Patient);
+    res.json(patients);
+  } catch (error) {
+    console.error('Error fetching patients:', error);
+    res.status(500).json({ error: 'Failed to fetch patients' });
+  }
 };
 
 /**
  * Retrieves a single patient record by ID (from req.body.id).
  */
 exports.getPatient = async (req, res) => {
-  const patient = await service.getById(Patient, req.body.id);
-  if (!patient) return res.status(404).json({ error: 'Patient not found' });
-  res.json(patient);
+  try {
+    const patient = await service.getById(Patient, req.body.id);
+    if (!patient) return res.status(404).json({ error: 'Patient not found' });
+    res.json(patient);
+  } catch (error) {
+    console.error('Error fetching patient:', error);
+    res.status(500).json({ error: 'Failed to fetch patient' });
+  }
 };
 
 /**
  * Updates a patient record by ID (from req.body.id).
  */
 exports.updatePatient = async (req, res) => {
-  const updated = await service.update(Patient, req.body.id, req.body);
-  if (!updated) return res.status(404).json({ error: 'Patient not found' });
-  res.json({ message: 'Patient updated successfully', patient: updated });
+  try {
+    const updated = await service.update(Patient, req.body.id, req.body);
+    if (!updated) return res.status(404).json({ error: 'Patient not found' });
+    res.json({ message: 'Patient updated successfully', patient: updated });
+  } catch (error) {
+    console.error('Error updating patient:', error);
+    res.status(500).json({ error: 'Failed to update patient' });
+  }
 };
 
 /**
  * Deletes a patient record by ID (from req.body.id).
  */
 exports.deletePatient = async (req, res) => {
-  const deleted = await service.deleteById(Patient, req.body.id);
-  if (!deleted) return res.status(404).json({ error: 'Patient not found' });
-  res.json({ message: 'Patient deleted successfully' });
+  try {
+    const deleted = await service.deleteById(Patient, req.body.id);
+    if (!deleted) return res.status(404).json({ error: 'Patient not found' });
+    res.json({ message: 'Patient deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting patient:', error);
+    res.status(500).json({ error: 'Failed to delete patient' });
+  }
 };
 
 /**
@@ -56,9 +83,29 @@ exports.searchPatients = async (req, res) => {
     // This calls the search function from your generic service
     const patients = await service.searchByName(Patient, name);
     res.json(patients);
-  } catch (err) {
-    // It's good practice to handle potential errors in new functions
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Error searching patients:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
+/**
+ * Get patients by workspace ID
+ */
+exports.getPatientsByWorkspace = async (req, res) => {
+  try {
+    const { workSpaceId } = req.body;
+    if (!workSpaceId) {
+      return res.status(400).json({ error: "workSpaceId is required" });
+    }
+    
+    const patients = await Patient.findAll({
+      where: { workSpaceId }
+    });
+    
+    res.json(patients);
+  } catch (error) {
+    console.error('Error fetching patients by workspace:', error);
+    res.status(500).json({ error: 'Failed to fetch patients' });
+  }
+};

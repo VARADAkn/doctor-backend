@@ -37,10 +37,12 @@ app.use(session({
 // Import routes
 const authRoutes = require('./routes/auth.routes');
 const routes = require('./routes');
+const doctorDashboardRoutes = require('./routes/doctorDashboard.routes'); // ADD THIS LINE
 
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api', routes);
+app.use('/api', doctorDashboardRoutes); // ADD THIS LINE
 
 // Basic error handler
 app.use((err, req, res, next) => {
