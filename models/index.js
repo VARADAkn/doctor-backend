@@ -28,6 +28,8 @@ db.WorkSpace = require('./Workspace.js')(sequelize, DataTypes);
 db.WorkspaceDoctor = require('./workspace_doctor.js')(sequelize, DataTypes);
 db.Task = require('./task.js')(sequelize, DataTypes);
 db.Activity = require('./activity.js')(sequelize, DataTypes);
+db.MedicalRecord = require('./medicalrecord.js')(sequelize, DataTypes);
+
 // ✅ Define Relationships
 db.User.hasOne(db.Doctor, { foreignKey: 'userId', as: 'doctorProfile' });
 db.Doctor.belongsTo(db.User, { foreignKey: 'userId' });
@@ -60,6 +62,8 @@ db.Task.belongsTo(db.Doctor, { foreignKey: 'assignedTo' }); // Changed from doct
 // Activity <-> Task (One-to-Many)
 db.Task.hasMany(db.Activity, { foreignKey: 'taskId' });
 db.Activity.belongsTo(db.Task, { foreignKey: 'taskId' });
+db.Patient.hasMany(db.MedicalRecord, { foreignKey: 'patientId', as: 'medicalRecords' });
+db.MedicalRecord.belongsTo(db.Patient, { foreignKey: 'patientId' });
 
 
 module.exports = db;
