@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -485,8 +486,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .empty-state {
@@ -542,17 +550,153 @@
             .stats-container {
                 grid-template-columns: 1fr 1fr;
             }
-            
+
             .wards-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .user-details {
                 display: none;
             }
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .detail-item span {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .patients-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .patient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo">
@@ -575,7 +719,7 @@
         <!-- Home/Wards View -->
         <div id="home-view" class="page-view active">
             <h2 class="page-title"><i class="fas fa-home"></i> Dashboard</h2>
-            
+
             <div class="stats-container">
                 <div class="stat-card primary">
                     <div class="stat-icon icon-ward">
@@ -606,7 +750,7 @@
                     <div class="stat-label">Completed Tasks</div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">My Assigned Wards</h3>
@@ -614,7 +758,7 @@
                         View All <i class="fas fa-chevron-right"></i>
                     </a>
                 </div>
-                
+
                 <div class="wards-grid">
                     <div class="ward-card" data-ward="1">
                         <div class="ward-header">
@@ -643,7 +787,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="ward-card" data-ward="2">
                         <div class="ward-header">
                             <div class="ward-name">ICU Ward</div>
@@ -671,7 +815,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="ward-card" data-ward="3">
                         <div class="ward-header">
                             <div class="ward-name">Emergency Ward</div>
@@ -701,7 +845,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Recent Tasks</h3>
@@ -709,7 +853,7 @@
                         View All <i class="fas fa-chevron-right"></i>
                     </a>
                 </div>
-                
+
                 <div class="tasks-list">
                     <div class="task-item">
                         <div class="task-info">
@@ -731,7 +875,7 @@
                             <div class="task-status status-pending">Pending</div>
                         </div>
                     </div>
-                    
+
                     <div class="task-item">
                         <div class="task-info">
                             <h3>Update Treatment Plan for Sarah Johnson</h3>
@@ -752,7 +896,7 @@
                             <div class="task-status status-in-progress">In Progress</div>
                         </div>
                     </div>
-                    
+
                     <div class="task-item">
                         <div class="task-info">
                             <h3>Perform Routine Checkup</h3>
@@ -776,30 +920,31 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Tasks View -->
         <div id="tasks-view" class="page-view">
             <h2 class="page-title"><i class="fas fa-tasks"></i> My Tasks</h2>
-            
+
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Search tasks...">
                 <button class="search-btn"><i class="fas fa-search"></i></button>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">All Tasks</h3>
                     <div class="task-filters">
-                        <select class="form-select">
-                            <option>All Status</option>
-                            <option>Pending</option>
-                            <option>In Progress</option>
-                            <option>Completed</option>
+                        <select class="form-select" id="task-status-filter" onchange="filterTasks()">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="in progress">In Progress</option>
+                            <option value="completed">Completed</option>
                         </select>
                     </div>
                 </div>
-                
-                <div class="tasks-list">
+
+                <!-- STEP 11: Task List Container -->
+                <div class="tasks-list" id="taskList">
                     <div class="task-item">
                         <div class="task-info">
                             <h3>Review Patient MRI Results</h3>
@@ -825,7 +970,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="task-item">
                         <div class="task-info">
                             <h3>Update Treatment Plan for Sarah Johnson</h3>
@@ -851,7 +996,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="task-item">
                         <div class="task-info">
                             <h3>Perform Routine Checkup</h3>
@@ -877,7 +1022,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="task-item">
                         <div class="task-info">
                             <h3>Prepare Surgical Report</h3>
@@ -906,18 +1051,19 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Profile View -->
         <div id="profile-view" class="page-view">
             <h2 class="page-title"><i class="fas fa-user"></i> My Profile</h2>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Personal Information</h3>
                 </div>
-                
+
                 <div class="profile-content">
-                    <div class="profile-header" style="display: flex; align-items: center; gap: 20px; margin-bottom: 2rem;">
+                    <div class="profile-header"
+                        style="display: flex; align-items: center; gap: 20px; margin-bottom: 2rem;">
                         <div class="user-avatar" style="width: 80px; height: 80px; font-size: 1.8rem;">RC</div>
                         <div>
                             <h3 style="font-size: 1.5rem; margin-bottom: 5px;">Dr. Robert Chen</h3>
@@ -925,48 +1071,165 @@
                             <div class="ward-status status-active" style="display: inline-block;">Active</div>
                         </div>
                     </div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                         <div class="form-group">
                             <label class="form-label">Email</label>
-                            <div class="form-input" style="background: var(--light); padding: 0.8rem;">robert.chen@hospital.com</div>
+                            <div class="form-input" style="background: var(--light); padding: 0.8rem;">
+                                robert.chen@hospital.com</div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label class="form-label">Phone</label>
-                            <div class="form-input" style="background: var(--light); padding: 0.8rem;">+1 (555) 123-4567</div>
+                            <div class="form-input" style="background: var(--light); padding: 0.8rem;">+1 (555) 123-4567
+                            </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label class="form-label">License Number</label>
                             <div class="form-input" style="background: var(--light); padding: 0.8rem;">MED-123456</div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label class="form-label">Years of Experience</label>
                             <div class="form-input" style="background: var(--light); padding: 0.8rem;">8 years</div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group" style="margin-top: 1.5rem;">
                         <label class="form-label">Bio</label>
                         <div class="form-input" style="background: var(--light); padding: 0.8rem; min-height: 100px;">
-                            Senior cardiologist with 8 years of experience in cardiovascular diseases. Specialized in interventional cardiology and heart failure management.
+                            Senior cardiologist with 8 years of experience in cardiovascular diseases. Specialized in
+                            interventional cardiology and heart failure management.
                         </div>
                     </div>
-                    
+
                     <div style="margin-top: 2rem; display: flex; gap: 10px;">
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary" onclick="openEditProfileModal()">
                             <i class="fas fa-edit"></i> Edit Profile
                         </button>
-                        <button class="btn btn-outline">
+                        <button class="btn btn-outline" onclick="alert('Password change coming soon')">
                             <i class="fas fa-key"></i> Change Password
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Ward Detail View (shown when entering a ward) -->
+        <div id="ward-detail-view" class="page-view">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                <button class="btn btn-outline btn-sm" onclick="showView('home-view')">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h2 class="page-title" id="active-ward-name" style="margin-bottom: 0;">Ward Name</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Patients in this Ward</h3>
+                </div>
+                <div id="ward-patients-list" class="patients-list">
+                    <!-- Loaded dynamically -->
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading patients...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Activity View -->
+        <div id="activity-view" class="page-view" style="display: none;">
+            <h2 class="page-title"><i class="fas fa-history"></i> My Activity Log</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Recent Actions</h3>
+                    <button class="btn btn-sm" onclick="loadDoctorActivity()">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                </div>
+                <div id="activity-logs-list" class="tasks-list">
+                    <!-- Logs populated here -->
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Task Detail Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Task Details</h3>
+                <button class="close-btn" onclick="closeModal('task-modal')">&times;</button>
+            </div>
+            <div id="task-modal-body">
+                <!-- Populated dynamically -->
+            </div>
+            <div class="form-actions" id="task-modal-actions">
+                <!-- Actions populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Profile</h3>
+                <button class="close-btn" onclick="closeModal('edit-profile-modal')">&times;</button>
+            </div>
+            <form id="edit-profile-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="edit-name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Specialization</label>
+                    <input type="text" id="edit-specialization" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="edit-phone" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">License Number</label>
+                    <input type="text" id="edit-license" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Experience (Years)</label>
+                    <input type="number" id="edit-experience" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea id="edit-bio" class="form-textarea"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('edit-profile-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification"
+        style="position: fixed; top: 20px; right: 20px; padding: 1rem 2rem; border-radius: 8px; color: white; display: none; z-index: 2000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: slideIn 0.3s ease-out;">
+    </div>
+
+    <style>
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
 
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home-view">
@@ -978,433 +1241,606 @@
             <span class="nav-label">Tasks</span>
         </div>
         <div class="nav-item" data-page="profile-view">
-            <i class="fas fa-user nav-icon"></i>
+            <i class="fas fa-user-circle nav-icon"></i>
             <span class="nav-label">Profile</span>
+        </div>
+        <div class="nav-item" data-page="activity-view">
+            <i class="fas fa-history nav-icon"></i>
+            <span class="nav-label">My Activity</span>
         </div>
     </div>
 
     <script>
-        // Navigation functionality
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                // Update active nav item
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('active');
+        // Global state
+        const API_BASE_URL = '/api';
+        let currentWards = [];
+        let currentTasks = [];
+
+        // UI Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Doctor dashboard initialized');
+            loadDashboardData();
+
+            // Set up auto-refresh every 2 minutes
+            setInterval(loadDashboardData, 120000);
+
+            // Setup navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    const pageId = this.getAttribute('data-page');
+                    showView(pageId);
                 });
-                this.classList.add('active');
-                
-                // Show selected page
-                const pageId = this.getAttribute('data-page');
-                document.querySelectorAll('.page-view').forEach(page => {
-                    page.classList.remove('active');
+            });
+
+            // Setup search and filters
+            const searchInput = document.querySelector('.search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterTasks);
+            }
+
+            // Setup Profile Form
+            document.getElementById('edit-profile-form').addEventListener('submit', handleProfileUpdate);
+        });
+
+        // View management
+        function showView(viewId) {
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                const isMatch = nav.getAttribute('data-page') === viewId ||
+                    (viewId === 'ward-detail-view' && nav.getAttribute('data-page') === 'home-view');
+                nav.classList.toggle('active', isMatch);
+            });
+
+            // Show selected page
+            document.querySelectorAll('.page-view').forEach(page => {
+                page.classList.toggle('active', page.id === viewId);
+            });
+
+            // Specific view logic
+            if (viewId === 'tasks-view') {
+                loadTasks();
+            }
+            if (viewId === 'activity-view') {
+                loadDoctorActivity();
+            }
+        }
+
+        // Dashboard Data Loading
+        async function loadDashboardData() {
+            try {
+                // Fetch stats and profile
+                const statsResponse = await fetch(`${API_BASE_URL}/doctor-dashboard/dashboard-stats`, { credentials: 'include' });
+                if (!statsResponse.ok) throw new Error('Failed to load stats');
+
+                const statsData = await statsResponse.json();
+                if (statsData.success) {
+                    updateStatsUI(statsData.stats);
+                    updateDoctorProfileUI(statsData.doctorProfile);
+                }
+
+                // Fetch wards
+                const wardsResponse = await fetch(`${API_BASE_URL}/doctor-dashboard/assigned-wards`, { credentials: 'include' });
+                if (wardsResponse.ok) {
+                    const wardsData = await wardsResponse.json();
+                    if (wardsData.success) {
+                        currentWards = wardsData.wards;
+                        displayAssignedWards(wardsData.wards);
+                    }
+                }
+
+                // Fetch tasks for recent list
+                await loadTasks();
+
+                // STEP 11: Also load doctor-specific tasks using the logged-in doctor's ID
+                const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                if (userData && userData.id) {
+                    await loadDoctorTasks(userData.id);
+                }
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showNotification(error.message, 'error');
+            }
+        }
+
+        async function loadTasks() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctor-dashboard/tasks`, { credentials: 'include' });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        currentTasks = data.tasks;
+                        displayTasks(data.tasks);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+            }
+        }
+
+        // STEP 11: Fetch Logged-In Doctor Tasks
+        async function loadDoctorTasks(doctorId) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/tasks/by-doctor`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ doctorId })
                 });
-                document.getElementById(pageId).classList.add('active');
-            });
-        });
-        
-        // Ward click functionality
-        document.querySelectorAll('.ward-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const wardId = this.getAttribute('data-ward');
-                alert(`Navigating to Ward ${wardId} detail page`);
-                // In a real app, you would navigate to the ward detail page
-            });
-        });
-        
-        // Task actions
-        document.querySelectorAll('.task-item').forEach(task => {
-            task.addEventListener('click', function() {
-                // In a real app, you would show task details
-                console.log('Task clicked');
-            });
-        });
-        
-        // Logout functionality
-       // Logout functionality
-document.querySelector('.logout-btn').addEventListener('click', function() {
-    if (confirm('Are you sure you want to logout?')) {
-        // Call logout API
-        fetch('http://localhost:3000/api/auth/logout', {
-            method: 'POST',
-            credentials: 'include'
-        })
-        .then(() => {
-            localStorage.removeItem('user');
-            window.location.href = '/';  // Changed from 'login.html'
-        })
-        .catch(error => {
-            console.error('Logout error:', error);
-            localStorage.removeItem('user');
-            window.location.href = '/';  // Changed from 'login.html'
-        });
-    }
-});
-        
-        // Simulate loading user data
-        window.addEventListener('load', function() {
-            // In a real app, you would fetch user data from API
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            if (user.name) {
-                document.querySelector('.user-details h3').textContent = user.name;
-                document.querySelector('.user-avatar').textContent = 
-                    user.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            }
-        });
-        const API_BASE_URL = 'http://localhost:3000/api';
 
-// Load dashboard data
-async function loadDashboardData() {
-    try {
-        console.log('Loading dashboard data...');
-        
-        // Load stats
-        const statsResponse = await fetch(`${API_BASE_URL}/doctor-dashboard/dashboard-stats`, {
-            credentials: 'include'
-        });
-        
-        if (!statsResponse.ok) {
-            throw new Error(`Stats API error: ${statsResponse.status}`);
-        }
-        
-        const statsData = await statsResponse.json();
-        console.log('Stats data:', statsData);
-        
-        if (statsData.success) {
-            updateStats(statsData.stats);
-            updateDoctorProfile(statsData.doctorProfile);
-        } else {
-            throw new Error(statsData.message || 'Failed to load stats');
-        }
+                const tasks = await res.json();
 
-        // Load assigned wards
-        const wardsResponse = await fetch(`${API_BASE_URL}/doctor-dashboard/assigned-wards`, {
-            credentials: 'include'
-        });
-        
-        if (wardsResponse.ok) {
-            const wardsData = await wardsResponse.json();
-            if (wardsData.success) {
-                displayAssignedWards(wardsData.wards);
+                // Store tasks for other functions to use
+                currentTasks = tasks;
+
+                // Update the taskList container
+                const taskListContainer = document.getElementById('taskList');
+                if (taskListContainer) {
+                    if (!tasks || tasks.length === 0) {
+                        taskListContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-tasks"></i>
+                                <p>No tasks assigned to you yet.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    taskListContainer.innerHTML = tasks.map(t => `
+                        <div class="task-item" onclick="viewTaskDetails('${t.id}')">
+                            <div class="task-info">
+                                <h4>${t.title}</h4>
+                                <p>${t.description || 'No description'}</p>
+                                <p>Deadline: ${new Date(t.dueDate).toDateString()}</p>
+                                <p>Status: ${t.status}</p>
+                            </div>
+                            <div class="task-details">
+                                <div class="task-status status-${(t.status || 'pending').toLowerCase().replace(' ', '-')}">
+                                    ${t.status || 'Pending'}
+                                </div>
+                                <div class="task-actions">
+                                    ${getTaskActionButton(t)}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Also update the displayTasks for recent tasks in home view
+                displayTasks(tasks);
+            } catch (error) {
+                console.error('Error loading doctor tasks:', error);
             }
         }
 
-        // Load tasks
-        const tasksResponse = await fetch(`${API_BASE_URL}/doctor-dashboard/tasks`, {
-            credentials: 'include'
-        });
-        
-        if (tasksResponse.ok) {
-            const tasksData = await tasksResponse.json();
-            if (tasksData.success) {
-                displayTasks(tasksData.tasks);
-            }
-        }
+        async function loadDoctorActivity() {
+            try {
+                const listContainer = document.getElementById('activity-logs-list');
+                listContainer.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin"></i> Loading activity...</div>';
 
-    } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        showNotification('Error loading dashboard data: ' + error.message, 'error');
-    }
-}
+                const response = await fetch(`${API_BASE_URL}/audit-logs/my-activities`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
 
-// Update statistics on the dashboard
-function updateStats(stats) {
-    console.log('Updating stats:', stats);
-    
-    // Update the stat cards
-    const statCards = document.querySelectorAll('.stat-card');
-    if (statCards.length >= 4) {
-        statCards[0].querySelector('.stat-value').textContent = stats.assignedWards || 0;
-        statCards[1].querySelector('.stat-value').textContent = stats.totalTasks || 0;
-        statCards[2].querySelector('.stat-value').textContent = stats.pendingTasks || 0;
-        statCards[3].querySelector('.stat-value').textContent = stats.completedTasks || 0;
-    }
-}
+                if (!response.ok) throw new Error('Failed to fetch activity logs');
 
-// Update doctor profile information
-function updateDoctorProfile(doctorProfile) {
-    console.log('Updating doctor profile:', doctorProfile);
-    
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    // Update header
-    const headerName = document.querySelector('.user-details h3');
-    const headerRole = document.querySelector('.user-details p');
-    
-    if (headerName) {
-        headerName.textContent = doctorProfile.name || user.name || 'Doctor';
-    }
-    if (headerRole) {
-        headerRole.textContent = doctorProfile.specialization || 'Doctor';
-    }
-    
-    // Update avatar
-    const avatar = document.querySelector('.user-avatar');
-    if (avatar) {
-        avatar.textContent = (doctorProfile.name || user.name || 'D').charAt(0).toUpperCase();
-    }
-    
-    // Update profile section
-    updateProfileSection(doctorProfile);
-}
+                const logs = await response.json();
 
-// Update profile view section
-function updateProfileSection(doctorProfile) {
-    const profileSection = document.querySelector('#profile-view');
-    if (!profileSection) return;
-    
-    const profileHeader = profileSection.querySelector('.profile-header');
-    if (profileHeader) {
-        profileHeader.querySelector('h3').textContent = doctorProfile.name || 'Doctor';
-        profileHeader.querySelector('p').textContent = doctorProfile.specialization || 'No specialization';
-    }
-    
-    // Update profile details
-    const detailsGrid = profileSection.querySelector('.info-grid');
-    if (detailsGrid) {
-        // You can add more profile details here
-        console.log('Profile data available:', doctorProfile);
-    }
-}
+                if (logs.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>No activity recorded yet</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-// Display assigned wards
-function displayAssignedWards(wards) {
-    const wardsGrid = document.querySelector('.wards-grid');
-    if (!wardsGrid) return;
-    
-    console.log('Displaying wards:', wards);
-    
-    if (!wards || wards.length === 0) {
-        wardsGrid.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-procedures"></i>
-                <h3>No Assigned Wards</h3>
-                <p>You haven't been assigned to any wards yet.</p>
-            </div>
-        `;
-        return;
-    }
+                listContainer.innerHTML = logs.map(log => {
+                    const date = new Date(log.createdAt).toLocaleString();
+                    let icon = 'fa-info-circle';
+                    let color = 'var(--primary)';
 
-    wardsGrid.innerHTML = wards.map(ward => `
-        <div class="ward-card" data-ward="${ward.id}">
-            <div class="ward-header">
-                <div class="ward-name">${ward.name}</div>
-                <div class="ward-status status-active">Active</div>
-            </div>
-            <div class="ward-info">
-                <div class="info-item">
-                    <i class="fas fa-user-injured"></i>
-                    <span>${ward.patientCount || 0} Patients</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-user-md"></i>
-                    <span>${ward.doctorCount || 1} Doctors</span>
-                </div>
-            </div>
-            <div class="ward-description">
-                ${ward.description || 'No description available'}
-            </div>
-            <div class="ward-actions">
-                <button class="btn btn-primary" onclick="enterWard('${ward.id}')">
-                    <i class="fas fa-door-open"></i> Enter Ward
-                </button>
-                <button class="btn btn-outline" onclick="viewWardTasks('${ward.id}')">
-                    <i class="fas fa-list"></i> Tasks
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
+                    if (log.action.includes('DELETE')) { icon = 'fa-trash'; color = 'var(--danger)'; }
+                    else if (log.action.includes('CREATE')) { icon = 'fa-plus-circle'; color = 'var(--success)'; }
+                    else if (log.action.includes('UPDATE')) { icon = 'fa-edit'; color = 'var(--warning)'; }
 
-// Display tasks
-function displayTasks(tasks) {
-    console.log('Displaying tasks:', tasks);
-    
-    const recentTasksList = document.querySelector('#home-view .tasks-list');
-    const allTasksList = document.querySelector('#tasks-view .tasks-list');
-    
-    if (!tasks || tasks.length === 0) {
-        const emptyState = `
-            <div class="empty-state">
-                <i class="fas fa-tasks"></i>
-                <h3>No Tasks Assigned</h3>
-                <p>You don't have any tasks assigned yet.</p>
-            </div>
-        `;
-        if (recentTasksList) recentTasksList.innerHTML = emptyState;
-        if (allTasksList) allTasksList.innerHTML = emptyState;
-        return;
-    }
-
-    // Format tasks for display
-    const taskHtml = tasks.map(task => `
-        <div class="task-item" data-task="${task.id}">
-            <div class="task-info">
-                <h3>${task.title}</h3>
-                <p>${task.workspace?.name || 'No Ward'} • ${task.patient?.name || 'No Patient'}</p>
-                <div class="task-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>Due: ${formatDate(task.dueDate)}</span>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-flag"></i>
-                        <span>Priority: ${task.priority || 'Medium'}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="task-details">
-                <div class="task-priority priority-${(task.priority || 'medium').toLowerCase()}">
-                    ${task.priority || 'Medium'}
-                </div>
-                <div class="task-status status-${task.status?.toLowerCase().replace(' ', '-') || 'pending'}">
-                    ${task.status || 'Pending'}
-                </div>
-                <div class="task-actions">
-                    ${getTaskActionButton(task)}
-                </div>
-            </div>
-        </div>
-    `).join('');
-
-    // Show only recent tasks in home view (limit to 3)
-    const recentTasks = tasks.slice(0, 3);
-    if (recentTasksList) {
-        recentTasksList.innerHTML = recentTasks.map(task => `
-            <div class="task-item" data-task="${task.id}">
-                <div class="task-info">
-                    <h3>${task.title}</h3>
-                    <p>${task.workspace?.name || 'No Ward'} • ${task.patient?.name || 'No Patient'}</p>
-                    <div class="task-meta">
-                        <div class="meta-item">
-                            <i class="fas fa-calendar"></i>
-                            <span>Due: ${formatDate(task.dueDate)}</span>
+                    return `
+                    <div class="task-item" style="cursor: default;">
+                         <div class="task-info">
+                            <h4 style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas ${icon}" style="color: ${color};"></i> ${log.action}
+                            </h4>
+                            <p>${log.details}</p>
+                            <div class="task-meta">
+                                <span class="meta-item"><i class="far fa-clock"></i> ${date}</span>
+                                <span class="meta-item"><i class="fas fa-tag"></i> ${log.targetType || 'System'}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="task-details">
-                    <div class="task-priority priority-${(task.priority || 'medium').toLowerCase()}">
-                        ${task.priority || 'Medium'}
-                    </div>
-                    <div class="task-status status-${task.status?.toLowerCase().replace(' ', '-') || 'pending'}">
-                        ${task.status || 'Pending'}
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
+                    `;
+                }).join('');
 
-    // Show all tasks in tasks view
-    if (allTasksList) {
-        allTasksList.innerHTML = taskHtml;
-    }
-}
-
-// Get appropriate action button for task
-function getTaskActionButton(task) {
-    const status = task.status?.toLowerCase();
-    
-    switch(status) {
-        case 'pending':
-            return `<button class="btn btn-primary btn-sm" onclick="updateTaskStatus('${task.id}', 'In Progress')">
-                <i class="fas fa-play"></i> Start
-            </button>`;
-        case 'in progress':
-            return `<button class="btn btn-success btn-sm" onclick="updateTaskStatus('${task.id}', 'Completed')">
-                <i class="fas fa-check"></i> Complete
-            </button>`;
-        case 'completed':
-            return `<button class="btn btn-outline btn-sm" onclick="viewTaskDetails('${task.id}')">
-                <i class="fas fa-eye"></i> View
-            </button>`;
-        default:
-            return `<button class="btn btn-primary btn-sm" onclick="updateTaskStatus('${task.id}', 'In Progress')">
-                <i class="fas fa-play"></i> Start
-            </button>`;
-    }
-}
-
-// Update task status
-async function updateTaskStatus(taskId, status) {
-    try {
-        console.log(`Updating task ${taskId} to status: ${status}`);
-        
-        const response = await fetch(`${API_BASE_URL}/doctor-dashboard/tasks/${taskId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({ status })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-            showNotification('Task status updated successfully!', 'success');
-            loadDashboardData(); // Reload data to reflect changes
-        } else {
-            throw new Error(result.message || 'Failed to update task status');
+            } catch (error) {
+                console.error('Error loading doctor activity:', error);
+                const listContainer = document.getElementById('activity-logs-list');
+                if (listContainer) {
+                    listContainer.innerHTML = `
+                        <div class="empty-state" style="color: var(--danger);">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Failed to load activity log</p>
+                        </div>
+                    `;
+                }
+            }
         }
-    } catch (error) {
-        console.error('Error updating task:', error);
-        showNotification('Error updating task: ' + error.message, 'error');
-    }
-}
 
-// Utility functions
-function formatDate(dateString) {
-    if (!dateString) return 'No due date';
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
-        });
-    } catch (error) {
-        return 'Invalid date';
-    }
-}
-
-function showNotification(message, type = 'info') {
-    // Create a simple notification
-    alert(`${type.toUpperCase()}: ${message}`);
-}
-
-// Ward actions
-function enterWard(wardId) {
-    showNotification(`Entering ward ${wardId} - Ward details feature coming soon!`);
-    // Implement ward details page
-}
-
-function viewWardTasks(wardId) {
-    showNotification(`Viewing tasks for ward ${wardId} - Filter feature coming soon!`);
-    // Filter and show tasks for this ward
-}
-
-function viewTaskDetails(taskId) {
-    showNotification(`Viewing details for task ${taskId} - Task details feature coming soon!`);
-    // Show task details modal
-}
-
-// Initialize dashboard when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Doctor dashboard initialized');
-    loadDashboardData();
-    
-    // Set up auto-refresh every 60 seconds
-    setInterval(loadDashboardData, 60000);
-});
-
-// Add this to handle page navigation
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', function() {
-        // Reload data when switching to tasks view
-        if (this.getAttribute('data-page') === 'tasks-view') {
-            setTimeout(loadDashboardData, 100);
+        // UI Update Functions
+        function updateStatsUI(stats) {
+            const statCards = document.querySelectorAll('.stat-card');
+            if (statCards.length >= 4) {
+                statCards[0].querySelector('.stat-value').textContent = stats.assignedWards || 0;
+                statCards[1].querySelector('.stat-value').textContent = stats.totalTasks || 0;
+                statCards[2].querySelector('.stat-value').textContent = stats.pendingTasks || 0;
+                statCards[3].querySelector('.stat-value').textContent = stats.completedTasks || 0;
+            }
         }
-    });
-});
+
+        function updateDoctorProfileUI(profile) {
+            currentDoctorProfile = profile;
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const name = profile.name || user.name || 'Doctor';
+
+            // Header
+            const userDetailsH3 = document.querySelector('.user-details h3');
+            const userDetailsP = document.querySelector('.user-details p');
+            const userAvatar = document.querySelector('.user-avatar');
+
+            if (userDetailsH3) userDetailsH3.textContent = name;
+            if (userDetailsP) userDetailsP.textContent = profile.specialization || 'Specialist';
+            if (userAvatar) userAvatar.textContent = name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+            // Profile View
+            const profileView = document.getElementById('profile-view');
+            if (profileView) {
+                const headH3 = profileView.querySelector('.profile-header h3');
+                const headP = profileView.querySelector('.profile-header p');
+                const headAvatar = profileView.querySelector('.user-avatar');
+
+                if (headH3) headH3.textContent = name;
+                if (headP) headP.textContent = profile.specialization || 'No specialization';
+                if (headAvatar) headAvatar.textContent = name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+                // Details
+                const profileCells = profileView.querySelectorAll('.form-input');
+                if (profileCells.length >= 4) {
+                    profileCells[0].textContent = profile.email || 'Not provided';
+                    profileCells[1].textContent = profile.phone || 'Not provided';
+                    profileCells[2].textContent = profile.licenseNumber || 'N/A';
+                    profileCells[3].textContent = `${profile.experience || 0} years`;
+                }
+                const bioCell = profileView.querySelector('.form-input[style*="min-height"]');
+                if (bioCell) bioCell.textContent = profile.bio || 'No bio provided.';
+            }
+        }
+
+        function displayAssignedWards(wards) {
+            const wardsGrid = document.querySelector('.wards-grid');
+            if (!wardsGrid) return;
+
+            if (!wards || wards.length === 0) {
+                wardsGrid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <i class="fas fa-procedures"></i>
+                        <h3>No Assigned Wards</h3>
+                        <p>You haven't been assigned to any wards yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            wardsGrid.innerHTML = wards.map(ward => `
+                <div class="ward-card" data-ward="${ward.id}" onclick="enterWard('${ward.id}')">
+                    <div class="ward-header">
+                        <div class="ward-name">${ward.name}</div>
+                        <div class="ward-status status-active">Active</div>
+                    </div>
+                    <div class="ward-info">
+                        <div class="info-item">
+                            <i class="fas fa-user-injured"></i>
+                            <span>${ward.patientCount || 0} Patients</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-user-md"></i>
+                            <span>${ward.doctorCount || 1} Doctors</span>
+                        </div>
+                    </div>
+                    <div class="ward-description">
+                        ${ward.description || 'No description available'}
+                    </div>
+                    <div class="ward-actions">
+                        <button class="btn btn-primary" onclick="event.stopPropagation(); enterWard('${ward.id}')">
+                            <i class="fas fa-door-open"></i> Enter Ward
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayTasks(tasks) {
+            const recentTasksList = document.querySelector('#home-view .tasks-list');
+            const allTasksList = document.getElementById('taskList');
+
+            const taskItemHtml = (task, showActions = true) => `
+                <div class="task-item" onclick="viewTaskDetails('${task.id}')">
+                    <div class="task-info">
+                        <h3>${task.title}</h3>
+                        <p>${task.workspace?.name || 'No Ward'} • ${task.patient?.name || 'No Patient'}</p>
+                        <div class="task-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>Due: ${formatDate(task.dueDate)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-details">
+                        <div class="task-priority priority-${(task.priority || 'medium').toLowerCase()}">
+                            ${task.priority || 'Medium'}
+                        </div>
+                        <div class="task-status status-${task.status?.toLowerCase().replace(' ', '-') || 'pending'}">
+                            ${task.status || 'Pending'}
+                        </div>
+                        ${showActions ? `
+                        <div class="task-actions">
+                            ${getTaskActionButton(task)}
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            if (!tasks || tasks.length === 0) {
+                const empty = `<div class="empty-state"><i class="fas fa-tasks"></i><p>No tasks found.</p></div>`;
+                if (recentTasksList) recentTasksList.innerHTML = empty;
+                if (allTasksList) allTasksList.innerHTML = empty;
+                return;
+            }
+
+            // Update Home View (Recent 3)
+            if (recentTasksList) {
+                recentTasksList.innerHTML = tasks.slice(0, 3).map(t => taskItemHtml(t, false)).join('');
+            }
+
+            // Update All Tasks View
+            if (allTasksList) {
+                allTasksList.innerHTML = tasks.map(t => taskItemHtml(t)).join('');
+            }
+        }
+
+        function filterTasks() {
+            const query = document.querySelector('.search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('task-status-filter').value.toLowerCase();
+
+            const filtered = currentTasks.filter(task => {
+                const matchesSearch = task.title.toLowerCase().includes(query) ||
+                    (task.patient?.name || '').toLowerCase().includes(query) ||
+                    (task.workspace?.name || '').toLowerCase().includes(query);
+
+                const matchesStatus = statusFilter === 'all' || task.status.toLowerCase() === statusFilter;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            displayTasks(filtered);
+        }
+
+        // Profile Editing
+        let currentDoctorProfile = {};
+
+        function openEditProfileModal() {
+            document.getElementById('edit-name').value = currentDoctorProfile.name || '';
+            document.getElementById('edit-specialization').value = currentDoctorProfile.specialization || '';
+            document.getElementById('edit-phone').value = currentDoctorProfile.phone === 'Not provided' ? '' : (currentDoctorProfile.phone || '');
+            document.getElementById('edit-license').value = currentDoctorProfile.licenseNumber === 'N/A' ? '' : (currentDoctorProfile.licenseNumber || '');
+            document.getElementById('edit-experience').value = currentDoctorProfile.experience || 0;
+            document.getElementById('edit-bio').value = currentDoctorProfile.bio || '';
+
+            document.getElementById('edit-profile-modal').style.display = 'flex';
+        }
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+
+            const profileData = {
+                name: document.getElementById('edit-name').value,
+                specialization: document.getElementById('edit-specialization').value,
+                phone: document.getElementById('edit-phone').value,
+                licenseNumber: document.getElementById('edit-license').value,
+                experience: parseInt(document.getElementById('edit-experience').value),
+                bio: document.getElementById('edit-bio').value
+            };
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+
+                const response = await fetch(`${API_BASE_URL}/doctor-dashboard/profile`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(profileData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Profile updated successfully', 'success');
+                    closeModal('edit-profile-modal');
+                    loadDashboardData();
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showNotification(error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+        function getTaskActionButton(task) {
+            const status = (task.status || 'Pending').toLowerCase();
+            if (status === 'pending') {
+                return `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); updateTaskStatus('${task.id}', 'In Progress')"><i class="fas fa-play"></i> Start</button>`;
+            } else if (status === 'in progress') {
+                return `<button class="btn btn-success btn-sm" onclick="event.stopPropagation(); updateTaskStatus('${task.id}', 'Completed')"><i class="fas fa-check"></i> Complete</button>`;
+            }
+            return `<button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); viewTaskDetails('${task.id}')"><i class="fas fa-eye"></i> View</button>`;
+        }
+
+        // Action Handlers
+        async function enterWard(wardId) {
+            const ward = currentWards.find(w => w.id === wardId);
+            if (!ward) return;
+
+            document.getElementById('active-ward-name').textContent = ward.name;
+            const patientList = document.getElementById('ward-patients-list');
+            patientList.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading patients...</p></div>';
+
+            showView('ward-detail-view');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctor-dashboard/wards/${wardId}/patients`, { credentials: 'include' });
+                const data = await response.json();
+
+                if (data.success && data.patients) {
+                    if (data.patients.length === 0) {
+                        patientList.innerHTML = '<div class="empty-state"><i class="fas fa-user-injured"></i><p>No patients in this ward.</p></div>';
+                    } else {
+                        patientList.innerHTML = data.patients.map(p => `
+                            <div class="patient-item">
+                                <div class="patient-info">
+                                    <h3 style="margin-bottom: 5px;">${p.name}</h3>
+                                    <p style="color: var(--gray); font-size: 0.9rem;">
+                                        ${p.age} years • ${p.gender} • ${p.bloodGroup || 'Blood Type Unknown'}
+                                    </p>
+                                </div>
+                                <div class="patient-actions">
+                                    <button class="btn btn-outline btn-sm" onclick="alert('Medical History coming soon for ${p.name}')">
+                                        <i class="fas fa-history"></i> History
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                patientList.innerHTML = '<div class="empty-state text-danger"><i class="fas fa-exclamation-circle"></i><p>Failed to load patients.</p></div>';
+            }
+        }
+
+        async function updateTaskStatus(taskId, status) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctor-dashboard/tasks/${taskId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ status })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showNotification(`Task marked as ${status}`, 'success');
+
+                    // Reload tasks to get updated data
+                    await loadTasks();
+
+                    // Recalculate and update stats based on current tasks
+                    const pendingTasks = currentTasks.filter(t => t.status === 'Pending').length;
+                    const completedTasks = currentTasks.filter(t => t.status === 'Completed').length;
+                    const totalTasks = currentTasks.length;
+
+                    // Update stats UI
+                    const statCards = document.querySelectorAll('.stat-card');
+                    if (statCards.length >= 4) {
+                        statCards[1].querySelector('.stat-value').textContent = totalTasks;
+                        statCards[2].querySelector('.stat-value').textContent = pendingTasks;
+                        statCards[3].querySelector('.stat-value').textContent = completedTasks;
+                    }
+
+                    // Close modal if open
+                    if (document.getElementById('task-modal').style.display === 'flex') {
+                        closeModal('task-modal');
+                    }
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        }
+
+        function viewTaskDetails(taskId) {
+            const task = currentTasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const body = document.getElementById('task-modal-body');
+            body.innerHTML = `
+                <div class="details-grid">
+                    <div class="detail-item"><label>Title</label><span>${task.title}</span></div>
+                    <div class="detail-item"><label>Ward</label><span>${task.workspace?.name || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Patient</label><span>${task.patient?.name || 'N/A'}</span></div>
+                    <div class="detail-item"><label>Priority</label><span>${task.priority}</span></div>
+                    <div class="detail-item"><label>Status</label><span>${task.status}</span></div>
+                    <div class="detail-item"><label>Due Date</label><span>${formatDate(task.dueDate)}</span></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <p style="background: var(--light); padding: 1rem; border-radius: 8px;">${task.description || 'No description provided.'}</p>
+                </div>
+            `;
+
+            const actions = document.getElementById('task-modal-actions');
+            actions.innerHTML = `
+                <button class="btn btn-secondary" onclick="closeModal('task-modal')">Close</button>
+                ${getTaskActionButton(task)}
+            `;
+
+            document.getElementById('task-modal').style.display = 'flex';
+        }
+
+        // Modals & Notifications
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showNotification(message, type = 'info') {
+            const note = document.getElementById('notification');
+            note.textContent = message;
+            note.style.backgroundColor = type === 'success' ? 'var(--success)' :
+                type === 'error' ? 'var(--danger)' : 'var(--primary)';
+            note.style.display = 'block';
+            setTimeout(() => { note.style.display = 'none'; }, 3000);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'No due date';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        // Logout
+        document.querySelector('.logout-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch(`${API_BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' })
+                    .finally(() => {
+                        localStorage.removeItem('user');
+                        window.location.href = '/';
+                    });
+            }
+        });
     </script>
 </body>
+
 </html>

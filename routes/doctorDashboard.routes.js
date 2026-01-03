@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { Doctor, Workspace, WorkspaceMember, Task, Patient, User } = require('../models');
+const { Doctor, WorkSpace, WorkspaceDoctor, Task, Patient, User } = require('../models');
 
-// Middleware to check if user is authenticated and is a doctor
-const authenticateDoctor = (req, res, next) => {
+
+// Middleware to check if user is authenticated
+const authenticateUser = (req, res, next) => {
   if (!req.session.userId) {
     return res.status(401).json({ success: false, message: 'Not authenticated' });
   }
@@ -11,41 +12,39 @@ const authenticateDoctor = (req, res, next) => {
 };
 
 // Get dashboard statistics
-router.get('/doctor-dashboard/dashboard-stats', authenticateDoctor, async (req, res) => {
+router.get('/doctor-dashboard/dashboard-stats', authenticateUser, async (req, res) => {
   try {
     const userId = req.session.userId;
-    
-    console.log('Fetching dashboard stats for user:', userId);
-    
+
     // Find the doctor record for this user
     const doctor = await Doctor.findOne({ where: { userId: userId } });
-    
+
     if (!doctor) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Doctor profile not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor profile not found'
       });
     }
 
     const doctorId = doctor.id;
-    
+
     // Get assigned wards count
-    const assignedWards = await WorkspaceMember.count({ 
-      where: { doctorId: doctorId, status: 'active' }
+    const assignedWards = await WorkspaceDoctor.count({
+      where: { doctorId: doctorId }
     });
-    
+
     // Get tasks statistics
     const totalTasks = await Task.count({ where: { assignedTo: doctorId } });
-    const pendingTasks = await Task.count({ 
+    const pendingTasks = await Task.count({
       where: { assignedTo: doctorId, status: 'pending' }
     });
-    const completedTasks = await Task.count({ 
+    const completedTasks = await Task.count({
       where: { assignedTo: doctorId, status: 'completed' }
     });
-    
+
     // Get user details for profile
     const user = await User.findByPk(userId);
-    
+
     res.json({
       success: true,
       stats: {
@@ -67,224 +66,278 @@ router.get('/doctor-dashboard/dashboard-stats', authenticateDoctor, async (req, 
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error loading dashboard statistics' 
+    res.status(500).json({
+      success: false,
+      message: 'Error loading dashboard statistics'
     });
   }
 });
 
 // Get assigned wards
-router.get('/doctor-dashboard/assigned-wards', authenticateDoctor, async (req, res) => {
+router.get('/doctor-dashboard/assigned-wards', authenticateUser, async (req, res) => {
   try {
     const userId = req.session.userId;
-    
+
     // Find the doctor record for this user
-    const doctor = await Doctor.findOne({ where: { userId: userId } });
-    
+    const doctor = await Doctor.findOne({
+      where: { userId: userId },
+      include: [{
+        model: WorkSpace,
+        as: 'WorkSpaces',
+        through: { attributes: [] }
+      }]
+    });
+
     if (!doctor) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Doctor profile not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor profile not found'
       });
     }
 
-    const doctorId = doctor.id;
-    
-    console.log('Fetching assigned wards for doctor:', doctorId);
-    
-    const wardMemberships = await WorkspaceMember.findAll({ 
-      where: { doctorId: doctorId, status: 'active' },
-      include: [{
-        model: Workspace,
-        as: 'workspace'
-      }]
-    });
-    
-    // If no ward memberships found, return empty array
-    if (!wardMemberships || wardMemberships.length === 0) {
-      return res.json({
-        success: true,
-        wards: []
-      });
-    }
-    
-    const wards = await Promise.all(wardMemberships.map(async (membership) => {
-      const workspace = membership.workspace;
-      if (!workspace) return null;
-      
+    const workspaces = doctor.WorkSpaces || [];
+
+    const wards = await Promise.all(workspaces.map(async (ws) => {
       // Get patient count for this workspace
-      const patientCount = await Patient.count({ 
-        where: { workspaceId: workspace.id }
+      const patientCount = await Patient.count({
+        where: { workSpaceId: ws.id }
       });
-      
+
       // Get doctor count for this workspace
-      const doctorCount = await WorkspaceMember.count({ 
-        where: { workspaceId: workspace.id, status: 'active' }
+      const doctorCount = await WorkspaceDoctor.count({
+        where: { workSpaceId: ws.id }
       });
-      
+
       return {
-        id: workspace.id,
-        name: workspace.name,
-        description: workspace.description || 'No description available',
+        id: ws.id,
+        name: ws.name,
+        description: ws.description || 'No description available',
         patientCount: patientCount || 0,
         doctorCount: doctorCount || 1
       };
     }));
-    
-    // Filter out any null values
-    const validWards = wards.filter(ward => ward !== null);
-    
+
     res.json({
       success: true,
-      wards: validWards
+      wards: wards
     });
   } catch (error) {
     console.error('Assigned wards error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error loading assigned wards' 
+    res.status(500).json({
+      success: false,
+      message: 'Error loading assigned wards'
     });
   }
 });
 
 // Get tasks
-router.get('/doctor-dashboard/tasks', authenticateDoctor, async (req, res) => {
+router.get('/doctor-dashboard/tasks', authenticateUser, async (req, res) => {
   try {
     const userId = req.session.userId;
-    
+
     // Find the doctor record for this user
     const doctor = await Doctor.findOne({ where: { userId: userId } });
-    
+
     if (!doctor) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Doctor profile not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor profile not found'
       });
     }
 
     const doctorId = doctor.id;
-    
-    console.log('Fetching tasks for doctor:', doctorId);
-    
+
     const tasks = await Task.findAll({
       where: { assignedTo: doctorId },
       include: [
         {
-          model: Workspace,
-          as: 'workspace',
-          attributes: ['id', 'name']
-        },
-        {
           model: Patient,
-          as: 'patient',
-          attributes: ['id', 'name']
+          as: 'Patient',
+          attributes: ['id', 'name'],
+          include: [{
+            model: WorkSpace,
+            as: 'WorkSpace',
+            attributes: ['id', 'name']
+          }]
         }
       ],
       order: [['dueDate', 'ASC']]
     });
-    
-    // If no tasks found, return sample data for demonstration
-    if (!tasks || tasks.length === 0) {
-      const sampleTasks = [
-        {
-          id: '1',
-          title: 'Review Patient MRI Results',
-          description: 'Review and analyze MRI results for patient',
-          priority: 'high',
-          status: 'pending',
-          dueDate: new Date(),
-          workspace: { name: 'Cardiology Ward' },
-          patient: { name: 'John Doe' }
-        },
-        {
-          id: '2',
-          title: 'Update Treatment Plan',
-          description: 'Update treatment plan based on recent tests',
-          priority: 'medium',
-          status: 'in progress',
-          dueDate: new Date(Date.now() + 86400000),
-          workspace: { name: 'ICU Ward' },
-          patient: { name: 'Sarah Johnson' }
-        }
-      ];
-      
-      return res.json({
-        success: true,
-        tasks: sampleTasks
-      });
-    }
-    
+
     const formattedTasks = tasks.map(task => ({
       id: task.id,
       title: task.title,
       description: task.description,
-      priority: task.priority || 'medium',
-      status: task.status || 'pending',
+      priority: task.priority || 'Medium',
+      status: task.status || 'Pending',
       dueDate: task.dueDate,
-      workspace: task.workspace ? { name: task.workspace.name } : null,
-      patient: task.patient ? { name: task.patient.name } : null
+      workspace: task.Patient && task.Patient.WorkSpace ? { name: task.Patient.WorkSpace.name } : { name: 'No Ward' },
+      patient: task.Patient ? { name: task.Patient.name } : { name: 'Unknown' }
     }));
-    
+
     res.json({
       success: true,
       tasks: formattedTasks
     });
   } catch (error) {
     console.error('Tasks error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error loading tasks' 
+    res.status(500).json({
+      success: false,
+      message: 'Error loading tasks'
     });
   }
 });
 
 // Update task status
-router.put('/doctor-dashboard/tasks/:taskId/status', authenticateDoctor, async (req, res) => {
+router.put('/doctor-dashboard/tasks/:taskId/status', authenticateUser, async (req, res) => {
   try {
     const { taskId } = req.params;
     const { status } = req.body;
     const userId = req.session.userId;
-    
+
     // Find the doctor record for this user
     const doctor = await Doctor.findOne({ where: { userId: userId } });
-    
+
     if (!doctor) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Doctor profile not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor profile not found'
       });
     }
 
     const doctorId = doctor.id;
-    
-    console.log(`Updating task ${taskId} to status: ${status} for doctor: ${doctorId}`);
-    
+
     // Verify the task belongs to this doctor
-    const task = await Task.findOne({ 
+    const task = await Task.findOne({
       where: { id: taskId, assignedTo: doctorId }
     });
-    
+
     if (!task) {
       return res.status(404).json({
         success: false,
         message: 'Task not found'
       });
     }
-    
+
+    const oldStatus = task.status;
     task.status = status;
-    task.updatedAt = new Date();
     await task.save();
-    
+
+    // Log the task status update
+    const { logActivity } = require('../controllers/auditlogcontroller');
+    await logActivity({
+      userId: userId,
+      userRole: 'doctor',
+      userName: doctor.name,
+      action: 'UPDATE_TASK_STATUS',
+      targetType: 'Task',
+      targetId: task.id,
+      targetName: task.title,
+      details: `${doctor.name} changed task "${task.title}" status from "${oldStatus}" to "${status}"`,
+      metadata: {
+        taskId: task.id,
+        oldStatus: oldStatus,
+        newStatus: status,
+        taskTitle: task.title
+      },
+      ipAddress: req.ip || req.connection.remoteAddress,
+      userAgent: req.get('user-agent'),
+      status: 'SUCCESS',
+    });
+
     res.json({
       success: true,
       message: 'Task status updated successfully'
     });
   } catch (error) {
     console.error('Update task status error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Error updating task status' 
+    res.status(500).json({
+      success: false,
+      message: 'Error updating task status'
+    });
+  }
+});
+
+// Get patients in a specific ward
+router.get('/doctor-dashboard/wards/:wardId/patients', authenticateUser, async (req, res) => {
+  try {
+    const { wardId } = req.params;
+    const userId = req.session.userId;
+
+    // Find the doctor record for this user
+    const doctor = await Doctor.findOne({ where: { userId: userId } });
+    if (!doctor) {
+      return res.status(404).json({ success: false, message: 'Doctor profile not found' });
+    }
+
+    // Verify the doctor is assigned to this ward
+    const membership = await WorkspaceDoctor.findOne({
+      where: { workSpaceId: wardId, doctorId: doctor.id }
+    });
+
+    if (!membership) {
+      return res.status(403).json({ success: false, message: 'Access denied: You are not assigned to this ward' });
+    }
+
+    const patients = await Patient.findAll({
+      where: { workSpaceId: wardId },
+      include: [{
+        model: Task,
+        as: 'Tasks',
+        where: { assignedTo: doctor.id },
+        required: false
+      }]
+    });
+
+    res.json({
+      success: true,
+      patients: patients
+    });
+  } catch (error) {
+    console.error('Ward patients error:', error);
+    res.status(500).json({ success: false, message: 'Error loading patients for this ward' });
+  }
+});
+
+// Update doctor profile
+router.put('/doctor-dashboard/profile', authenticateUser, async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { name, specialization, phone, licenseNumber, experience, bio } = req.body;
+
+    const doctor = await Doctor.findOne({ where: { userId: userId } });
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: 'Doctor profile not found'
+      });
+    }
+
+    // Update Doctor details
+    doctor.name = name || doctor.name;
+    doctor.specialization = specialization || doctor.specialization;
+    doctor.licenceNumber = licenseNumber || doctor.licenceNumber;
+    doctor.yearOfExperience = experience || doctor.yearOfExperience;
+    doctor.bio = bio || doctor.bio;
+    await doctor.save();
+
+    // Update User details (like phone/email if needed)
+    const user = await User.findByPk(userId);
+    if (user && phone) {
+      user.phone = phone;
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully'
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating profile'
     });
   }
 });

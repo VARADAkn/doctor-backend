@@ -4,76 +4,112 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const bodyParser = require('body-parser');
 const path = require('path');
 
+// 📦 Import Database and Models
+const db = require("./models");
+
+// 🗝️ Initialize Session Store
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const sessionStore = new SequelizeStore({
+  db: db.sequelize,
+  tableName: 'Sessions',
+});
+
 // Initialize Express
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3005;
 
 // 🧩 MIDDLEWARES
 app.use(cors({
-  origin: true, // Allow all origins for testing
+  origin: true,
   credentials: true
 }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Basic route to test if server is working
-app.get('/test', (req, res) => {
-  res.json({ message: '✅ Server is running!', timestamp: new Date() });
+// Global Logging Middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  if (req.method === 'POST') {
+    const logBody = { ...req.body };
+    if (logBody.password) logBody.password = '********';
+    console.log('Body:', JSON.stringify(logBody));
+  }
+  next();
 });
 
-// 🗝️ SESSION SETUP (temporarily simplified for testing)
+// 🗝️ SESSION SETUP
 app.use(session({
-  secret: 'test-secret-key',
+  secret: process.env.SESSION_SECRET || 'test-secret-key',
+  store: sessionStore,
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true if using HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }));
+
+// Sync the session store table
+sessionStore.sync();
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'front-end')));
+
+// Root route redirects to login
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'front-end', 'login.html'));
+});
 
 // Import routes
 const authRoutes = require('./routes/auth.routes');
 const routes = require('./routes');
-const doctorDashboardRoutes = require('./routes/doctorDashboard.routes'); // ADD THIS LINE
+const doctorDashboardRoutes = require('./routes/doctorDashboard.routes');
+//const auditLogRoutes = require('./routes/auditlog.routes');
 
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api', routes);
-app.use('/api', doctorDashboardRoutes); // ADD THIS LINE
+app.use('/api', doctorDashboardRoutes);
+//app.use('/api/audit-logs', auditLogRoutes);
+
+// 404 handler
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ message: 'API Route not found' });
+});
+
+// For any other route, serve the login page or handle appropriately
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'front-end', 'login.html'));
+});
 
 // Basic error handler
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ 
+  console.error('SERVER ERROR:', err);
+  res.status(500).json({
     message: 'Something went wrong!',
-    error: err.message 
+    error: err.message
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
 
-const db = require("./models");
 
-// Sync database
-db.sequelize.sync({ alter: true }) // Use { force: true } if you want to drop & recreate all tables
+// Sync database and start server
+db.sequelize.sync({ alter: true })
   .then(() => {
     console.log("✅ Database synced successfully!");
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`📊 Test the server at: http://localhost:${PORT}/test`);
+    });
   })
   .catch((err) => {
     console.error("❌ Error syncing database:", err);
   });
-
-// Start server without database connection for testing
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-  console.log(`📊 Test the server at: http://localhost:${PORT}/test`);
-});
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason) => {

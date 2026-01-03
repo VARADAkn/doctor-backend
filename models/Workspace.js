@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       phoneNumber: { type: DataTypes.STRING },
       email: { type: DataTypes.STRING },
       createdBy: { type: DataTypes.STRING },
+      createdByAdminId: {
+        type: DataTypes.UUID,
+        references: { model: "Users", key: "id" }
+      },
+
     },
     {
       tableName: "workspaces",
