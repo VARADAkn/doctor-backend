@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -145,8 +146,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-title {
@@ -242,14 +250,16 @@
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            border: 3px solid rgba(255, 255, 255, .3);
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .alert {
@@ -326,17 +336,18 @@
             .container {
                 flex-direction: column;
             }
-            
+
             .welcome-section {
                 padding: 30px 20px;
             }
-            
+
             .auth-section {
                 padding: 30px 20px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Welcome Section -->
@@ -381,14 +392,16 @@
                         <label class="form-label" for="login-phone">Phone Number</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            <input type="tel" class="form-input" id="login-phone" placeholder="Enter your phone number" required>
+                            <input type="tel" class="form-input" id="login-phone" placeholder="Enter your phone number"
+                                required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="login-password">Password</label>
                         <div class="input-with-icon">
                             <i class="fas fa-lock"></i>
-                            <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+                            <input type="password" class="form-input" id="login-password"
+                                placeholder="Enter your password" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary" id="login-btn">
@@ -404,11 +417,12 @@
             <!-- Signup Form -->
             <div class="form-container" id="signup-form">
                 <h3 class="form-title">Create Account</h3>
-                
+
                 <!-- Admin Note -->
                 <div class="admin-note" id="admin-note" style="display: none;">
                     <i class="fas fa-shield-alt"></i>
-                    <strong>Admin Doctor:</strong> Admin doctors have full system access including user management, workspace creation, and task assignment capabilities.
+                    <strong>Admin:</strong> Administrators have full system access including user management,
+                    workspace creation, and task assignment capabilities.
                 </div>
 
                 <form id="signupForm">
@@ -420,7 +434,7 @@
                                 <option value="">Select Role</option>
                                 <option value="doctor">Doctor</option>
                                 <option value="patient">Patient</option>
-                                <option value="admin">Admin Doctor</option>
+                                <option value="admin">Admin</option>
                             </select>
                         </div>
                     </div>
@@ -429,7 +443,8 @@
                         <label class="form-label" for="signup-name">Full Name</label>
                         <div class="input-with-icon">
                             <i class="fas fa-user"></i>
-                            <input type="text" class="form-input" id="signup-name" placeholder="Enter your full name" required>
+                            <input type="text" class="form-input" id="signup-name" placeholder="Enter your full name"
+                                required>
                         </div>
                     </div>
 
@@ -437,7 +452,8 @@
                         <label class="form-label" for="signup-email">Email Address</label>
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" class="form-input" id="signup-email" placeholder="Enter your email" required>
+                            <input type="email" class="form-input" id="signup-email" placeholder="Enter your email"
+                                required>
                         </div>
                     </div>
 
@@ -445,7 +461,8 @@
                         <label class="form-label" for="signup-phone">Phone Number</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            <input type="tel" class="form-input" id="signup-phone" placeholder="Enter your phone number" required>
+                            <input type="tel" class="form-input" id="signup-phone" placeholder="Enter your phone number"
+                                required>
                         </div>
                     </div>
 
@@ -455,7 +472,8 @@
                             <label class="form-label" for="signup-specialization">Specialization</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-stethoscope"></i>
-                                <input type="text" class="form-input" id="signup-specialization" placeholder="e.g., Cardiology, Neurology">
+                                <input type="text" class="form-input" id="signup-specialization"
+                                    placeholder="e.g., Cardiology, Neurology">
                             </div>
                         </div>
                     </div>
@@ -475,7 +493,8 @@
                         <label class="form-label" for="signup-password">Password</label>
                         <div class="input-with-icon">
                             <i class="fas fa-lock"></i>
-                            <input type="password" class="form-input" id="signup-password" placeholder="Create a password" required>
+                            <input type="password" class="form-input" id="signup-password"
+                                placeholder="Create a password" required>
                         </div>
                     </div>
 
@@ -483,7 +502,8 @@
                         <label class="form-label" for="signup-confirm-password">Confirm Password</label>
                         <div class="input-with-icon">
                             <i class="fas fa-lock"></i>
-                            <input type="password" class="form-input" id="signup-confirm-password" placeholder="Confirm your password" required>
+                            <input type="password" class="form-input" id="signup-confirm-password"
+                                placeholder="Confirm your password" required>
                         </div>
                     </div>
 
@@ -494,12 +514,12 @@
                 </form>
 
                 <!-- Debug Information -->
-                <div class="debug-info" id="debug-info">
+             <!--   <div class="debug-info" id="debug-info">
                     <h4>Connection Status</h4>
                     <div id="connection-status">Checking backend connection...</div>
-                    <div id="backend-url">Backend URL: http://localhost:3000</div>
+                    <div id="backend-url">Backend URL: <span id="actual-url">http://localhost:3005</span></div>
                 </div>
-
+            -->
                 <div class="form-footer">
                     <p>Already have an account? <a href="#" id="switch-to-login">Login here</a></p>
                 </div>
@@ -509,7 +529,7 @@
 
     <script>
         // API Configuration - Now using relative paths since frontend is served by backend
-        const API_BASE_URL = 'http://localhost:3000/api/auth';
+        const API_BASE_URL = '/api/auth';
 
         // DOM Elements
         const loginTab = document.querySelector('[data-tab="login"]');
@@ -533,33 +553,36 @@
         const patientFields = document.getElementById('patient-fields');
         const adminNote = document.getElementById('admin-note');
         const connectionStatus = document.getElementById('connection-status');
-        
+
         // Check backend connection on page load
-        async function checkBackendConnection() {
+       /* async function checkBackendConnection() {
             try {
                 connectionStatus.innerHTML = 'Checking backend connection... <i class="fas fa-sync fa-spin"></i>';
-                
+
                 const response = await fetch('/api', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 });
-                
+
                 if (response.ok) {
                     connectionStatus.innerHTML = '✅ Backend is running and accessible';
                     connectionStatus.style.color = 'var(--success)';
+                    document.getElementById('actual-url').textContent = window.location.origin;
                 } else {
                     connectionStatus.innerHTML = '⚠️ Backend responded with error';
                     connectionStatus.style.color = 'var(--warning)';
+                    document.getElementById('actual-url').textContent = window.location.origin;
                 }
             } catch (error) {
-                connectionStatus.innerHTML = '❌ Cannot connect to backend. Make sure server is running on port 3000';
+                connectionStatus.innerHTML = `❌ Cannot connect to backend. Make sure server is running on ${window.location.origin}`;
                 connectionStatus.style.color = 'var(--danger)';
+                document.getElementById('actual-url').textContent = window.location.origin;
                 console.error('Backend connection failed:', error);
             }
         }
-
+*/
         // Tab Switching
         loginTab.addEventListener('click', () => switchTab('login'));
         signupTab.addEventListener('click', () => switchTab('signup'));
@@ -575,7 +598,7 @@
         // Role selection handler
         signupRole.addEventListener('change', (e) => {
             const role = e.target.value;
-            doctorFields.classList.toggle('active', role === 'doctor' || role === 'admin');
+            doctorFields.classList.toggle('active', role === 'doctor');
             patientFields.classList.toggle('active', role === 'patient');
             adminNote.style.display = role === 'admin' ? 'block' : 'none';
         });
@@ -584,11 +607,11 @@
             // Update tabs
             loginTab.classList.toggle('active', tab === 'login');
             signupTab.classList.toggle('active', tab === 'signup');
-            
+
             // Update forms
             loginForm.classList.toggle('active', tab === 'login');
             signupForm.classList.toggle('active', tab === 'signup');
-            
+
             // Clear alerts and reset role fields
             hideAlerts();
             if (tab === 'signup') {
@@ -633,10 +656,10 @@
         // Form Submission - LOGIN
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const phone = document.getElementById('login-phone').value;
             const password = document.getElementById('login-password').value;
-            
+
             // Validation
             if (!phone || !password) {
                 showError('Please fill in all fields');
@@ -644,10 +667,10 @@
             }
 
             setLoading(loginBtn, loginText, loginLoading, true);
-            
+
             try {
                 console.log('Attempting login with:', { phone, password });
-                
+
                 const response = await fetch(`${API_BASE_URL}/login`, {
                     method: 'POST',
                     headers: {
@@ -656,10 +679,10 @@
                     body: JSON.stringify({ phone, password }),
                     credentials: 'include'
                 });
-                
+
                 const data = await response.json();
                 console.log('Login response:', data);
-                
+
                 if (response.ok) {
                     showSuccess(data.message);
                     localStorage.setItem('user', JSON.stringify(data.user));
@@ -686,7 +709,7 @@
         // Form Submission - SIGNUP
         document.getElementById('signupForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const role = document.getElementById('signup-role').value;
             const name = document.getElementById('signup-name').value;
             const email = document.getElementById('signup-email').value;
@@ -695,7 +718,7 @@
             const confirmPassword = document.getElementById('signup-confirm-password').value;
             const specialization = document.getElementById('signup-specialization').value;
             const dob = document.getElementById('signup-dob').value;
-            
+
             // Validation
             if (!role || !name || !email || !phone || !password) {
                 showError('Please fill in all required fields');
@@ -717,18 +740,18 @@
             };
 
             // Add role-specific data
-            if (role === 'doctor' || role === 'admin') {
+            if (role === 'doctor') {
                 signupData.specialization = specialization || 'General Medicine';
             } else if (role === 'patient') {
                 signupData.dob = dob;
             }
-            
+
             setLoading(signupBtn, signupText, signupLoading, true);
 
             try {
                 console.log('Sending signup request to:', `${API_BASE_URL}/signup`);
                 console.log('Signup data:', signupData);
-                
+
                 const response = await fetch(`${API_BASE_URL}/signup`, {
                     method: 'POST',
                     headers: {
@@ -737,11 +760,11 @@
                     body: JSON.stringify(signupData),
                     credentials: 'include'
                 });
-                
+
                 console.log('Response status:', response.status);
                 const data = await response.json();
                 console.log('Signup response data:', data);
-                
+
                 if (response.ok) {
                     showSuccess(data.message);
                     setTimeout(() => {
@@ -791,4 +814,5 @@
         checkExistingSession();
     </script>
 </body>
+
 </html>

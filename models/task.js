@@ -20,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         references: { model: "patients", key: "id" },
       },
+      workSpaceId: {
+        type: DataTypes.UUID,
+        references: { model: "workspaces", key: "id" }
+      },
+      createdByAdminId: {
+        type: DataTypes.UUID,
+        references: { model: "Users", key: "id" }
+      },
       createdBy: { type: DataTypes.STRING },
     },
     {

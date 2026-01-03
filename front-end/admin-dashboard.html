@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -417,7 +418,9 @@
             font-weight: 500;
         }
 
-        .form-input, .form-textarea, .form-select {
+        .form-input,
+        .form-textarea,
+        .form-select {
             width: 100%;
             padding: 0.8rem;
             border: 1px solid #cbd5e0;
@@ -447,14 +450,16 @@
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
+            border: 3px solid rgba(255, 255, 255, .3);
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .alert {
@@ -518,7 +523,7 @@
             background: white;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .filter-group {
@@ -576,14 +581,86 @@
             margin-bottom: 0.5rem;
         }
 
-        .record-consultation { background-color: #bee3f8; color: var(--primary); }
-        .record-lab { background-color: #c6f6d5; color: var(--success); }
-        .record-prescription { background-color: #fed7d7; color: var(--danger); }
-        .record-surgery { background-color: #fbd38d; color: var(--warning); }
-        .record-vaccination { background-color: #d6bcfa; color: #6b46c1; }
-        .record-other { background-color: #e2e8f0; color: var(--gray); }
+        .record-consultation {
+            background-color: #bee3f8;
+            color: var(--primary);
+        }
+
+        .record-lab {
+            background-color: #c6f6d5;
+            color: var(--success);
+        }
+
+        .record-prescription {
+            background-color: #fed7d7;
+            color: var(--danger);
+        }
+
+        .record-surgery {
+            background-color: #fbd38d;
+            color: var(--warning);
+        }
+
+        .doctor-min-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mini-card {
+            background: var(--primary-light);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+        }
+
+        .mini-card i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .record-vaccination {
+            background-color: #d6bcfa;
+            color: #6b46c1;
+        }
+
+        .record-other {
+            background-color: #e2e8f0;
+            color: var(--gray);
+        }
+
+        .ward-details-item {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid #edf2f7;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .ward-details-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo">
@@ -592,7 +669,7 @@
         </div>
         <div class="user-info">
             <div class="user-avatar" id="user-avatar">AD</div>
-            <span id="user-name">Admin Doctor</span>
+            <span id="user-name">Admin</span>
             <button class="btn btn-danger" onclick="logout()" style="margin-left: 1rem;">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </button>
@@ -611,7 +688,7 @@
         <!-- Home/Wards View -->
         <div id="home-view" class="page-view">
             <h2 class="page-title"><i class="fas fa-home"></i> Dashboard</h2>
-            
+
             <div class="stats-container" id="stats-container">
                 <div class="stat-card">
                     <div class="stat-icon icon-ward">
@@ -642,7 +719,7 @@
                     <div class="stat-label">Active Tasks</div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Virtual Wards</h3>
@@ -650,7 +727,7 @@
                         <i class="fas fa-plus"></i> Create New Ward
                     </button>
                 </div>
-                
+
                 <div class="ward-list" id="ward-list">
                     <div class="empty-state">
                         <i class="fas fa-procedures"></i>
@@ -661,12 +738,12 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Recent Patients</h3>
                 </div>
-                
+
                 <div class="patient-list" id="recent-patient-list">
                     <div class="empty-state">
                         <i class="fas fa-user-injured"></i>
@@ -675,11 +752,11 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Patients View -->
         <div id="patients-view" class="page-view" style="display: none;">
             <h2 class="page-title"><i class="fas fa-user-injured"></i> Patients</h2>
-            
+
             <div class="search-container">
                 <input type="text" class="search-input" id="patient-search" placeholder="Search patients by name...">
                 <button class="search-btn" onclick="searchPatients()"><i class="fas fa-search"></i></button>
@@ -727,7 +804,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="patient-list" id="patient-list">
                     <div class="empty-state">
@@ -740,16 +817,16 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Doctors View -->
         <div id="doctors-view" class="page-view" style="display: none;">
             <h2 class="page-title"><i class="fas fa-user-md"></i> Doctors</h2>
-            
+
             <div class="search-container">
                 <input type="text" class="search-input" id="doctor-search" placeholder="Search doctors...">
                 <button class="search-btn" onclick="searchDoctors()"><i class="fas fa-search"></i></button>
             </div>
-            
+
             <div class="card">
                 <div class="doctor-list" id="doctor-list">
                     <div class="empty-state">
@@ -759,16 +836,16 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Tasks View -->
         <div id="tasks-view" class="page-view" style="display: none;">
             <h2 class="page-title"><i class="fas fa-tasks"></i> Tasks</h2>
-            
+
             <div class="search-container">
                 <input type="text" class="search-input" id="task-search" placeholder="Search tasks...">
                 <button class="search-btn" onclick="searchTasks()"><i class="fas fa-search"></i></button>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">All Tasks</h3>
@@ -776,7 +853,7 @@
                         <i class="fas fa-plus"></i> Create New Task
                     </button>
                 </div>
-                
+
                 <div class="task-list" id="all-task-list">
                     <div class="empty-state">
                         <i class="fas fa-tasks"></i>
@@ -785,21 +862,22 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Search View -->
         <div id="search-view" class="page-view" style="display: none;">
             <h2 class="page-title"><i class="fas fa-search"></i> Search</h2>
-            
+
             <div class="search-container">
-                <input type="text" class="search-input" id="global-search" placeholder="Search patients, doctors, tasks, or wards...">
+                <input type="text" class="search-input" id="global-search"
+                    placeholder="Search patients, doctors, tasks, or wards...">
                 <button class="search-btn" onclick="globalSearch()"><i class="fas fa-search"></i></button>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Search Results</h3>
                 </div>
-                
+
                 <div class="search-results" id="search-results">
                     <p class="no-results" style="text-align: center; padding: 2rem; color: var(--gray);">
                         Enter a search term to find patients, doctors, tasks, or wards
@@ -807,582 +885,949 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Create Ward Modal -->
-    <div class="modal" id="create-ward-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create New Ward</h3>
-                <button class="close-btn" onclick="closeCreateWardModal()">&times;</button>
-            </div>
-            <form id="create-ward-form">
-                <div class="form-group">
-                    <label class="form-label" for="ward-name">Ward Name *</label>
-                    <input type="text" class="form-input" id="ward-name" placeholder="Enter ward name" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="ward-description">Description</label>
-                    <textarea class="form-textarea" id="ward-description" placeholder="Enter ward description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="ward-address">Address</label>
-                    <input type="text" class="form-input" id="ward-address" placeholder="Enter ward address">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="ward-phone">Phone Number</label>
-                    <input type="tel" class="form-input" id="ward-phone" placeholder="Enter phone number">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="ward-email">Email</label>
-                    <input type="email" class="form-input" id="ward-email" placeholder="Enter email address">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeCreateWardModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="create-ward-submit">
-                        <i class="fas fa-plus"></i> Create Ward
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+        <!-- Audit Log View -->
 
-    <!-- Edit Ward Modal -->
-    <div class="modal" id="edit-ward-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Edit Ward</h3>
-                <button class="close-btn" onclick="closeEditWardModal()">&times;</button>
-            </div>
-            <form id="edit-ward-form">
-                <input type="hidden" id="edit-ward-id">
-                <div class="form-group">
-                    <label class="form-label" for="edit-ward-name">Ward Name *</label>
-                    <input type="text" class="form-input" id="edit-ward-name" placeholder="Enter ward name" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-ward-description">Description</label>
-                    <textarea class="form-textarea" id="edit-ward-description" placeholder="Enter ward description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-ward-address">Address</label>
-                    <input type="text" class="form-input" id="edit-ward-address" placeholder="Enter ward address">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-ward-phone">Phone Number</label>
-                    <input type="tel" class="form-input" id="edit-ward-phone" placeholder="Enter phone number">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-ward-email">Email</label>
-                    <input type="email" class="form-input" id="edit-ward-email" placeholder="Enter email address">
-                </div>
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeEditWardModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="edit-ward-submit">
-                        <i class="fas fa-save"></i> Update Ward
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    <!-- Create Patient Modal -->
-    <div class="modal" id="create-patient-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Add New Patient</h3>
-                <button class="close-btn" onclick="closeCreatePatientModal()">&times;</button>
+        <div id="ward-details-view" class="page-view" style="display: none;">
+            <div class="view-header" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                <button class="btn btn-icon" onclick="showPage('home-view')" style="background: var(--light);">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2 class="page-title" id="ward-page-title" style="margin: 0;">Ward Management</h2>
             </div>
-            <form id="create-patient-form">
-                <div class="form-group">
-                    <label class="form-label" for="patient-name">Patient Name *</label>
-                    <input type="text" class="form-input" id="patient-name" placeholder="Enter patient full name" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="patient-dob">Date of Birth</label>
-                        <input type="date" class="form-input" id="patient-dob">
+
+            <div class="view-body" style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Ward Info section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-info-circle"></i> Ward Info</h3>
+                        <button class="btn btn-sm" id="btn-edit-ward" onclick="openEditWardModalContext()">Edit</button>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="patient-age">Age</label>
-                        <input type="number" class="form-input" id="patient-age" placeholder="Age" min="0" max="150">
+                    <div id="ward-info-content" class="card-body">
+                        <!-- Static Info populated by JS -->
                     </div>
                 </div>
-                <div class="form-row">
+
+                <!-- Doctors and Patients in cards -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-user-md"></i> Assigned Doctors</h3>
+                        <button class="btn btn-primary btn-sm" id="btn-assign-doctor">
+                            <i class="fas fa-user-plus"></i> Assign Doctor
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="ward-doctors-list">
+                            <!-- Loaded via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-user-injured"></i> Assigned Patients</h3>
+                        <button class="btn btn-primary btn-sm" id="btn-assign-patient">
+                            <i class="fas fa-user-plus"></i> Assign Patient
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="ward-patients-list">
+                            <!-- Loaded via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Ward Modal -->
+        <div class="modal" id="create-ward-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Create New Ward</h3>
+                    <button class="close-btn" onclick="closeCreateWardModal()">&times;</button>
+                </div>
+                <form id="create-ward-form">
                     <div class="form-group">
-                        <label class="form-label" for="patient-gender">Gender</label>
-                        <select class="form-select" id="patient-gender">
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                        <label class="form-label" for="ward-name">Ward Name *</label>
+                        <input type="text" class="form-input" id="ward-name" placeholder="Enter ward name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ward-description">Description</label>
+                        <textarea class="form-textarea" id="ward-description"
+                            placeholder="Enter ward description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ward-address">Address</label>
+                        <input type="text" class="form-input" id="ward-address" placeholder="Enter ward address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ward-phone">Phone Number</label>
+                        <input type="tel" class="form-input" id="ward-phone" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ward-email">Email</label>
+                        <input type="email" class="form-input" id="ward-email" placeholder="Enter email address">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="closeCreateWardModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="create-ward-submit">
+                            <i class="fas fa-plus"></i> Create Ward
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Ward Modal -->
+        <div class="modal" id="edit-ward-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Ward</h3>
+                    <button class="close-btn" onclick="closeEditWardModal()">&times;</button>
+                </div>
+                <form id="edit-ward-form">
+                    <input type="hidden" id="edit-ward-id">
+                    <div class="form-group">
+                        <label class="form-label" for="edit-ward-name">Ward Name *</label>
+                        <input type="text" class="form-input" id="edit-ward-name" placeholder="Enter ward name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-ward-description">Description</label>
+                        <textarea class="form-textarea" id="edit-ward-description"
+                            placeholder="Enter ward description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-ward-address">Address</label>
+                        <input type="text" class="form-input" id="edit-ward-address" placeholder="Enter ward address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-ward-phone">Phone Number</label>
+                        <input type="tel" class="form-input" id="edit-ward-phone" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-ward-email">Email</label>
+                        <input type="email" class="form-input" id="edit-ward-email" placeholder="Enter email address">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="closeEditWardModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="edit-ward-submit">
+                            <i class="fas fa-save"></i> Update Ward
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Assign Doctor Modal -->
+        <div class="modal" id="assign-doctor-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Assign Doctors to Ward</h3>
+                    <button class="close-btn" onclick="closeAssignDoctorModal()">&times;</button>
+                </div>
+
+                <form id="assign-doctor-form">
+                    <input type="hidden" id="assign-ward-id">
+
+                    <div class="form-group">
+                        <label class="form-label">Doctors</label>
+                        <select class="form-select" id="doctor-select" multiple></select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="closeAssignDoctorModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Assign</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create Patient Modal -->
+        <div class="modal" id="create-patient-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Add New Patient</h3>
+                    <button class="close-btn" onclick="closeCreatePatientModal()">&times;</button>
+                </div>
+                <form id="create-patient-form">
+                    <div class="form-group">
+                        <label class="form-label" for="patient-name">Patient Name *</label>
+                        <input type="text" class="form-input" id="patient-name" placeholder="Enter patient full name"
+                            required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="patient-dob">Date of Birth</label>
+                            <input type="date" class="form-input" id="patient-dob">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="patient-age">Age</label>
+                            <input type="number" class="form-input" id="patient-age" placeholder="Age" min="0"
+                                max="150">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="patient-gender">Gender</label>
+                            <select class="form-select" id="patient-gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="patient-bloodgroup">Blood Group</label>
+                            <select class="form-select" id="patient-bloodgroup">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patient-address">Address</label>
+                        <textarea class="form-textarea" id="patient-address"
+                            placeholder="Enter patient address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patient-phone">Phone Number</label>
+                        <input type="tel" class="form-input" id="patient-phone" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patient-email">Email</label>
+                        <input type="email" class="form-input" id="patient-email" placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patient-emergencyContact">Emergency Contact</label>
+                        <input type="text" class="form-input" id="patient-emergencyContact"
+                            placeholder="Emergency contact name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patient-emergencyPhone">Emergency Phone</label>
+                        <input type="tel" class="form-input" id="patient-emergencyPhone"
+                            placeholder="Emergency contact phone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="patient-ward">Assign to Ward</label>
+                        <select class="form-select" id="patient-ward">
+                            <option value="">Select Ward (Optional)</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="closeCreatePatientModal()">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="create-patient-submit">
+                            <i class="fas fa-plus"></i> Add Patient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Patient Modal -->
+        <div class="modal" id="view-patient-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Patient Details</h3>
+                    <button class="close-btn" onclick="closeViewPatientModal()">&times;</button>
+                </div>
+                <div class="tabs">
+                    <div class="tab active" data-tab="details">Basic Info</div>
+                    <div class="tab" data-tab="medical">Medical History</div>
+                    <div class="tab" data-tab="records">Medical Records</div>
+                </div>
+
+                <div class="tab-content active" id="details-tab">
+                    <div id="patient-details-content">
+                        <!-- Patient details will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="medical-tab">
+                    <div id="patient-medical-content">
+                        <!-- Medical history will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="records-tab">
+                    <div id="patient-records-content">
+                        <!-- Medical records will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeViewPatientModal()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="editPatientFromView()">Edit Patient</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Patient Modal -->
+        <div class="modal" id="edit-patient-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Patient</h3>
+                    <button class="close-btn" onclick="closeEditPatientModal()">&times;</button>
+                </div>
+                <form id="edit-patient-form">
+                    <input type="hidden" id="edit-patient-id">
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-name">Patient Name *</label>
+                        <input type="text" class="form-input" id="edit-patient-name" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-patient-dob">Date of Birth</label>
+                            <input type="date" class="form-input" id="edit-patient-dob">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-patient-age">Age</label>
+                            <input type="number" class="form-input" id="edit-patient-age" min="0" max="150">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-patient-gender">Gender</label>
+                            <select class="form-select" id="edit-patient-gender">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-patient-bloodgroup">Blood Group</label>
+                            <select class="form-select" id="edit-patient-bloodgroup">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-address">Address</label>
+                        <textarea class="form-textarea" id="edit-patient-address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-phone">Phone Number</label>
+                        <input type="tel" class="form-input" id="edit-patient-phone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-email">Email</label>
+                        <input type="email" class="form-input" id="edit-patient-email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-emergencyContact">Emergency Contact</label>
+                        <input type="text" class="form-input" id="edit-patient-emergencyContact">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-emergencyPhone">Emergency Phone</label>
+                        <input type="tel" class="form-input" id="edit-patient-emergencyPhone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-ward">Assign to Ward</label>
+                        <select class="form-select" id="edit-patient-ward">
+                            <option value="">Select Ward (Optional)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="patient-bloodgroup">Blood Group</label>
-                        <select class="form-select" id="patient-bloodgroup">
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                        </select>
+                        <label class="form-label" for="edit-patient-medicalHistory">Medical History</label>
+                        <textarea class="form-textarea" id="edit-patient-medicalHistory"
+                            placeholder="Previous illnesses, surgeries, etc."></textarea>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-allergies">Allergies</label>
+                        <textarea class="form-textarea" id="edit-patient-allergies"
+                            placeholder="List any allergies"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-currentMedications">Current Medications</label>
+                        <textarea class="form-textarea" id="edit-patient-currentMedications"
+                            placeholder="List current medications"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="edit-patient-chronicConditions">Chronic Conditions</label>
+                        <textarea class="form-textarea" id="edit-patient-chronicConditions"
+                            placeholder="List chronic conditions"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="closeEditPatientModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="edit-patient-submit">
+                            <i class="fas fa-save"></i> Update Patient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- View Ward Modal -->
+        <div class="modal" id="view-ward-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="view-ward-title">Ward Details</h3>
+                    <button class="close-btn" onclick="closeViewWardModal()">&times;</button>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="patient-address">Address</label>
-                    <textarea class="form-textarea" id="patient-address" placeholder="Enter patient address"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="patient-phone">Phone Number</label>
-                    <input type="tel" class="form-input" id="patient-phone" placeholder="Enter phone number">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="patient-email">Email</label>
-                    <input type="email" class="form-input" id="patient-email" placeholder="Enter email address">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="patient-emergencyContact">Emergency Contact</label>
-                    <input type="text" class="form-input" id="patient-emergencyContact" placeholder="Emergency contact name">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="patient-emergencyPhone">Emergency Phone</label>
-                    <input type="tel" class="form-input" id="patient-emergencyPhone" placeholder="Emergency contact phone">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="patient-ward">Assign to Ward</label>
-                    <select class="form-select" id="patient-ward">
-                        <option value="">Select Ward (Optional)</option>
-                    </select>
+                <div id="view-ward-content">
+                    <!-- Ward details and assigned doctors will be loaded here -->
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeCreatePatientModal()">Cancel</button>
-                    <button type="submit" class="btn btn-success" id="create-patient-submit">
-                        <i class="fas fa-plus"></i> Add Patient
-                    </button>
+                    <button type="button" class="btn" onclick="closeViewWardModal()">Close</button>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- View Patient Modal -->
-    <div class="modal" id="view-patient-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Patient Details</h3>
-                <button class="close-btn" onclick="closeViewPatientModal()">&times;</button>
-            </div>
-            <div class="tabs">
-                <div class="tab active" data-tab="details">Basic Info</div>
-                <div class="tab" data-tab="medical">Medical History</div>
-                <div class="tab" data-tab="records">Medical Records</div>
-            </div>
-            
-            <div class="tab-content active" id="details-tab">
-                <div id="patient-details-content">
-                    <!-- Patient details will be loaded here -->
-                </div>
-            </div>
-            
-            <div class="tab-content" id="medical-tab">
-                <div id="patient-medical-content">
-                    <!-- Medical history will be loaded here -->
-                </div>
-            </div>
-            
-            <div class="tab-content" id="records-tab">
-                <div id="patient-records-content">
-                    <!-- Medical records will be loaded here -->
-                </div>
-            </div>
-            
-            <div class="form-actions">
-                <button type="button" class="btn" onclick="closeViewPatientModal()">Close</button>
-                <button type="button" class="btn btn-primary" onclick="editPatientFromView()">Edit Patient</button>
             </div>
         </div>
-    </div>
 
-    <!-- Edit Patient Modal -->
-    <div class="modal" id="edit-patient-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Edit Patient</h3>
-                <button class="close-btn" onclick="closeEditPatientModal()">&times;</button>
-            </div>
-            <form id="edit-patient-form">
-                <input type="hidden" id="edit-patient-id">
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-name">Patient Name *</label>
-                    <input type="text" class="form-input" id="edit-patient-name" required>
+        <!-- Assign Patient to Ward Modal -->
+        <div class="modal" id="assign-patient-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Assign Patient to Ward</h3>
+                    <button class="close-btn" onclick="closeAssignPatientModal()">&times;</button>
                 </div>
-                <div class="form-row">
+                <div class="modal-body">
                     <div class="form-group">
-                        <label class="form-label" for="edit-patient-dob">Date of Birth</label>
-                        <input type="date" class="form-input" id="edit-patient-dob">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="edit-patient-age">Age</label>
-                        <input type="number" class="form-input" id="edit-patient-age" min="0" max="150">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="edit-patient-gender">Gender</label>
-                        <select class="form-select" id="edit-patient-gender">
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
+                        <label for="patient-select">Select Patient</label>
+                        <select id="patient-select" class="form-control" required>
+                            <option value="">Loading patients...</option>
                         </select>
+                        <small class="form-text">Only unassigned patients are shown</small>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label" for="edit-patient-bloodgroup">Blood Group</label>
-                        <select class="form-select" id="edit-patient-bloodgroup">
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-address">Address</label>
-                    <textarea class="form-textarea" id="edit-patient-address"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-phone">Phone Number</label>
-                    <input type="tel" class="form-input" id="edit-patient-phone">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-email">Email</label>
-                    <input type="email" class="form-input" id="edit-patient-email">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-emergencyContact">Emergency Contact</label>
-                    <input type="text" class="form-input" id="edit-patient-emergencyContact">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-emergencyPhone">Emergency Phone</label>
-                    <input type="tel" class="form-input" id="edit-patient-emergencyPhone">
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-ward">Assign to Ward</label>
-                    <select class="form-select" id="edit-patient-ward">
-                        <option value="">Select Ward (Optional)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-medicalHistory">Medical History</label>
-                    <textarea class="form-textarea" id="edit-patient-medicalHistory" placeholder="Previous illnesses, surgeries, etc."></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-allergies">Allergies</label>
-                    <textarea class="form-textarea" id="edit-patient-allergies" placeholder="List any allergies"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-currentMedications">Current Medications</label>
-                    <textarea class="form-textarea" id="edit-patient-currentMedications" placeholder="List current medications"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="edit-patient-chronicConditions">Chronic Conditions</label>
-                    <textarea class="form-textarea" id="edit-patient-chronicConditions" placeholder="List chronic conditions"></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeEditPatientModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="edit-patient-submit">
-                        <i class="fas fa-save"></i> Update Patient
+                    <button type="button" class="btn" onclick="closeAssignPatientModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="assign-patient-submit"
+                        onclick="assignPatientToWard()">
+                        <i class="fas fa-check"></i> Assign Patient
                     </button>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active" data-page="home-view">
-            <i class="fas fa-home nav-icon"></i>
-            <span class="nav-label">Home</span>
+        <!-- Create Task Modal (STEP 8) -->
+        <div class="modal" id="createTaskModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Create Task</h3>
+                    <button class="close-btn" onclick="closeCreateTaskModal()">&times;</button>
+                </div>
+                <form id="create-task-form">
+                    <input type="hidden" id="taskWardId">
+                    <input type="hidden" id="taskPatientId">
+                    <div class="form-group">
+                        <label class="form-label" for="taskTitle">Task Title *</label>
+                        <input type="text" class="form-input" id="taskTitle" placeholder="Task Title" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="taskPriority">Priority</label>
+                        <select class="form-select" id="taskPriority">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="taskDescription">Task Description</label>
+                        <textarea class="form-textarea" id="taskDescription" placeholder="Task Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="doctorSelect">Assign to Doctor *</label>
+                        <select class="form-select" id="doctorSelect" required>
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="taskDeadline">Due Date</label>
+                        <input type="date" class="form-input" id="taskDeadline">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn" onclick="closeCreateTaskModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" onclick="createTask()">
+                            <i class="fas fa-plus"></i> Create
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="nav-item" data-page="patients-view">
-            <i class="fas fa-user-injured nav-icon"></i>
-            <span class="nav-label">Patients</span>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" data-page="home-view">
+                <i class="fas fa-home nav-icon"></i>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-item" data-page="patients-view">
+                <i class="fas fa-user-injured nav-icon"></i>
+                <span class="nav-label">Patients</span>
+            </div>
+            <div class="nav-item" data-page="doctors-view">
+                <i class="fas fa-user-md nav-icon"></i>
+                <span class="nav-label">Doctors</span>
+            </div>
+            <div class="nav-item" data-page="tasks-view">
+                <i class="fas fa-tasks nav-icon"></i>
+                <span class="nav-label">Tasks</span>
+            </div>
+            <div class="nav-item" data-page="search-view">
+                <i class="fas fa-search nav-icon"></i>
+                <span class="nav-label">Search</span>
+            </div>
+
         </div>
-        <div class="nav-item" data-page="doctors-view">
-            <i class="fas fa-user-md nav-icon"></i>
-            <span class="nav-label">Doctors</span>
-        </div>
-        <div class="nav-item" data-page="tasks-view">
-            <i class="fas fa-tasks nav-icon"></i>
-            <span class="nav-label">Tasks</span>
-        </div>
-        <div class="nav-item" data-page="search-view">
-            <i class="fas fa-search nav-icon"></i>
-            <span class="nav-label">Search</span>
-        </div>
-    </div>
 
-    <script>
-        // API Configuration
-        const API_BASE_URL = 'http://localhost:3000/api';
-        let currentUser = null;
-        let currentEditingWorkspace = null;
-        let currentEditingPatient = null;
+        <script>
+            // API Configuration
+            const API_BASE_URL = '/api';
+            let currentUser = null;
+            let currentEditingWorkspace = null;
+            let currentEditingPatient = null;
 
-        // DOM Elements
-        const successAlert = document.getElementById('success-alert');
-        const errorAlert = document.getElementById('error-alert');
-        const successMessage = document.getElementById('success-message');
-        const errorMessage = document.getElementById('error-message');
+            // DOM Elements
+            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('error-alert');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
 
-        // Initialize the dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthentication();
-            loadDashboardData();
-            setupEventListeners();
-        });
-
-        // Check if user is authenticated
-        function checkAuthentication() {
-            const userData = localStorage.getItem('user');
-            if (!userData) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            currentUser = JSON.parse(userData);
-            document.getElementById('user-name').textContent = currentUser.name;
-            document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
-        }
-
-        // Load dashboard data
-        async function loadDashboardData() {
-            try {
-                await loadWorkspaces();
-                await loadPatients();
-                await loadRecentPatients();
-                await loadFilterWardOptions();
-            } catch (error) {
-                console.error('Error loading dashboard data:', error);
-            }
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Create ward form
-            document.getElementById('create-ward-form').addEventListener('submit', handleCreateWard);
-            
-            // Edit ward form
-            document.getElementById('edit-ward-form').addEventListener('submit', handleEditWard);
-            
-            // Create patient form
-            document.getElementById('create-patient-form').addEventListener('submit', handleCreatePatient);
-            
-            // Edit patient form
-            document.getElementById('edit-patient-form').addEventListener('submit', handleEditPatient);
-            
-            // Patient search input (search on enter key)
-            document.getElementById('patient-search').addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    searchPatients();
-                }
+            // Initialize the dashboard
+            document.addEventListener('DOMContentLoaded', function () {
+                checkAuthentication();
+                loadDashboardData();
+                setupEventListeners();
             });
 
-            // Tab navigation
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.getAttribute('data-tab');
-                    
-                    // Update active tab
-                    document.querySelectorAll('.tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Show selected tab content
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(`${tabName}-tab`).classList.add('active');
-                    
-                    // Load data for specific tabs
-                    if (tabName === 'records' && currentEditingPatient) {
-                        loadPatientMedicalRecords(currentEditingPatient.id);
+            function showPage(pageId) {
+                console.log('Transitioning to page:', pageId);
+                const pages = document.querySelectorAll('.page-view');
+                console.log('Total page-views found:', pages.length);
+                pages.forEach(page => {
+                    page.style.display = 'none';
+                });
+                const target = document.getElementById(pageId);
+                if (target) {
+                    console.log('Target view found, showing it.');
+                    target.style.display = 'block';
+                } else {
+                    console.error('Target view NOT found:', pageId);
+                }
+
+                // Optional: update nav highlighting if needed
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    const navId = nav.getAttribute('data-page');
+                    if (navId === pageId) nav.classList.add('active');
+                    else nav.classList.remove('active');
+                });
+            }
+
+            // Check if user is authenticated
+            function checkAuthentication() {
+                const userData = localStorage.getItem('user');
+                if (!userData) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                currentUser = JSON.parse(userData);
+                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('user-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            }
+
+            // Load dashboard data
+            async function loadDashboardData() {
+                try {
+                    await loadWorkspaces();
+                    await loadPatients();
+                    await loadRecentPatients();
+                    await loadFilterWardOptions();
+                    await loadDoctors();
+                    await loadTasks();
+                } catch (error) {
+                    console.error('Error loading dashboard data:', error);
+                }
+            }
+
+            // Setup event listeners
+            function setupEventListeners() {
+                // Create ward form
+                document.getElementById('create-ward-form').addEventListener('submit', handleCreateWard);
+
+                // Edit ward form
+                document.getElementById('edit-ward-form').addEventListener('submit', handleEditWard);
+
+                // Create patient form
+                document.getElementById('create-patient-form').addEventListener('submit', handleCreatePatient);
+
+                // Edit patient form
+                document.getElementById('edit-patient-form').addEventListener('submit', handleEditPatient);
+
+                // Patient search input (search on enter key)
+                document.getElementById('patient-search').addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter') {
+                        searchPatients();
                     }
                 });
-            });
 
-            // Navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    // Update active nav item
-                    document.querySelectorAll('.nav-item').forEach(nav => {
-                        nav.classList.remove('active');
+                // Doctor search input (search on enter key)
+                document.getElementById('doctor-search').addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter') {
+                        searchDoctors();
+                    }
+                });
+
+                // Tab navigation
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', function () {
+                        const tabName = this.getAttribute('data-tab');
+
+                        // Update active tab
+                        document.querySelectorAll('.tab').forEach(t => {
+                            t.classList.remove('active');
+                        });
+                        this.classList.add('active');
+
+                        // Show selected tab content
+                        document.querySelectorAll('.tab-content').forEach(content => {
+                            content.classList.remove('active');
+                        });
+                        document.getElementById(`${tabName}-tab`).classList.add('active');
+
+                        // Load data for specific tabs
+                        if (tabName === 'records' && currentEditingPatient) {
+                            loadPatientMedicalRecords(currentEditingPatient.id);
+                        }
                     });
-                    this.classList.add('active');
-                    
-                    // Show selected page
-                    const pageId = this.getAttribute('data-page');
-                    document.querySelectorAll('.page-view').forEach(page => {
-                        page.style.display = 'none';
+                });
+
+                // Navigation
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        // Update active nav item
+                        document.querySelectorAll('.nav-item').forEach(nav => {
+                            nav.classList.remove('active');
+                        });
+                        this.classList.add('active');
+
+                        // Show selected page
+                        const pageId = this.getAttribute('data-page');
+                        document.querySelectorAll('.page-view').forEach(page => {
+                            page.style.display = 'none';
+                        });
+                        document.getElementById(pageId).style.display = 'block';
+
+                        // Load data for specific views
+                        if (pageId === 'patients-view') {
+                            loadPatients();
+                        } else if (pageId === 'doctors-view') {
+                            loadDoctors();
+                        } else if (pageId === 'tasks-view') {
+                            loadTasks();
+                        }
                     });
-                    document.getElementById(pageId).style.display = 'block';
-                    
-                    // Load data for specific views
-                    if (pageId === 'patients-view') {
+                });
+
+
+                // Create task form
+                document.getElementById('create-task-form').addEventListener('submit', handleCreateTask);
+
+                // Task search input
+                document.getElementById('task-search').addEventListener('keypress', function (event) {
+                    if (event.key === 'Enter') {
+                        searchTasks();
+                    }
+                });
+            }
+
+            // Show/hide alerts
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successAlert.style.display = 'block';
+                errorAlert.style.display = 'none';
+                setTimeout(() => {
+                    successAlert.style.display = 'none';
+                }, 5000);
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+                setTimeout(() => {
+                    errorAlert.style.display = 'none';
+                }, 5000);
+            }
+
+            // Modal functions
+            function showCreateWardModal() {
+                document.getElementById('create-ward-modal').style.display = 'flex';
+            }
+
+            function closeCreateWardModal() {
+                document.getElementById('create-ward-modal').style.display = 'none';
+                document.getElementById('create-ward-form').reset();
+            }
+
+            function showEditWardModal() {
+                document.getElementById('edit-ward-modal').style.display = 'flex';
+            }
+
+            function closeEditWardModal() {
+                document.getElementById('edit-ward-modal').style.display = 'none';
+                document.getElementById('edit-ward-form').reset();
+                currentEditingWorkspace = null;
+            }
+
+            // Patient Modal Functions
+            function showCreatePatientModal() {
+                loadWardOptions('patient-ward');
+                document.getElementById('create-patient-modal').style.display = 'flex';
+            }
+
+            function closeCreatePatientModal() {
+                document.getElementById('create-patient-modal').style.display = 'none';
+                document.getElementById('create-patient-form').reset();
+            }
+
+            function showViewPatientModal() {
+                document.getElementById('view-patient-modal').style.display = 'flex';
+            }
+
+            function closeViewPatientModal() {
+                document.getElementById('view-patient-modal').style.display = 'none';
+                // Reset tabs to default
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector('.tab[data-tab="details"]').classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById('details-tab').classList.add('active');
+            }
+
+            function showEditPatientModal() {
+                document.getElementById('edit-patient-modal').style.display = 'flex';
+            }
+
+            function closeEditPatientModal() {
+                document.getElementById('edit-patient-modal').style.display = 'none';
+                document.getElementById('edit-patient-form').reset();
+                currentEditingPatient = null;
+            }
+
+            // Doctor Modal Functions
+            function showEditDoctorModal() {
+                document.getElementById('edit-doctor-modal').style.display = 'flex';
+            }
+
+            function closeEditDoctorModal() {
+                document.getElementById('edit-doctor-modal').style.display = 'none';
+                document.getElementById('edit-doctor-form').reset();
+            }
+
+            // Ward View Functions (Moved to Page View)
+            function closeViewWardPage() {
+                showPage('wards-view');
+            }
+
+            // Assign Patient Modal Functions
+            let selectedWardId = null;
+
+            function openAssignPatientModal(wardId) {
+                selectedWardId = wardId;
+                loadUnassignedPatients();
+                document.getElementById('assign-patient-modal').style.display = 'flex';
+            }
+
+            function closeAssignPatientModal() {
+                document.getElementById('assign-patient-modal').style.display = 'none';
+                document.getElementById('patient-select').innerHTML = '<option value="">Select a patient...</option>';
+                selectedWardId = null;
+            }
+
+            async function loadUnassignedPatients() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/get`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch patients');
+
+                    const patients = await response.json();
+                    const unassignedPatients = patients.filter(p => !p.workSpaceId);
+
+                    const selectElement = document.getElementById('patient-select');
+
+                    if (unassignedPatients.length === 0) {
+                        selectElement.innerHTML = '<option value="">No unassigned patients available</option>';
+                    } else {
+                        selectElement.innerHTML = '<option value="">Select a patient...</option>' +
+                            unassignedPatients.map(p =>
+                                `<option value="${p.id}">${p.name} (${p.age || '?'} yrs, ${p.gender || 'Unknown'})</option>`
+                            ).join('');
+                    }
+                } catch (error) {
+                    console.error('Error loading patients:', error);
+                    showError('Failed to load patients');
+                }
+            }
+
+            async function assignPatientToWard() {
+                const patientId = document.getElementById('patient-select').value;
+
+                if (!patientId) {
+                    showError('Please select a patient');
+                    return;
+                }
+
+                const submitBtn = document.getElementById('assign-patient-submit');
+                const originalText = submitBtn.innerHTML;
+
+                try {
+                    submitBtn.innerHTML = '<div class="loading"></div> Assigning...';
+                    submitBtn.disabled = true;
+
+                    const response = await fetch(`${API_BASE_URL}/patients/assign-ward`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            patientId: patientId,
+                            workSpaceId: selectedWardId
+                        })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to assign patient');
+
+                    showSuccess('Patient assigned to ward successfully!');
+                    closeAssignPatientModal();
+
+                    // Refresh the patient list to show updated assignments
+                    if (currentSection === 'patients') {
                         loadPatients();
                     }
-                });
-            });
-        }
-
-        // Show/hide alerts
-        function showSuccess(message) {
-            successMessage.textContent = message;
-            successAlert.style.display = 'block';
-            errorAlert.style.display = 'none';
-            setTimeout(() => {
-                successAlert.style.display = 'none';
-            }, 5000);
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorAlert.style.display = 'block';
-            successAlert.style.display = 'none';
-            setTimeout(() => {
-                errorAlert.style.display = 'none';
-            }, 5000);
-        }
-
-        // Modal functions
-        function showCreateWardModal() {
-            document.getElementById('create-ward-modal').style.display = 'flex';
-        }
-
-        function closeCreateWardModal() {
-            document.getElementById('create-ward-modal').style.display = 'none';
-            document.getElementById('create-ward-form').reset();
-        }
-
-        function showEditWardModal() {
-            document.getElementById('edit-ward-modal').style.display = 'flex';
-        }
-
-        function closeEditWardModal() {
-            document.getElementById('edit-ward-modal').style.display = 'none';
-            document.getElementById('edit-ward-form').reset();
-            currentEditingWorkspace = null;
-        }
-
-        // Patient Modal Functions
-        function showCreatePatientModal() {
-            loadWardOptions('patient-ward');
-            document.getElementById('create-patient-modal').style.display = 'flex';
-        }
-
-        function closeCreatePatientModal() {
-            document.getElementById('create-patient-modal').style.display = 'none';
-            document.getElementById('create-patient-form').reset();
-        }
-
-        function showViewPatientModal() {
-            document.getElementById('view-patient-modal').style.display = 'flex';
-        }
-
-        function closeViewPatientModal() {
-            document.getElementById('view-patient-modal').style.display = 'none';
-            // Reset tabs to default
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector('.tab[data-tab="details"]').classList.add('active');
-            
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById('details-tab').classList.add('active');
-        }
-
-        function showEditPatientModal() {
-            document.getElementById('edit-patient-modal').style.display = 'flex';
-        }
-
-        function closeEditPatientModal() {
-            document.getElementById('edit-patient-modal').style.display = 'none';
-            document.getElementById('edit-patient-form').reset();
-            currentEditingPatient = null;
-        }
-
-        // Load ward options for dropdowns
-        async function loadWardOptions(selectId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch wards');
+                } catch (error) {
+                    console.error('Error assigning patient:', error);
+                    showError(error.message || 'Failed to assign patient to ward');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
-
-                const workspaces = await response.json();
-                const selectElement = document.getElementById(selectId);
-                
-                // Clear existing options except the first one
-                selectElement.innerHTML = '<option value="">Select Ward (Optional)</option>';
-                
-                workspaces.forEach(workspace => {
-                    const option = document.createElement('option');
-                    option.value = workspace.id;
-                    option.textContent = workspace.name;
-                    selectElement.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading ward options:', error);
             }
-        }
 
-        // Workspace functions
-        async function loadWorkspaces() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
+            // Task Modal Functions (STEP 7 & 9)
+            // Open Create Task Modal and load doctors into dropdown
+            async function openCreateTaskModal() {
+                await loadDoctorsForTask();
+                document.getElementById('createTaskModal').style.display = 'flex';
+            }
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch workspaces');
+            // STEP 9: Load Doctors Into Dropdown
+            async function loadDoctorsForTask() {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/doctors/get`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+                    const doctors = await res.json();
+
+                    document.getElementById('doctorSelect').innerHTML =
+                        '<option value="">Select Doctor</option>' +
+                        doctors.map(d =>
+                            `<option value="${d.id}">${d.name} (${d.specialization || 'General'})</option>`
+                        ).join('');
+                } catch (error) {
+                    console.error('Error loading doctors:', error);
+                    showError('Failed to load doctors list');
                 }
-
-                const workspaces = await response.json();
-                displayWorkspaces(workspaces);
-                updateStats('wards-count', workspaces.length);
-            } catch (error) {
-                console.error('Error loading workspaces:', error);
-                showError('Failed to load workspaces');
             }
-        }
 
-        function displayWorkspaces(workspaces) {
-            const wardList = document.getElementById('ward-list');
-            
-            if (workspaces.length === 0) {
-                wardList.innerHTML = `
+            // Alias for backward compatibility
+            function showCreateTaskModal() {
+                openCreateTaskModal();
+            }
+
+            function closeCreateTaskModal() {
+                document.getElementById('createTaskModal').style.display = 'none';
+                document.getElementById('create-task-form').reset();
+            }
+
+            // Load ward options for dropdowns
+            async function loadWardOptions(selectId) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch wards');
+                    }
+
+                    const workspaces = await response.json();
+                    const selectElement = document.getElementById(selectId);
+
+                    // Clear existing options except the first one
+                    selectElement.innerHTML = '<option value="">Select Ward (Optional)</option>';
+
+                    workspaces.forEach(workspace => {
+                        const option = document.createElement('option');
+                        option.value = workspace.id;
+                        option.textContent = workspace.name;
+                        selectElement.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error loading ward options:', error);
+                }
+            }
+
+            // Workspace functions
+            async function loadWorkspaces() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch workspaces');
+                    }
+
+                    const workspaces = await response.json();
+                    displayWorkspaces(workspaces);
+                    updateStats('wards-count', workspaces.length);
+                } catch (error) {
+                    console.error('Error loading workspaces:', error);
+                    showError('Failed to load workspaces');
+                }
+            }
+
+            function displayWorkspaces(workspaces) {
+                const wardList = document.getElementById('ward-list');
+
+                if (workspaces.length === 0) {
+                    wardList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-procedures"></i>
                         <p>No wards created yet</p>
@@ -1391,12 +1836,12 @@
                         </button>
                     </div>
                 `;
-                return;
-            }
+                    return;
+                }
 
-            wardList.innerHTML = workspaces.map(workspace => {
-                const isOwner = workspace.createdBy === currentUser.name;
-                return `
+                wardList.innerHTML = workspaces.map(workspace => {
+                    const isOwner = workspace.createdByAdminId ? (workspace.createdByAdminId === currentUser.id) : (workspace.createdBy === currentUser.name);
+                    return `
                 <div class="list-item" data-ward="${workspace.id}">
                     <div class="item-info">
                         <h3>
@@ -1412,7 +1857,10 @@
                     </div>
                     <div class="item-actions">
                         ${isOwner ? `
-                            <button class="btn btn-primary" onclick="editWorkspace('${workspace.id}')">
+                            <button class="btn btn-primary" onclick="viewWorkspaceDetails('${workspace.id}')">
+                                <i class="fas fa-eye"></i> View & Manage
+                            </button>
+                            <button class="btn" onclick="editWorkspace('${workspace.id}')">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
                             <button class="btn btn-danger" onclick="deleteWorkspace('${workspace.id}')">
@@ -1427,240 +1875,241 @@
                     </div>
                 </div>
                 `;
-            }).join('');
-        }
-
-        async function handleCreateWard(event) {
-            event.preventDefault();
-            
-            const submitBtn = document.getElementById('create-ward-submit');
-            const originalText = submitBtn.innerHTML;
-            
-            try {
-                submitBtn.innerHTML = '<div class="loading"></div> Creating...';
-                submitBtn.disabled = true;
-
-                const wardData = {
-                    name: document.getElementById('ward-name').value,
-                    description: document.getElementById('ward-description').value,
-                    address: document.getElementById('ward-address').value,
-                    phoneNumber: document.getElementById('ward-phone').value,
-                    email: document.getElementById('ward-email').value,
-                    createdBy: currentUser.name
-                };
-
-                const response = await fetch(`${API_BASE_URL}/workspaces/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(wardData)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to create ward');
-                }
-
-                const newWorkspace = await response.json();
-                showSuccess('Ward created successfully!');
-                closeCreateWardModal();
-                await loadWorkspaces();
-                
-            } catch (error) {
-                console.error('Error creating ward:', error);
-                showError(error.message || 'Failed to create ward');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        }
-
-        async function handleEditWard(event) {
-            event.preventDefault();
-            
-            const submitBtn = document.getElementById('edit-ward-submit');
-            const originalText = submitBtn.innerHTML;
-            
-            try {
-                submitBtn.innerHTML = '<div class="loading"></div> Updating...';
-                submitBtn.disabled = true;
-
-                const workspaceId = document.getElementById('edit-ward-id').value;
-                const wardData = {
-                    id: workspaceId,
-                    name: document.getElementById('edit-ward-name').value,
-                    description: document.getElementById('edit-ward-description').value,
-                    address: document.getElementById('edit-ward-address').value,
-                    phoneNumber: document.getElementById('edit-ward-phone').value,
-                    email: document.getElementById('edit-ward-email').value,
-                    createdBy: currentUser.name
-                };
-
-                const response = await fetch(`${API_BASE_URL}/workspaces/update`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(wardData)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to update ward');
-                }
-
-                showSuccess('Ward updated successfully!');
-                closeEditWardModal();
-                await loadWorkspaces();
-                
-            } catch (error) {
-                console.error('Error updating ward:', error);
-                showError(error.message || 'Failed to update ward');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        }
-
-        async function deleteWorkspace(workspaceId) {
-            if (!confirm('Are you sure you want to delete this ward? This action cannot be undone.')) {
-                return;
+                }).join('');
             }
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/workspaces/delete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ id: workspaceId })
-                });
+            async function handleCreateWard(event) {
+                event.preventDefault();
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to delete ward');
+                const submitBtn = document.getElementById('create-ward-submit');
+                const originalText = submitBtn.innerHTML;
+
+                try {
+                    submitBtn.innerHTML = '<div class="loading"></div> Creating...';
+                    submitBtn.disabled = true;
+
+                    const wardData = {
+                        name: document.getElementById('ward-name').value,
+                        description: document.getElementById('ward-description').value,
+                        address: document.getElementById('ward-address').value,
+                        phoneNumber: document.getElementById('ward-phone').value,
+                        email: document.getElementById('ward-email').value,
+                        createdBy: currentUser.name
+                    };
+
+                    const response = await fetch(`${API_BASE_URL}/workspaces/create`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(wardData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to create ward');
+                    }
+
+                    const newWorkspace = await response.json();
+                    showSuccess('Ward created successfully!');
+                    closeCreateWardModal();
+                    await loadWorkspaces();
+
+                } catch (error) {
+                    console.error('Error creating ward:', error);
+                    showError(error.message || 'Failed to create ward');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
-
-                showSuccess('Ward deleted successfully!');
-                await loadWorkspaces();
-            } catch (error) {
-                console.error('Error deleting ward:', error);
-                showError(error.message || 'Failed to delete ward');
             }
-        }
 
-        async function editWorkspace(workspaceId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/workspaces/find`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ id: workspaceId })
-                });
+            async function handleEditWard(event) {
+                event.preventDefault();
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch workspace details');
+                const submitBtn = document.getElementById('edit-ward-submit');
+                const originalText = submitBtn.innerHTML;
+
+                try {
+                    submitBtn.innerHTML = '<div class="loading"></div> Updating...';
+                    submitBtn.disabled = true;
+
+                    const workspaceId = document.getElementById('edit-ward-id').value;
+                    const wardData = {
+                        id: workspaceId,
+                        name: document.getElementById('edit-ward-name').value,
+                        description: document.getElementById('edit-ward-description').value,
+                        address: document.getElementById('edit-ward-address').value,
+                        phoneNumber: document.getElementById('edit-ward-phone').value,
+                        email: document.getElementById('edit-ward-email').value,
+                        createdBy: currentUser.name
+                    };
+
+                    const response = await fetch(`${API_BASE_URL}/workspaces/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(wardData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to update ward');
+                    }
+
+                    showSuccess('Ward updated successfully!');
+                    closeEditWardModal();
+                    await loadWorkspaces();
+
+                } catch (error) {
+                    console.error('Error updating ward:', error);
+                    showError(error.message || 'Failed to update ward');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
+            }
 
-                const workspace = await response.json();
-                
-                // Check if current user is the owner
-                if (workspace.createdBy !== currentUser.name) {
-                    showError('You can only edit wards created by you');
+            async function deleteWorkspace(workspaceId) {
+                if (!confirm('Are you sure you want to delete this ward? This action cannot be undone.')) {
                     return;
                 }
 
-                currentEditingWorkspace = workspace;
+                try {
+                    const response = await fetch(`${API_BASE_URL}/workspaces/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: workspaceId })
+                    });
 
-                // Populate the edit form
-                document.getElementById('edit-ward-id').value = workspace.id;
-                document.getElementById('edit-ward-name').value = workspace.name;
-                document.getElementById('edit-ward-description').value = workspace.description || '';
-                document.getElementById('edit-ward-address').value = workspace.address || '';
-                document.getElementById('edit-ward-phone').value = workspace.phoneNumber || '';
-                document.getElementById('edit-ward-email').value = workspace.email || '';
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to delete ward');
+                    }
 
-                showEditWardModal();
-            } catch (error) {
-                console.error('Error fetching workspace details:', error);
-                showError('Failed to load workspace details');
-            }
-        }
-
-        function viewWorkspaceDetails(workspaceId) {
-            alert('View workspace details - Read only access');
-        }
-
-        // Patient Management Functions
-        async function loadPatients() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/patients/get`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch patients');
+                    showSuccess('Ward deleted successfully!');
+                    await loadWorkspaces();
+                } catch (error) {
+                    console.error('Error deleting ward:', error);
+                    showError(error.message || 'Failed to delete ward');
                 }
-
-                const patients = await response.json();
-                displayPatients(patients);
-                updateStats('patients-count', patients.length);
-            } catch (error) {
-                console.error('Error loading patients:', error);
-                showError('Failed to load patients');
             }
-        }
 
-        async function loadRecentPatients() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/patients/get`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
+            async function editWorkspace(workspaceId) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/workspaces/find`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: workspaceId })
+                    });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch patients');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch workspace details');
+                    }
+
+                    const workspace = await response.json();
+
+                    // Check if current user is the owner
+                    if (workspace.createdBy !== currentUser.name) {
+                        showError('You can only edit wards created by you');
+                        return;
+                    }
+
+                    currentEditingWorkspace = workspace;
+
+                    // Populate the edit form
+                    document.getElementById('edit-ward-id').value = workspace.id;
+                    document.getElementById('edit-ward-name').value = workspace.name;
+                    document.getElementById('edit-ward-description').value = workspace.description || '';
+                    document.getElementById('edit-ward-address').value = workspace.address || '';
+                    document.getElementById('edit-ward-phone').value = workspace.phoneNumber || '';
+                    document.getElementById('edit-ward-email').value = workspace.email || '';
+
+                    showEditWardModal();
+                } catch (error) {
+                    console.error('Error fetching workspace details:', error);
+                    showError('Failed to load workspace details');
                 }
-
-                const patients = await response.json();
-                // Get only the first 5 patients for the recent list
-                const recentPatients = patients.slice(0, 5);
-                displayRecentPatients(recentPatients);
-            } catch (error) {
-                console.error('Error loading recent patients:', error);
             }
-        }
 
-        function displayRecentPatients(patients) {
-            const recentPatientList = document.getElementById('recent-patient-list');
-            
-            if (patients.length === 0) {
-                recentPatientList.innerHTML = `
+            function openEditWardModal(workspaceId) {
+                editWorkspace(workspaceId);
+            }
+
+
+            // Patient Management Functions
+            async function loadPatients() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch patients');
+                    }
+
+                    const patients = await response.json();
+                    displayPatients(patients);
+                    updateStats('patients-count', patients.length);
+                } catch (error) {
+                    console.error('Error loading patients:', error);
+                    showError('Failed to load patients');
+                }
+            }
+
+            async function loadRecentPatients() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch patients');
+                    }
+
+                    const patients = await response.json();
+                    // Get only the first 5 patients for the recent list
+                    const recentPatients = patients.slice(0, 5);
+                    displayRecentPatients(recentPatients);
+                } catch (error) {
+                    console.error('Error loading recent patients:', error);
+                }
+            }
+
+            function displayRecentPatients(patients) {
+                const recentPatientList = document.getElementById('recent-patient-list');
+
+                if (patients.length === 0) {
+                    recentPatientList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-user-injured"></i>
                         <p>No patients available</p>
                     </div>
                 `;
-                return;
-            }
+                    return;
+                }
 
-            recentPatientList.innerHTML = patients.map(patient => {
-                const wardBadge = patient.wardName ? `<span class="ward-badge">${patient.wardName}</span>` : '';
-                
-                return `
+                recentPatientList.innerHTML = patients.map(patient => {
+                    const wardBadge = patient.WorkSpace?.name ? `<span class="ward-badge">${patient.WorkSpace.name}</span>` : '';
+
+                    return `
                 <div class="list-item" data-patient="${patient.id}">
                     <div class="item-info">
                         <h3>
@@ -1684,15 +2133,15 @@
                     </div>
                 </div>
                 `;
-            }).join('');
-        }
+                }).join('');
+            }
 
-        // Display patients in the list
-        function displayPatients(patients) {
-            const patientList = document.getElementById('patient-list');
-            
-            if (patients.length === 0) {
-                patientList.innerHTML = `
+            // Display patients in the list
+            function displayPatients(patients) {
+                const patientList = document.getElementById('patient-list');
+
+                if (patients.length === 0) {
+                    patientList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-user-injured"></i>
                         <p>No patients found</p>
@@ -1701,13 +2150,13 @@
                         </button>
                     </div>
                 `;
-                return;
-            }
+                    return;
+                }
 
-            patientList.innerHTML = patients.map(patient => {
-                const wardBadge = patient.wardName ? `<span class="ward-badge">${patient.wardName}</span>` : '';
-                
-                return `
+                patientList.innerHTML = patients.map(patient => {
+                    const wardBadge = patient.WorkSpace?.name ? `<span class="ward-badge">${patient.WorkSpace.name}</span>` : '';
+
+                    return `
                 <div class="list-item" data-patient="${patient.id}">
                     <div class="item-info">
                         <h3>
@@ -1737,86 +2186,86 @@
                     </div>
                 </div>
                 `;
-            }).join('');
-        }
-
-        // Handle create patient form submission
-        async function handleCreatePatient(event) {
-            event.preventDefault();
-            
-            const submitBtn = document.getElementById('create-patient-submit');
-            const originalText = submitBtn.innerHTML;
-            
-            try {
-                submitBtn.innerHTML = '<div class="loading"></div> Adding...';
-                submitBtn.disabled = true;
-
-                const patientData = {
-                    name: document.getElementById('patient-name').value,
-                    dob: document.getElementById('patient-dob').value,
-                    age: parseInt(document.getElementById('patient-age').value) || 0,
-                    gender: document.getElementById('patient-gender').value,
-                    bloodGroup: document.getElementById('patient-bloodgroup').value,
-                    address: document.getElementById('patient-address').value,
-                    phone: document.getElementById('patient-phone').value,
-                    email: document.getElementById('patient-email').value,
-                    emergencyContact: document.getElementById('patient-emergencyContact').value,
-                    emergencyPhone: document.getElementById('patient-emergencyPhone').value,
-                    workSpaceId: document.getElementById('patient-ward').value || null,
-                    userId: currentUser.id,
-                    createdBy: currentUser.name
-                };
-
-                const response = await fetch(`${API_BASE_URL}/patients/create`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(patientData)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to create patient');
-                }
-
-                const newPatient = await response.json();
-                showSuccess('Patient added successfully!');
-                closeCreatePatientModal();
-                await loadPatients();
-                await loadRecentPatients();
-                
-            } catch (error) {
-                console.error('Error creating patient:', error);
-                showError(error.message || 'Failed to add patient');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                }).join('');
             }
-        }
 
-        // View patient details
-        async function viewPatient(patientId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/patients/find`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ id: patientId })
-                });
+            // Handle create patient form submission
+            async function handleCreatePatient(event) {
+                event.preventDefault();
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch patient details');
+                const submitBtn = document.getElementById('create-patient-submit');
+                const originalText = submitBtn.innerHTML;
+
+                try {
+                    submitBtn.innerHTML = '<div class="loading"></div> Adding...';
+                    submitBtn.disabled = true;
+
+                    const patientData = {
+                        name: document.getElementById('patient-name').value,
+                        dob: document.getElementById('patient-dob').value,
+                        age: parseInt(document.getElementById('patient-age').value) || 0,
+                        gender: document.getElementById('patient-gender').value,
+                        bloodGroup: document.getElementById('patient-bloodgroup').value,
+                        address: document.getElementById('patient-address').value,
+                        phone: document.getElementById('patient-phone').value,
+                        email: document.getElementById('patient-email').value,
+                        emergencyContact: document.getElementById('patient-emergencyContact').value,
+                        emergencyPhone: document.getElementById('patient-emergencyPhone').value,
+                        workSpaceId: document.getElementById('patient-ward').value || null,
+                        userId: currentUser.id,
+                        createdBy: currentUser.name
+                    };
+
+                    const response = await fetch(`${API_BASE_URL}/patients/create`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(patientData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to create patient');
+                    }
+
+                    const newPatient = await response.json();
+                    showSuccess('Patient added successfully!');
+                    closeCreatePatientModal();
+                    await loadPatients();
+                    await loadRecentPatients();
+
+                } catch (error) {
+                    console.error('Error creating patient:', error);
+                    showError(error.message || 'Failed to add patient');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 }
+            }
 
-                const patient = await response.json();
-                
-                // Populate the view modal
-                const content = document.getElementById('patient-details-content');
-                content.innerHTML = `
+            // View patient details
+            async function viewPatient(patientId) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/find`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: patientId })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch patient details');
+                    }
+
+                    const patient = await response.json();
+
+                    // Populate the view modal
+                    const content = document.getElementById('patient-details-content');
+                    content.innerHTML = `
                     <div class="patient-details">
                         <div class="detail-row">
                             <span class="detail-label">Name:</span>
@@ -1860,7 +2309,7 @@
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Assigned Ward:</span>
-                            <span class="detail-value">${patient.wardName || 'Not assigned'}</span>
+                            <span class="detail-value">${patient.WorkSpace?.name || 'Not assigned'}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Created By:</span>
@@ -1873,9 +2322,9 @@
                     </div>
                 `;
 
-                // Populate medical history tab
-                const medicalContent = document.getElementById('patient-medical-content');
-                medicalContent.innerHTML = `
+                    // Populate medical history tab
+                    const medicalContent = document.getElementById('patient-medical-content');
+                    medicalContent.innerHTML = `
                     <div class="patient-details">
                         <div class="detail-row">
                             <span class="detail-label">Medical History:</span>
@@ -1903,52 +2352,52 @@
                         </div>
                     </div>
                 `;
-                
-                // Store the current patient for editing
-                currentEditingPatient = patient;
-                showViewPatientModal();
-            } catch (error) {
-                console.error('Error fetching patient details:', error);
-                showError('Failed to load patient details');
+
+                    // Store the current patient for editing
+                    currentEditingPatient = patient;
+                    showViewPatientModal();
+                } catch (error) {
+                    console.error('Error fetching patient details:', error);
+                    showError('Failed to load patient details');
+                }
             }
-        }
 
-        // Load patient medical records
-        async function loadPatientMedicalRecords(patientId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/medical-records/patient`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ patientId })
-                });
+            // Load patient medical records
+            async function loadPatientMedicalRecords(patientId) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/medical-records/patient`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ patientId })
+                    });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch medical records');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch medical records');
+                    }
+
+                    const medicalRecords = await response.json();
+                    displayMedicalRecords(medicalRecords);
+                } catch (error) {
+                    console.error('Error fetching medical records:', error);
+                    document.getElementById('patient-records-content').innerHTML = '<p>Failed to load medical records</p>';
+                }
+            }
+
+            // Display medical records
+            function displayMedicalRecords(records) {
+                const recordsContent = document.getElementById('patient-records-content');
+
+                if (records.length === 0) {
+                    recordsContent.innerHTML = '<p>No medical records found</p>';
+                    return;
                 }
 
-                const medicalRecords = await response.json();
-                displayMedicalRecords(medicalRecords);
-            } catch (error) {
-                console.error('Error fetching medical records:', error);
-                document.getElementById('patient-records-content').innerHTML = '<p>Failed to load medical records</p>';
-            }
-        }
-
-        // Display medical records
-        function displayMedicalRecords(records) {
-            const recordsContent = document.getElementById('patient-records-content');
-            
-            if (records.length === 0) {
-                recordsContent.innerHTML = '<p>No medical records found</p>';
-                return;
-            }
-
-            recordsContent.innerHTML = records.map(record => {
-                const recordTypeClass = `record-${record.recordType.replace('_', '')}`;
-                return `
+                recordsContent.innerHTML = records.map(record => {
+                    const recordTypeClass = `record-${record.recordType.replace('_', '')}`;
+                    return `
                 <div class="medical-record-item">
                     <div class="record-type-badge ${recordTypeClass}">${record.recordType}</div>
                     <h4>${record.title}</h4>
@@ -1960,327 +2409,922 @@
                     ${record.nextFollowUp ? `<p><strong>Next Follow-up:</strong> ${new Date(record.nextFollowUp).toLocaleDateString()}</p>` : ''}
                 </div>
                 `;
-            }).join('');
-        }
+                }).join('');
+            }
 
-        // Edit patient from view modal
-        function editPatientFromView() {
-            closeViewPatientModal();
-            editPatient(currentEditingPatient.id);
-        }
+            // Edit patient from view modal
+            function editPatientFromView() {
+                closeViewPatientModal();
+                editPatient(currentEditingPatient.id);
+            }
 
-        // Edit patient
-        async function editPatient(patientId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/patients/find`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ id: patientId })
-                });
+            // Edit patient
+            async function editPatient(patientId) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/find`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: patientId })
+                    });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch patient details');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch patient details');
+                    }
+
+                    const patient = await response.json();
+                    currentEditingPatient = patient;
+
+                    // Load ward options for edit modal
+                    await loadWardOptions('edit-patient-ward');
+
+                    // Populate the edit form
+                    document.getElementById('edit-patient-id').value = patient.id;
+                    document.getElementById('edit-patient-name').value = patient.name;
+                    document.getElementById('edit-patient-dob').value = patient.dob || '';
+                    document.getElementById('edit-patient-age').value = patient.age || '';
+                    document.getElementById('edit-patient-gender').value = patient.gender || '';
+                    document.getElementById('edit-patient-bloodgroup').value = patient.bloodGroup || '';
+                    document.getElementById('edit-patient-address').value = patient.address || '';
+                    document.getElementById('edit-patient-phone').value = patient.phone || '';
+                    document.getElementById('edit-patient-email').value = patient.email || '';
+                    document.getElementById('edit-patient-emergencyContact').value = patient.emergencyContact || '';
+                    document.getElementById('edit-patient-emergencyPhone').value = patient.emergencyPhone || '';
+                    document.getElementById('edit-patient-ward').value = patient.workSpaceId || '';
+                    document.getElementById('edit-patient-medicalHistory').value = patient.medicalHistory || '';
+                    document.getElementById('edit-patient-allergies').value = patient.allergies || '';
+                    document.getElementById('edit-patient-currentMedications').value = patient.currentMedications || '';
+                    document.getElementById('edit-patient-chronicConditions').value = patient.chronicConditions || '';
+
+                    showEditPatientModal();
+                } catch (error) {
+                    console.error('Error fetching patient details:', error);
+                    showError('Failed to load patient details');
+                }
+            }
+
+            // Handle edit patient form submission
+            async function handleEditPatient(event) {
+                event.preventDefault();
+
+                const submitBtn = document.getElementById('edit-patient-submit');
+                const originalText = submitBtn.innerHTML;
+
+                try {
+                    submitBtn.innerHTML = '<div class="loading"></div> Updating...';
+                    submitBtn.disabled = true;
+
+                    const patientId = document.getElementById('edit-patient-id').value;
+                    const patientData = {
+                        id: patientId,
+                        name: document.getElementById('edit-patient-name').value,
+                        dob: document.getElementById('edit-patient-dob').value,
+                        age: parseInt(document.getElementById('edit-patient-age').value) || 0,
+                        gender: document.getElementById('edit-patient-gender').value,
+                        bloodGroup: document.getElementById('edit-patient-bloodgroup').value,
+                        address: document.getElementById('edit-patient-address').value,
+                        phone: document.getElementById('edit-patient-phone').value,
+                        email: document.getElementById('edit-patient-email').value,
+                        emergencyContact: document.getElementById('edit-patient-emergencyContact').value,
+                        emergencyPhone: document.getElementById('edit-patient-emergencyPhone').value,
+                        workSpaceId: document.getElementById('edit-patient-ward').value || null,
+                        medicalHistory: document.getElementById('edit-patient-medicalHistory').value,
+                        allergies: document.getElementById('edit-patient-allergies').value,
+                        currentMedications: document.getElementById('edit-patient-currentMedications').value,
+                        chronicConditions: document.getElementById('edit-patient-chronicConditions').value
+                    };
+
+                    const response = await fetch(`${API_BASE_URL}/patients/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(patientData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to update patient');
+                    }
+
+                    showSuccess('Patient updated successfully!');
+                    closeEditPatientModal();
+                    await loadPatients();
+                    await loadRecentPatients();
+
+                } catch (error) {
+                    console.error('Error updating patient:', error);
+                    showError(error.message || 'Failed to update patient');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+
+            // Delete patient
+            async function deletePatient(patientId) {
+                if (!confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
+                    return;
                 }
 
-                const patient = await response.json();
-                currentEditingPatient = patient;
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: patientId })
+                    });
 
-                // Load ward options for edit modal
-                await loadWardOptions('edit-patient-ward');
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to delete patient');
+                    }
 
-                // Populate the edit form
-                document.getElementById('edit-patient-id').value = patient.id;
-                document.getElementById('edit-patient-name').value = patient.name;
-                document.getElementById('edit-patient-dob').value = patient.dob || '';
-                document.getElementById('edit-patient-age').value = patient.age || '';
-                document.getElementById('edit-patient-gender').value = patient.gender || '';
-                document.getElementById('edit-patient-bloodgroup').value = patient.bloodGroup || '';
-                document.getElementById('edit-patient-address').value = patient.address || '';
-                document.getElementById('edit-patient-phone').value = patient.phone || '';
-                document.getElementById('edit-patient-email').value = patient.email || '';
-                document.getElementById('edit-patient-emergencyContact').value = patient.emergencyContact || '';
-                document.getElementById('edit-patient-emergencyPhone').value = patient.emergencyPhone || '';
-                document.getElementById('edit-patient-ward').value = patient.workSpaceId || '';
-                document.getElementById('edit-patient-medicalHistory').value = patient.medicalHistory || '';
-                document.getElementById('edit-patient-allergies').value = patient.allergies || '';
-                document.getElementById('edit-patient-currentMedications').value = patient.currentMedications || '';
-                document.getElementById('edit-patient-chronicConditions').value = patient.chronicConditions || '';
-
-                showEditPatientModal();
-            } catch (error) {
-                console.error('Error fetching patient details:', error);
-                showError('Failed to load patient details');
+                    showSuccess('Patient deleted successfully!');
+                    await loadPatients();
+                    await loadRecentPatients();
+                } catch (error) {
+                    console.error('Error deleting patient:', error);
+                    showError(error.message || 'Failed to delete patient');
+                }
             }
-        }
 
-        // Handle edit patient form submission
-        async function handleEditPatient(event) {
-            event.preventDefault();
-            
-            const submitBtn = document.getElementById('edit-patient-submit');
-            const originalText = submitBtn.innerHTML;
-            
-            try {
-                submitBtn.innerHTML = '<div class="loading"></div> Updating...';
-                submitBtn.disabled = true;
+            // Search patients
+            async function searchPatients() {
+                const query = document.getElementById('patient-search').value;
 
-                const patientId = document.getElementById('edit-patient-id').value;
-                const patientData = {
-                    id: patientId,
-                    name: document.getElementById('edit-patient-name').value,
-                    dob: document.getElementById('edit-patient-dob').value,
-                    age: parseInt(document.getElementById('edit-patient-age').value) || 0,
-                    gender: document.getElementById('edit-patient-gender').value,
-                    bloodGroup: document.getElementById('edit-patient-bloodgroup').value,
-                    address: document.getElementById('edit-patient-address').value,
-                    phone: document.getElementById('edit-patient-phone').value,
-                    email: document.getElementById('edit-patient-email').value,
-                    emergencyContact: document.getElementById('edit-patient-emergencyContact').value,
-                    emergencyPhone: document.getElementById('edit-patient-emergencyPhone').value,
-                    workSpaceId: document.getElementById('edit-patient-ward').value || null,
-                    medicalHistory: document.getElementById('edit-patient-medicalHistory').value,
-                    allergies: document.getElementById('edit-patient-allergies').value,
-                    currentMedications: document.getElementById('edit-patient-currentMedications').value,
-                    chronicConditions: document.getElementById('edit-patient-chronicConditions').value
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/search`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ name: query })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to search patients');
+                    }
+
+                    const patients = await response.json();
+                    displayPatients(patients);
+                } catch (error) {
+                    console.error('Error searching patients:', error);
+                    showError('Failed to search patients');
+                }
+            }
+
+            // Apply filters to patients
+            async function applyFilters() {
+                const wardId = document.getElementById('filter-ward').value;
+                const gender = document.getElementById('filter-gender').value;
+                const bloodGroup = document.getElementById('filter-bloodgroup').value;
+
+                try {
+                    // Since we don't have a specific filter endpoint, we'll filter client-side
+                    const response = await fetch(`${API_BASE_URL}/patients/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch patients');
+                    }
+
+                    const allPatients = await response.json();
+
+                    // Apply filters
+                    let filteredPatients = allPatients;
+                    if (wardId) {
+                        filteredPatients = filteredPatients.filter(patient => patient.workSpaceId === wardId);
+                    }
+                    if (gender) {
+                        filteredPatients = filteredPatients.filter(patient => patient.gender === gender);
+                    }
+                    if (bloodGroup) {
+                        filteredPatients = filteredPatients.filter(patient => patient.bloodGroup === bloodGroup);
+                    }
+
+                    displayPatients(filteredPatients);
+                } catch (error) {
+                    console.error('Error filtering patients:', error);
+                    showError('Failed to filter patients');
+                }
+            }
+
+            // Clear filters
+            function clearFilters() {
+                document.getElementById('filter-ward').value = '';
+                document.getElementById('filter-gender').value = '';
+                document.getElementById('filter-bloodgroup').value = '';
+                loadPatients();
+            }
+
+            // Load ward options for filter dropdown
+            async function loadFilterWardOptions() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch wards');
+                    }
+
+                    const workspaces = await response.json();
+                    const selectElement = document.getElementById('filter-ward');
+
+                    // Clear existing options except the first one
+                    selectElement.innerHTML = '<option value="">All Wards</option>';
+
+                    workspaces.forEach(workspace => {
+                        const option = document.createElement('option');
+                        option.value = workspace.id;
+                        option.textContent = workspace.name;
+                        selectElement.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error loading ward options for filter:', error);
+                }
+            }
+
+            // Update statistics
+            function updateStats(elementId, count) {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.textContent = count;
+                }
+            }
+
+            // Doctor Management Functions
+            async function loadDoctors() {
+                // ... existing loadDoctors ...
+                try {
+                    const response = await fetch(`${API_BASE_URL}/doctors/get`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch doctors');
+                    }
+
+                    const doctors = await response.json();
+                    displayDoctors(doctors);
+                    updateStats('doctors-count', doctors.length);
+                } catch (error) {
+                    console.error('Error loading doctors:', error);
+                    showError('Failed to load doctors');
+                }
+            }
+
+            function displayDoctors(doctors) {
+                const doctorList = document.getElementById('doctor-list');
+
+                if (doctors.length === 0) {
+                    doctorList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-md"></i>
+                        <p>No doctors found</p>
+                    </div>
+                `;
+                    return;
+                }
+
+                doctorList.innerHTML = doctors.map(doctor => {
+                    return `
+                <div class="list-item" data-doctor="${doctor.id}">
+                    <div class="item-info">
+                        <h3>Dr. ${doctor.name}</h3>
+                        <p>
+                            ${doctor.specialization ? `${doctor.specialization} • ` : 'General Practitioner • '}
+                            ${doctor.yearOfExperience ? `${doctor.yearOfExperience} years exp.` : 'No exp. recorded'}
+                        </p>
+                        <small>
+                            ${doctor.qualification ? `Qualification: ${doctor.qualification} • ` : ''}
+                            Licence: ${doctor.licenceNumber || 'N/A'}
+                        </small>
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn btn-danger" onclick="deleteDoctor('${doctor.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                `;
+                }).join('');
+            }
+
+            async function searchDoctors() {
+                const query = document.getElementById('doctor-search').value;
+                if (!query) {
+                    loadDoctors();
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/doctors/search`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ name: query })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to search doctors');
+                    }
+
+                    const doctors = await response.json();
+                    displayDoctors(doctors);
+                } catch (error) {
+                    console.error('Error searching doctors:', error);
+                    showError('Failed to search doctors');
+                }
+            }
+
+            // Placeholders for edit/delete doctor (can be fully implemented if needed)
+
+            async function deleteDoctor(doctorId) {
+                // ... existing deleteDoctor ...
+                if (!confirm('Are you sure you want to delete this doctor? This action cannot be undone.')) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/doctors/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: doctorId })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Failed to delete doctor');
+                    }
+
+                    showSuccess('Doctor deleted successfully');
+                    await loadDoctors();
+                } catch (error) {
+                    console.error('Error deleting doctor:', error);
+                    showError(error.message || 'Failed to delete doctor');
+                }
+            }
+
+            let currentWardIdForAssignment = null;
+
+            async function viewWorkspaceDetails(wardId) {
+                console.log('viewWorkspaceDetails called for ward:', wardId);
+                try {
+                    currentWardIdForAssignment = wardId;
+
+                    // Show a loading state if we are already in the view or about to switch
+                    let infoCard = document.getElementById('ward-info-content');
+                    let doctorList = document.getElementById('ward-doctors-list');
+                    let patientList = document.getElementById('ward-patients-list');
+
+                    if (infoCard) infoCard.innerHTML = '<p>Loading ward info...</p>';
+                    if (doctorList) doctorList.innerHTML = '<p>Loading doctors...</p>';
+                    if (patientList) patientList.innerHTML = '<p>Loading patients...</p>';
+
+                    const response = await fetch(`${API_BASE_URL}/workspaces/${wardId}/details`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch ward details');
+
+                    const workspace = await response.json();
+
+                    // ACCESS CONTROL: Determine if current user is owner
+                    const isOwner = currentUser && (currentUser.id === workspace.createdByAdminId);
+                    console.log('User is owner of this ward:', isOwner);
+
+                    // Update Title
+                    document.getElementById('ward-page-title').textContent = isOwner ? `Manage Ward: ${workspace.name}` : `View Ward: ${workspace.name}`;
+
+                    // Update Info Card
+                    infoCard = document.getElementById('ward-info-content');
+                    infoCard.innerHTML = `
+                        <div class="detail-row"><span class="detail-label">Description:</span> <span class="detail-value">${workspace.description || 'N/A'}</span></div>
+                        <div class="detail-row"><span class="detail-label">Address:</span> <span class="detail-value">${workspace.address || 'N/A'}</span></div>
+                        <div class="detail-row"><span class="detail-label">Phone:</span> <span class="detail-value">${workspace.phoneNumber || 'N/A'}</span></div>
+                        <div class="detail-row"><span class="detail-label">Email:</span> <span class="detail-value">${workspace.email || 'N/A'}</span></div>
+                        <div class="detail-row"><span class="detail-label">Created by:</span> <span class="detail-value">${workspace.createdBy || 'Admin'}</span></div>
+                    `;
+
+                    // Toggle primary actions based on ownership
+                    document.getElementById('btn-edit-ward').style.display = isOwner ? 'inline-flex' : 'none';
+                    document.getElementById('btn-assign-doctor').style.display = isOwner ? 'inline-flex' : 'none';
+                    document.getElementById('btn-assign-patient').style.display = isOwner ? 'inline-flex' : 'none';
+
+                    // Update Doctors List
+                    doctorList = document.getElementById('ward-doctors-list');
+                    if (!workspace.Doctors || workspace.Doctors.length === 0) {
+                        doctorList.innerHTML = '<div class="empty-state"><p>No doctors assigned.</p></div>';
+                    } else {
+                        doctorList.innerHTML = workspace.Doctors.map(doc => `
+                             <div class="ward-details-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem; min-width: 200px;">
+                                        <div class="avatar" style="width: 48px; height: 48px; font-size: 1.25rem;">
+                                            ${doc.name.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 1.1rem;">Dr. ${doc.name}</h4>
+                                            <small style="color: var(--gray); display: block;">${doc.specialization || 'General'}</small>
+                                        </div>
+                                    </div>
+                                    ${isOwner ? `
+                                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                                        <button class="btn btn-sm btn-primary" style="padding: 0.5rem 1rem;" onclick="openCreateTaskModal('${workspace.id}', null, '${doc.id}')">
+                                            <i class="fas fa-tasks"></i> Assign Task
+                                        </button>
+                                        <button class="btn btn-sm" style="background: #fff5f5; color: var(--danger); border: 1px solid #fed7d7; padding: 0.5rem;" onclick="unassignDoctorFromWard('${workspace.id}', '${doc.id}')" title="Unassign Doctor">
+                                            <i class="fas fa-unlink"></i>
+                                        </button>
+                                    </div>
+                                    ` : `
+                                    <div class="text-muted"><small>Read-only Mode</small></div>
+                                    `}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    // Update Patients List
+                    patientList = document.getElementById('ward-patients-list');
+                    if (!workspace.Patients || workspace.Patients.length === 0) {
+                        patientList.innerHTML = '<div class="empty-state"><p>No patients assigned.</p></div>';
+                    } else {
+                        patientList.innerHTML = workspace.Patients.map(patient => `
+                             <div class="ward-details-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem; min-width: 200px;">
+                                        <div class="avatar" style="width: 48px; height: 48px; font-size: 1.25rem;">
+                                            <i class="fas fa-user-injured"></i>
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 1.1rem;">${patient.name}</h4>
+                                            <small style="color: var(--gray); display: block;">${patient.age || '?'} yrs • ${patient.gender || 'Unknown'}</small>
+                                        </div>
+                                    </div>
+                                    ${isOwner ? `
+                                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                                        <button class="btn btn-sm btn-primary" style="padding: 0.5rem 1rem;" onclick="openCreateTaskModal('${workspace.id}', '${patient.id}')">
+                                            <i class="fas fa-plus"></i> Create Task
+                                        </button>
+                                        <button class="btn btn-sm" style="background: #fff5f5; color: var(--danger); border: 1px solid #fed7d7; padding: 0.5rem;" onclick="unassignPatientFromWard('${workspace.id}', '${patient.id}')" title="Unassign Patient">
+                                            <i class="fas fa-unlink"></i>
+                                        </button>
+                                    </div>
+                                    ` : `
+                                    <div class="text-muted"><small>Read-only Mode</small></div>
+                                    `}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    // Setup Action Buttons
+                    document.getElementById('btn-assign-doctor').onclick = () => openAssignDoctorModal(wardId);
+                    document.getElementById('btn-assign-patient').onclick = () => openAssignPatientToWardModal(wardId);
+
+                    // Switching views
+                    showPage('ward-details-view');
+
+                } catch (error) {
+                    console.error('View ward error:', error);
+                    showError('Failed to load ward details');
+                }
+            }
+
+            // Assign Doctor Logic
+            function showAssignDoctorModal() { document.getElementById('assign-doctor-modal').style.display = 'flex'; }
+            function closeAssignDoctorModal() { document.getElementById('assign-doctor-modal').style.display = 'none'; }
+
+            async function openAssignDoctorModal(wardId) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/doctors/get`, { method: 'POST', credentials: 'include' });
+                    const doctors = await res.json();
+
+                    const select = document.getElementById('doctor-select');
+                    select.innerHTML = doctors.map(d => `<option value="${d.id}">${d.name} (${d.specialization || 'General'})</option>`).join('');
+
+                    document.getElementById('assign-ward-id').value = wardId;
+                    showAssignDoctorModal();
+                } catch (error) {
+                    showError('Failed to load doctors list');
+                }
+            }
+
+            document.getElementById('assign-doctor-form').onsubmit = async (e) => {
+                e.preventDefault();
+                const wardId = document.getElementById('assign-ward-id').value;
+                const select = document.getElementById('doctor-select');
+                const selectedDoctorIds = Array.from(select.selectedOptions).map(opt => opt.value);
+
+                if (selectedDoctorIds.length === 0) return;
+
+                try {
+                    for (const doctorId of selectedDoctorIds) {
+                        await fetch(`${API_BASE_URL}/workspace-doctors/assign`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ doctorId, workSpaceId: wardId })
+                        });
+                    }
+                    showSuccess('Doctors assigned successfully');
+                    closeAssignDoctorModal();
+                    await viewWorkspaceDetails(wardId);
+                } catch (error) {
+                    showError('Failed to assign doctors');
+                }
+            };
+
+            // Assign Patient Logic
+            function showAssignPatientModal() { document.getElementById('assign-patient-modal').style.display = 'flex'; }
+            function closeAssignPatientModal() { document.getElementById('assign-patient-modal').style.display = 'none'; }
+
+            async function openAssignPatientToWardModal(wardId) {
+                try {
+                    // Fetch all patients and filter for unassigned
+                    const res = await fetch(`${API_BASE_URL}/patients/get`, { method: 'POST', credentials: 'include' });
+                    const patients = await res.json();
+
+                    const select = document.getElementById('patient-select');
+                    const unassigned = patients.filter(p => !p.workSpaceId || p.workSpaceId === '');
+
+                    if (unassigned.length === 0) {
+                        select.innerHTML = '<option value="">No unassigned patients available</option>';
+                    } else {
+                        select.innerHTML = '<option value="">Select Patient</option>' +
+                            unassigned.map(p => `<option value="${p.id}">${p.name} (${p.phone || 'No Phone'})</option>`).join('');
+                    }
+
+                    document.getElementById('assign-patient-modal').dataset.wardId = wardId;
+                    showAssignPatientModal();
+                } catch (error) {
+                    showError('Failed to load patients list');
+                }
+            }
+
+            async function assignPatientToWard() {
+                const wardId = document.getElementById('assign-patient-modal').dataset.wardId;
+                const patientId = document.getElementById('patient-select').value;
+
+                if (!patientId) return;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/assign-to-ward`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ patientId, workSpaceId: wardId })
+                    });
+
+                    if (!response.ok) throw new Error('Failed to assign patient');
+
+                    showSuccess('Patient assigned successfully');
+                    closeAssignPatientModal();
+                    await viewWorkspaceDetails(wardId);
+                } catch (error) {
+                    showError(error.message);
+                }
+            }
+
+            async function unassignDoctorFromWard(wardId, doctorId) {
+                if (!confirm('Unassign this doctor from the ward?')) return;
+                try {
+                    const response = await fetch(`${API_BASE_URL}/workspace-doctors/unassign`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ doctorId, workSpaceId: wardId })
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error || 'Failed to unassign doctor');
+                    }
+
+                    showSuccess('Doctor removed from ward');
+                    await viewWorkspaceDetails(wardId);
+                } catch (e) {
+                    console.error(e);
+                    showError(e.message || 'Failed to unassign');
+                }
+            }
+
+            async function unassignPatientFromWard(wardId, patientId) {
+                if (!confirm('Unassign this patient from the ward?')) return;
+                try {
+                    const response = await fetch(`${API_BASE_URL}/patients/assign-to-ward`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ patientId, workSpaceId: null })
+                    });
+                    if (!response.ok) throw new Error('Failed to unassign');
+                    showSuccess('Patient removed from ward');
+                    await viewWorkspaceDetails(wardId);
+                } catch (e) { showError(e.message); }
+            }
+
+            function openEditWardModalContext() {
+                if (!currentWardIdForAssignment) return;
+                openEditWardModal(currentWardIdForAssignment);
+            }
+
+            // Task Management Functions
+            async function loadTasks() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/tasks/get`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fetch tasks');
+
+                    const tasks = await response.json();
+                    displayTasks(tasks);
+                    updateStats('tasks-count', tasks.length);
+                } catch (error) {
+                    console.error('Error loading tasks:', error);
+                    showError('Failed to load tasks');
+                }
+            }
+
+            async function deleteTask(taskId) {
+                if (!confirm('Are you sure you want to delete this task?')) return;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/tasks/delete`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: taskId })
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error || 'Failed to delete task');
+                    }
+
+                    showSuccess('Task deleted successfully');
+                    loadTasks();
+                } catch (error) {
+                    console.error('Error deleting task:', error);
+                    showError(error.message);
+                }
+            }
+
+            function displayTasks(tasks) {
+                const taskList = document.getElementById('all-task-list');
+
+                if (tasks.length === 0) {
+                    taskList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p>No tasks created yet</p>
+                    </div>
+                    `;
+                    return;
+                }
+
+                taskList.innerHTML = tasks.map(task => {
+                    const priorityClass = `priority-${task.priority?.toLowerCase() || 'medium'}`;
+                    return `
+                        <div class="list-item" data-task="${task.id}">
+                        <div class="item-info">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <h3>${task.title}</h3>
+                                <span class="badge ${priorityClass}">${task.priority || 'Medium'}</span>
+                            </div>
+                            <p>${task.description || 'No description'}</p>
+                            <small>
+                                Status: ${task.status} • 
+                                Due: ${task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No date'}
+                            </small>
+                        </div>
+                        <div class="item-actions">
+                             <span style="color: var(--gray); font-size: 0.8rem; margin-right: 10px;">${task.status}</span>
+                             <button class="btn btn-sm btn-icon" onclick="deleteTask('${task.id}')" title="Delete Task" style="color: var(--danger);">
+                                <i class="fas fa-trash"></i>
+                             </button>
+                        </div>
+                    </div>
+                        `;
+                }).join('');
+            }
+
+            async function openCreateTaskModal(wardId = null, patientId = null, doctorId = null) {
+                document.getElementById('taskWardId').value = wardId || '';
+                document.getElementById('taskPatientId').value = patientId || '';
+
+                // Show modal
+                document.getElementById('createTaskModal').style.display = 'flex';
+
+                // Load doctors - if ward provided, filter them or load just ward doctors
+                if (wardId) {
+                    await loadDoctorsForWard(wardId, doctorId);
+                } else {
+                    await loadDoctorsForTask(doctorId);
+                }
+            }
+
+            function closeCreateTaskModal() {
+                document.getElementById('createTaskModal').style.display = 'none';
+            }
+
+            async function loadDoctorsForWard(wardId, selectedDoctorId = null) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/workspaces/find`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ id: wardId })
+                    });
+                    const ward = await res.json();
+
+                    const select = document.getElementById('doctorSelect');
+                    select.innerHTML = '<option value="">Select Doctor</option>' +
+                        (ward.Doctors || []).map(d =>
+                            `<option value="${d.id}" ${d.id === selectedDoctorId ? 'selected' : ''}>${d.name} (${d.specialization || 'General'})</option>`
+                        ).join('');
+                } catch (error) {
+                    console.error('Error loading ward doctors:', error);
+                }
+            }
+
+
+
+            async function createTask(e) {
+                if (e) e.preventDefault();
+
+                const submitBtn = e ? e.target : document.querySelector('#create-task-form button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+
+                const data = {
+                    title: document.getElementById('taskTitle').value,
+                    description: document.getElementById('taskDescription').value,
+                    assignedTo: document.getElementById('doctorSelect').value,
+                    dueDate: document.getElementById('taskDeadline').value,
+                    priority: document.getElementById('taskPriority').value,
+                    workSpaceId: document.getElementById('taskWardId').value || null,
+                    patientId: document.getElementById('taskPatientId').value || null,
+                    status: "Pending"
                 };
 
-                const response = await fetch(`${API_BASE_URL}/patients/update`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(patientData)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to update patient');
+                if (!data.title || !data.assignedTo) {
+                    showError('Please fill in required fields');
+                    return;
                 }
 
-                showSuccess('Patient updated successfully!');
-                closeEditPatientModal();
-                await loadPatients();
-                await loadRecentPatients();
-                
-            } catch (error) {
-                console.error('Error updating patient:', error);
-                showError(error.message || 'Failed to update patient');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                try {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<div class="loading"></div> Creating...';
+
+                    const response = await fetch(`${API_BASE_URL}/tasks/create`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error || 'Failed to create task');
+                    }
+
+                    showSuccess('Task assigned successfully');
+                    closeCreateTaskModal();
+                    loadTasks();
+                } catch (error) {
+                    console.error('Error creating task:', error);
+                    showError(error.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
             }
-        }
 
-        // Delete patient
-        async function deletePatient(patientId) {
-            if (!confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
-                return;
+            // Alias for backward compatibility with form submit handler
+            function handleCreateTask(e) {
+                createTask(e);
             }
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/patients/delete`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ id: patientId })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to delete patient');
+            async function searchTasks() {
+                const query = document.getElementById('task-search').value;
+                if (!query) {
+                    loadTasks();
+                    return;
                 }
 
-                showSuccess('Patient deleted successfully!');
-                await loadPatients();
-                await loadRecentPatients();
-            } catch (error) {
-                console.error('Error deleting patient:', error);
-                showError(error.message || 'Failed to delete patient');
-            }
-        }
+                try {
+                    const response = await fetch(`${API_BASE_URL}/tasks/search`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ name: query })
+                    });
 
-        // Search patients
-        async function searchPatients() {
-            const query = document.getElementById('patient-search').value;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/patients/search`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ name: query })
-                });
+                    if (!response.ok) throw new Error('Failed to search tasks');
 
-                if (!response.ok) {
-                    throw new Error('Failed to search patients');
+                    const tasks = await response.json();
+                    displayTasks(tasks);
+                } catch (error) {
+                    console.error('Error searching tasks:', error);
+                    showError('Failed to search tasks');
                 }
-
-                const patients = await response.json();
-                displayPatients(patients);
-            } catch (error) {
-                console.error('Error searching patients:', error);
-                showError('Failed to search patients');
             }
-        }
 
-        // Apply filters to patients
-        async function applyFilters() {
-            const wardId = document.getElementById('filter-ward').value;
-            const gender = document.getElementById('filter-gender').value;
-            const bloodGroup = document.getElementById('filter-bloodgroup').value;
-            
-            try {
-                // Since we don't have a specific filter endpoint, we'll filter client-side
-                const response = await fetch(`${API_BASE_URL}/patients/get`, {
+            function globalSearch() {
+                const query = document.getElementById('global-search').value.toLowerCase();
+                if (!query) return;
+
+                // Search across all types and switch to the first matching view
+                // This is a simple implementation that filters visible lists
+
+                // Logic: Switch to search results or just alert for now with a summary
+                alert(`Global search for "${query}" across Wards, Patients, and Doctors initiated.`);
+            }
+
+            // Logout function
+            function logout() {
+                fetch(`${API_BASE_URL}/auth/logout`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch patients');
-                }
-
-                const allPatients = await response.json();
-                
-                // Apply filters
-                let filteredPatients = allPatients;
-                if (wardId) {
-                    filteredPatients = filteredPatients.filter(patient => patient.workSpaceId === wardId);
-                }
-                if (gender) {
-                    filteredPatients = filteredPatients.filter(patient => patient.gender === gender);
-                }
-                if (bloodGroup) {
-                    filteredPatients = filteredPatients.filter(patient => patient.bloodGroup === bloodGroup);
-                }
-                
-                displayPatients(filteredPatients);
-            } catch (error) {
-                console.error('Error filtering patients:', error);
-                showError('Failed to filter patients');
+                })
+                    .then(() => {
+                        localStorage.removeItem('user');
+                        window.location.href = 'login.html';
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
+                        localStorage.removeItem('user');
+                        window.location.href = 'login.html';
+                    });
             }
-        }
 
-        // Clear filters
-        function clearFilters() {
-            document.getElementById('filter-ward').value = '';
-            document.getElementById('filter-gender').value = '';
-            document.getElementById('filter-bloodgroup').value = '';
-            loadPatients();
-        }
+            // Close modal when clicking outside
+            window.addEventListener('click', function (event) {
+                const createModal = document.getElementById('create-ward-modal');
+                const editModal = document.getElementById('edit-ward-modal');
+                const createPatientModal = document.getElementById('create-patient-modal');
+                const viewPatientModal = document.getElementById('view-patient-modal');
+                const editPatientModal = document.getElementById('edit-patient-modal');
+                const assignDoctorModal = document.getElementById('assign-doctor-modal');
 
-        // Load ward options for filter dropdown
-        async function loadFilterWardOptions() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/workspaces/get`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch wards');
+                if (event.target === createModal) {
+                    closeCreateWardModal();
                 }
-
-                const workspaces = await response.json();
-                const selectElement = document.getElementById('filter-ward');
-                
-                // Clear existing options except the first one
-                selectElement.innerHTML = '<option value="">All Wards</option>';
-                
-                workspaces.forEach(workspace => {
-                    const option = document.createElement('option');
-                    option.value = workspace.id;
-                    option.textContent = workspace.name;
-                    selectElement.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Error loading ward options for filter:', error);
-            }
-        }
-
-        // Update statistics
-        function updateStats(elementId, count) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = count;
-            }
-        }
-
-        // Search functions (to be implemented)
-        function searchDoctors() {
-            const query = document.getElementById('doctor-search').value;
-            alert(`Search doctors: ${query} - To be implemented`);
-        }
-
-        function searchTasks() {
-            const query = document.getElementById('task-search').value;
-            alert(`Search tasks: ${query} - To be implemented`);
-        }
-
-        function globalSearch() {
-            const query = document.getElementById('global-search').value;
-            alert(`Global search: ${query} - To be implemented`);
-        }
-
-        function showCreateTaskModal() {
-            alert('Create task modal - To be implemented');
-        }
-
-        // Logout function
-        function logout() {
-            fetch(`${API_BASE_URL}/auth/logout`, {
-                method: 'POST',
-                credentials: 'include'
-            })
-            .then(() => {
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
-            })
-            .catch(error => {
-                console.error('Logout error:', error);
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
+                if (event.target === editModal) {
+                    closeEditWardModal();
+                }
+                if (event.target === createPatientModal) {
+                    closeCreatePatientModal();
+                }
+                if (event.target === viewPatientModal) {
+                    closeViewPatientModal();
+                }
+                if (event.target === editPatientModal) {
+                    closeEditPatientModal();
+                }
+                if (event.target === assignDoctorModal) {
+                    closeAssignDoctorModal();
+                }
+                // Close Create Task Modal when clicking outside
+                const createTaskModal = document.getElementById('createTaskModal');
+                if (event.target === createTaskModal) {
+                    closeCreateTaskModal();
+                }
             });
-        }
 
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const createModal = document.getElementById('create-ward-modal');
-            const editModal = document.getElementById('edit-ward-modal');
-            const createPatientModal = document.getElementById('create-patient-modal');
-            const viewPatientModal = document.getElementById('view-patient-modal');
-            const editPatientModal = document.getElementById('edit-patient-modal');
-            
-            if (event.target === createModal) {
-                closeCreateWardModal();
-            }
-            if (event.target === editModal) {
-                closeEditWardModal();
-            }
-            if (event.target === createPatientModal) {
-                closeCreatePatientModal();
-            }
-            if (event.target === viewPatientModal) {
-                closeViewPatientModal();
-            }
-            if (event.target === editPatientModal) {
-                closeEditPatientModal();
-            }
-        });
-    </script>
+        </script>
 </body>
+
 </html>

@@ -19,7 +19,7 @@ exports.getDoctors = async (_req, res) => {
 // Retrieves a single doctor by their ID from the URL parameters.
 // Example URL: /api/doctors/some-uuid-1234
 exports.getDoctor = async (req, res) => {
-  const { id } = req.params; // Get ID from URL parameter
+  const { id } = req.body; // Get ID from body
   const doctor = await service.getById(Doctor, id);
 
   if (!doctor) {
@@ -30,25 +30,41 @@ exports.getDoctor = async (req, res) => {
 
 // Updates a doctor by their ID from the URL parameters.
 exports.updateDoctor = async (req, res) => {
-  const { id } = req.params; // Get ID from URL parameter
-  const [updatedRows] = await service.update(Doctor, id, req.body);
+  const { id } = req.body; // Get ID from body
+  const updatedRecord = await service.update(Doctor, id, req.body);
 
-  if (updatedRows === 0) {
+  if (!updatedRecord) {
     return res.status(404).json({ error: 'Doctor not found or no changes were made.' });
   }
-  
-  const updatedDoctor = await service.getById(Doctor, id);
-  res.json({ message: 'Doctor updated successfully.', data: updatedDoctor });
+
+  res.json({ message: 'Doctor updated successfully.', data: updatedRecord });
 };
 
 // Deletes a doctor by their ID from the URL parameters.
 exports.deleteDoctor = async (req, res) => {
-  const { id } = req.params; // Get ID from URL parameter
+  const { id } = req.body; // Get ID from body
   const deletedRows = await service.deleteById(Doctor, id);
 
   if (deletedRows === 0) {
     return res.status(404).json({ error: 'Doctor not found.' });
   }
-  
+
   res.json({ message: 'Doctor deleted successfully.' });
+};
+
+/**
+ * Searches for doctors by name (case-insensitive, starts-with).
+ */
+exports.searchDoctors = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ error: "Search term 'name' is required" });
+    }
+    const doctors = await service.searchByName(Doctor, name);
+    res.json(doctors);
+  } catch (error) {
+    console.error('Error searching doctors:', error);
+    res.status(500).json({ error: error.message });
+  }
 };

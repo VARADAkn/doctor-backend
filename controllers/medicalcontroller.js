@@ -3,6 +3,7 @@ const db = require("../models");
 const { MedicalRecord, Patient } = db;
 const service = require('../services/genericservice');
 
+
 exports.createMedicalRecord = async (req, res) => {
   try {
     const medicalRecord = await service.create(MedicalRecord, req.body);

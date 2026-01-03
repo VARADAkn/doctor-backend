@@ -1,6 +1,5 @@
-// controllers/patientcontroller.js
 const db = require("../models");
-const { Patient } = db; // Import Patient from models
+const { Patient, WorkSpace, MedicalRecord, User } = db;
 const service = require('../services/genericservice');
 
 /**
@@ -21,7 +20,13 @@ exports.createPatient = async (req, res) => {
  */
 exports.getPatients = async (_req, res) => {
   try {
-    const patients = await service.getAll(Patient);
+    const patients = await Patient.findAll({
+      include: [{
+        model: WorkSpace,
+        as: 'WorkSpace',
+        attributes: ['id', 'name']
+      }]
+    });
     res.json(patients);
   } catch (error) {
     console.error('Error fetching patients:', error);
@@ -34,7 +39,13 @@ exports.getPatients = async (_req, res) => {
  */
 exports.getPatient = async (req, res) => {
   try {
-    const patient = await service.getById(Patient, req.body.id);
+    const patient = await Patient.findByPk(req.body.id, {
+      include: [{
+        model: WorkSpace,
+        as: 'WorkSpace',
+        attributes: ['id', 'name']
+      }]
+    });
     if (!patient) return res.status(404).json({ error: 'Patient not found' });
     res.json(patient);
   } catch (error) {
@@ -98,14 +109,47 @@ exports.getPatientsByWorkspace = async (req, res) => {
     if (!workSpaceId) {
       return res.status(400).json({ error: "workSpaceId is required" });
     }
-    
+
     const patients = await Patient.findAll({
       where: { workSpaceId }
     });
-    
+
     res.json(patients);
   } catch (error) {
     console.error('Error fetching patients by workspace:', error);
     res.status(500).json({ error: 'Failed to fetch patients' });
+  }
+};
+
+exports.assignPatientToWard = async (req, res) => {
+  try {
+    const { patientId, workSpaceId } = req.body;
+
+    if (!patientId || !workSpaceId) {
+      return res.status(400).json({ error: "patientId and workSpaceId required" });
+    }
+
+    const patient = await Patient.findByPk(patientId);
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    const workspace = await WorkSpace.findByPk(workSpaceId);
+    if (!workspace) {
+      return res.status(404).json({ error: "Ward not found" });
+    }
+
+    // Ownership check
+    if (workspace.createdByAdminId !== req.session.userId) {
+      return res.status(403).json({ error: "Access denied: You can only assign patients to wards created by you" });
+    }
+
+    patient.workSpaceId = workSpaceId;
+    await patient.save();
+
+    res.json({ message: "Patient assigned to ward successfully" });
+  } catch (error) {
+    console.error("Assign patient error:", error);
+    res.status(500).json({ error: "Failed to assign patient" });
   }
 };

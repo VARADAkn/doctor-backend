@@ -9,20 +9,20 @@ router.post('/logout', authController.logout);
 
 
 
-router.put('/disable/:id', authSession, authController.disableUser);
+router.put('/disable/:id', authSession.isAdmin, authController.disableUser);
 
 // Add session check endpoint
 router.get('/check-session', (req, res) => {
     if (req.session.userId) {
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             message: 'Session is valid',
             user: { id: req.session.userId }
         });
     } else {
-        res.status(401).json({ 
-            success: false, 
-            message: 'No valid session' 
+        res.status(401).json({
+            success: false,
+            message: 'No valid session'
         });
     }
 });
