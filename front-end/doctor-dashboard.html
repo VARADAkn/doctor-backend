@@ -6,769 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard - MedCollab</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="dashboard-ui.css">
+    <link rel="stylesheet" href="dashboard-ui.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary: #2a6bc9;
-            --primary-light: #e8f1ff;
-            --secondary: #1a936f;
-            --dark: #2d3748;
-            --light: #f8f9fa;
-            --gray: #718096;
-            --danger: #e53e3e;
-            --success: #38a169;
-            --warning: #dd6b20;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
+        /* Page Specific Styles for Doctor Dashboard */
         body {
-            background-color: #f5f7fa;
-            color: var(--dark);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow: hidden;
         }
 
-        .header {
-            background: linear-gradient(135deg, var(--primary), #1e4a8b);
-            color: white;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i {
-            font-size: 1.8rem;
-        }
-
-        .logo h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .user-details h3 {
-            font-size: 1rem;
-            margin-bottom: 3px;
-        }
-
-        .user-details p {
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .main-wrapper {
+            height: calc(100vh - 70px);
         }
 
         .main-content {
-            flex: 1;
-            padding: 1.5rem;
             overflow-y: auto;
-            padding-bottom: 80px;
-        }
-
-        .page-title {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-        }
-
-        .stat-card.primary::before {
-            background: var(--primary);
-        }
-
-        .stat-card.success::before {
-            background: var(--success);
-        }
-
-        .stat-card.warning::before {
-            background: var(--warning);
-        }
-
-        .stat-card.danger::before {
-            background: var(--danger);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .stat-label {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .icon-ward {
-            background-color: var(--primary);
-        }
-
-        .icon-task {
-            background-color: var(--secondary);
-        }
-
-        .icon-pending {
-            background-color: var(--warning);
-        }
-
-        .icon-completed {
-            background-color: var(--success);
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            margin-bottom: 1.5rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .view-all {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .wards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .ward-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
-            border-left: 4px solid var(--primary);
-        }
-
-        .ward-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .ward-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .ward-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .ward-status {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-active {
-            background-color: #c6f6d5;
-            color: var(--success);
-        }
-
-        .ward-info {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 1rem;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .ward-description {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
-
-        .ward-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #1e5bb8;
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background-color: var(--primary-light);
-        }
-
-        .tasks-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .task-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-radius: 8px;
-            background: var(--light);
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
-
-        .task-item:hover {
-            background-color: var(--primary-light);
-        }
-
-        .task-info h3 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .task-info p {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 15px;
-            margin-top: 5px;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-
-        .task-priority {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .priority-high {
-            background-color: #fed7d7;
-            color: var(--danger);
-        }
-
-        .priority-medium {
-            background-color: #fef5e7;
-            color: var(--warning);
-        }
-
-        .priority-low {
-            background-color: #c6f6d5;
-            color: var(--success);
-        }
-
-        .task-status {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background-color: #fef5e7;
-            color: var(--warning);
-        }
-
-        .status-in-progress {
-            background-color: #bee3f8;
-            color: var(--primary);
-        }
-
-        .status-completed {
-            background-color: #c6f6d5;
-            color: var(--success);
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 0.8rem 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            padding: 0.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-            max-width: 80px;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        .nav-item:hover {
-            background-color: var(--primary-light);
-        }
-
-        .nav-icon {
-            font-size: 1.4rem;
-        }
-
-        .nav-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .page-view {
-            display: none;
-        }
-
-        .page-view.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--gray);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        .search-container {
-            display: flex;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 0.8rem 1rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px 0 0 8px;
-            font-size: 1rem;
-        }
-
-        .search-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 1.2rem;
-            border-radius: 0 8px 8px 0;
-            cursor: pointer;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.8rem;
-        }
-
-        @media (max-width: 768px) {
-            .stats-container {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .wards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .user-details {
-                display: none;
-            }
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            animation: modalIn 0.3s ease-out;
-        }
-
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 1rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .close-btn {
+            scroll-behavior: smooth;
             background: none;
+            box-shadow: none;
             border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-            transition: color 0.2s;
         }
 
-        .close-btn:hover {
-            color: var(--danger);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        /* Medical Search Styles */
-        .medical-search-results {
-            margin-top: 1.5rem;
-        }
-
-        .result-section {
-            margin-bottom: 2rem;
-        }
-
-        .result-section h4 {
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .offline-result-item {
-            background: #f8fafc;
-            border-left: 4px solid var(--secondary);
-            padding: 1rem;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-
-        .online-result-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .online-result-card h5 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-
-        .wiki-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .not-medical-alert {
-            text-align: center;
-            padding: 2rem;
-            background: #fff5f5;
-            color: #c53030;
-            border-radius: 12px;
-            border: 1px solid #feb2b2;
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-
-        .details-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .detail-item label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--gray);
-            margin-bottom: 5px;
-        }
-
-        .detail-item span {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .patients-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .patient-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: var(--light);
-            border-radius: 8px;
-            border-left: 4px solid var(--secondary);
-        }
-
-
-
-        /* Chat System Styles */
         .chat-container {
             display: flex;
-            height: calc(100vh - 140px);
+            height: calc(100vh - 180px);
             background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
+            border-radius: 20px;
             overflow: hidden;
-            position: relative;
+            box-shadow: var(--shadow-lg);
         }
 
         .chat-sidebar {
             width: 300px;
-            border-right: 1px solid #e2e8f0;
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
         }
@@ -777,168 +46,28 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: #f7fafc;
-        }
-
-        .chat-header {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-        }
-
-        .chat-user-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .chat-user-item {
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border-bottom: 1px solid #f7fafc;
-        }
-
-        .chat-user-item:hover,
-        .chat-user-item.active {
-            background-color: var(--primary-light);
+            background: var(--light);
         }
 
         .chat-messages {
             flex: 1;
-            padding: 1rem;
+            padding: 1.5rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .message {
-            max-width: 70%;
-            padding: 0.8rem 1rem;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-        }
-
-        .message.sent {
-            align-self: flex-end;
-            background-color: var(--primary);
-            color: white;
-            border-bottom-right-radius: 2px;
-        }
-
-        .message.received {
-            align-self: flex-start;
-            background-color: white;
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 2px;
-        }
-
-        .chat-input-area {
-            padding: 1rem;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .user-search-result {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .unread-badge {
-            background-color: var(--success);
-            color: white;
-            border-radius: 50%;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 6px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-search-result:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* New Notification Badge Style */
         .notification-badge {
             position: absolute;
-            top: 5px;
-            right: 20px;
-            background-color: var(--danger);
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
             color: white;
             border-radius: 50%;
             width: 18px;
             height: 18px;
             font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes bounceIn {
-            0% {
-                transform: scale(0);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Banner Notification */
-        .chat-notification-banner {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 15px 25px;
-            border-radius: 50px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .chat-notification-banner.show {
-            top: 20px;
-        }
-
-        .chat-notification-banner .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -973,7 +102,8 @@
             </button>
         </div>
     </div>
-    <div class="main-content">
+    <div class="main-wrapper">
+        <div class="main-content glass content-grid">
         <!-- Home/Wards View -->
         <div id="home-view" class="page-view active">
             <h2 class="page-title"><i class="fas fa-home"></i>Dashboard</h2>
@@ -2389,27 +1519,34 @@
         </div>
     </div>
 
+        </div> <!-- End .main-content -->
+    </div> <!-- End .main-wrapper -->
+
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home-view">
-            <i class="fas fa-home nav-icon"></i>
-            <span class="nav-label">Home</span>
+            <i class="fas fa-home"></i>
+            <span>Home</span>
         </div>
         <div class="nav-item" data-page="tasks-view">
-            <i class="fas fa-tasks nav-icon"></i>
-            <span class="nav-label">Tasks</span>
+            <i class="fas fa-tasks"></i>
+            <span>Tasks</span>
         </div>
-        <div class="nav-item" onclick="showMedicalSearchModal()">
-            <i class="fas fa-hand-holding-medical nav-icon"></i>
-            <span class="nav-label">Search</span>
+        <div class="nav-item search-pill" onclick="showMedicalSearchModal()">
+            <i class="fas fa-hand-holding-medical"></i>
+            <span>Search</span>
         </div>
         <div class="nav-item" data-page="chat-view" style="position: relative;">
-            <i class="fas fa-comments nav-icon"></i>
-            <span class="nav-label">Chat</span>
+            <i class="fas fa-comments"></i>
+            <span>Chat</span>
             <span id="chat-notification-badge" class="notification-badge" style="display: none;">0</span>
         </div>
         <div class="nav-item" data-page="activity-view">
-            <i class="fas fa-history nav-icon"></i>
-            <span class="nav-label">Activity</span>
+            <i class="fas fa-history"></i>
+            <span>Activity</span>
+        </div>
+        <div class="nav-item logout-pill" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
         </div>
     </div>
 </body>
