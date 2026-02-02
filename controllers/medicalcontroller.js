@@ -1,9 +1,16 @@
+/**
+ * @file medicalcontroller.js
+ * @description Standard medical records management logic.
+ */
 // controllers/medicalrecordcontroller.js
 const db = require("../models");
 const { MedicalRecord, Patient } = db;
 const service = require('../services/genericservice');
 
 
+/**
+ * Creates a new medical record in the system.
+ */
 exports.createMedicalRecord = async (req, res) => {
   try {
     const medicalRecord = await service.create(MedicalRecord, req.body);
@@ -14,6 +21,9 @@ exports.createMedicalRecord = async (req, res) => {
   }
 };
 
+/**
+ * Fetches all medical records for a specific patient.
+ */
 exports.getPatientMedicalRecords = async (req, res) => {
   try {
     const { patientId } = req.body;
@@ -32,6 +42,9 @@ exports.getPatientMedicalRecords = async (req, res) => {
   }
 };
 
+/**
+ * Updates an existing medical record.
+ */
 exports.updateMedicalRecord = async (req, res) => {
   try {
     const updated = await service.update(MedicalRecord, req.body.id, req.body);
@@ -43,6 +56,9 @@ exports.updateMedicalRecord = async (req, res) => {
   }
 };
 
+/**
+ * Deletes a medical record from the system.
+ */
 exports.deleteMedicalRecord = async (req, res) => {
   try {
     const deleted = await service.deleteById(MedicalRecord, req.body.id);
