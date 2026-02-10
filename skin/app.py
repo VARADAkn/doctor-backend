@@ -605,6 +605,6 @@ def download_report():
         return f"Error generating report: {str(e)}", 500
 
 if __name__ == '__main__':
-    print("Starting Flask server on http://0.0.0.1:5000 (shorthand for All Interfaces)")
+    print("Starting Flask server on http://0.0.0.0:5000 (All Interfaces)")
     app.run(debug=True, port=5000, host='0.0.0.0')
 
