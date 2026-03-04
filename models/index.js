@@ -30,6 +30,8 @@ db.Task = require('./task.js')(sequelize, DataTypes);
 db.Activity = require('./activity.js')(sequelize, DataTypes);
 //db.AuditLog = require('./auditlog.js')(sequelize, DataTypes);
 db.MedicalRecord = require('./medicalrecord.js')(sequelize, DataTypes);
+db.Message = require('./message.model.js')(sequelize, DataTypes);
+
 // User <-> Doctor (One-to-One)
 db.User.hasOne(db.Doctor, { foreignKey: 'userId', as: 'doctorProfile' });
 db.Doctor.belongsTo(db.User, { foreignKey: 'userId', as: 'User' });
@@ -37,6 +39,12 @@ db.Doctor.belongsTo(db.User, { foreignKey: 'userId', as: 'User' });
 // User <-> Patient (One-to-One)
 db.User.hasOne(db.Patient, { foreignKey: 'userId', as: 'patientProfile' });
 db.Patient.belongsTo(db.User, { foreignKey: 'userId', as: 'User' });
+
+// User <-> Message (One-to-Many)
+db.User.hasMany(db.Message, { foreignKey: 'senderId', as: 'SentMessages' });
+db.User.hasMany(db.Message, { foreignKey: 'receiverId', as: 'ReceivedMessages' });
+db.Message.belongsTo(db.User, { foreignKey: 'senderId', as: 'Sender' });
+db.Message.belongsTo(db.User, { foreignKey: 'receiverId', as: 'Receiver' });
 
 // Workspace <-> Patient (One-to-Many)
 db.WorkSpace.hasMany(db.Patient, { foreignKey: 'workSpaceId', as: 'Patients' });

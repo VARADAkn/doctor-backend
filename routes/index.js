@@ -9,6 +9,7 @@ const taskRoutes = require('./taskroute');
 const activityRoutes = require('./activityroute');
 const medicalRecordRoutes = require('./medicalrecordroute');
 const workspaceDoctorRoutes = require('./workspacedoctorroute');
+const chatRoutes = require('./chat.routes');
 
 // Mount the routes on their base paths
 router.use('/doctors', doctorRoutes);
@@ -18,6 +19,7 @@ router.use('/tasks', taskRoutes);
 router.use('/activities', activityRoutes);
 router.use('/medical-records', medicalRecordRoutes);
 router.use('/workspace-doctors', workspaceDoctorRoutes);
+router.use('/chat', chatRoutes);
 
 //const auditLogRoutes = require('./auditlog.routes');
 //router.use('/audit-logs', auditLogRoutes);
