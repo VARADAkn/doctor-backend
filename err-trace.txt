@@ -1,0 +1,3 @@
+TypeError: Cannot read properties of undefined (reading 'term')
+    at seedComprehensiveKnowledge (C:\Users\LENOVO\Desktop\Project new\doctor-backend\seed-comprehensive-medical-knowledge.js:421:37)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)

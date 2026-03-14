@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "isMedical": true,
+  "query": "occupational therapy",
+  "offline": [
+    {
+      "id": "e697efa7-408d-4f67-b996-6e348d8c90e7",
+      "term": "Occupational Therapy",
+      "description": "Occupational therapy is a rehabilitation treatment that helps individuals regain the ability to perform daily activities. It is often used for patients recovering from injuries, surgeries, or neurological disorders. Occupational therapists evaluate patients and design personalized therapy plans. The therapy focuses on improving physical, cognitive, and emotional abilities. Patients practice activities such as dressing, eating, and writing. Special equipment may be used to assist with movement and coordination. Occupational therapy also helps individuals adapt to disabilities. The goal is to improve independence and quality of life. Therapy sessions may take place in hospitals, clinics, or home settings. Progress is monitored regularly to adjust treatment plans. Occupational therapy is especially beneficial for stroke survivors and elderly patients. With consistent therapy, many individuals regain functional independence.",
+      "category": "Treatment",
+      "createdAt": "2026-03-14T15:45:35.675Z",
+      "updatedAt": "2026-03-14T15:45:35.675Z"
+    }
+  ],
+  "online": {
+    "title": "Occupational therapy",
+    "extract": "Occupational therapy (OT), also known as ergotherapy in Europe, is a healthcare profession that helps people take part in the everyday activities, or occupations, that are important for daily life. These occupations include self-care tasks, work, school, social participation, and leisure activities.\nOccupational therapists work with people who experience illness, injury, disability, or age-related changes that limit their ability to function independently. They assess a person’s needs, set goals, and use everyday activities as therapeutic tools. Therapists may also modify tasks, recommend adaptive equipment, or adjust the physical or social environment to support participation.\nOccupational therapy began developing into a formal health profession in the early twentieth century. Occupational science, the academic study of humans as 'doers' or 'occupational beings', was developed by interdisciplinary scholars, including occupational therapists, in the 1980s.\nThe World Federation of Occupational Therapists (WFOT) defines occupational therapy as a \"client-centred health profession concerned with promoting health and wellbeing through occupation. The primary goal of occupational therapy is to enable people to participate in the activities of everyday life. Occupational therapists achieve this outcome by working with people and communities to enhance their ability to engage in the occupations they want to, need to, or are expected to do, or by modifying the occupation or the environment to better support their occupational engagement.\"\nOccupational therapy is classified as an allied health profession in many countries. In the United Kingdom, occupational therapists are regulated by the Health and Care Professions Council as part of a group of professions that form the third-largest clinical workforce in the National Health Service. In England, allied health professions (AHPs) are the third largest clinical workforce in health and care. Fifteen professions, with 352,593 registrants, are regulated by the Health and Care Professions Council in the United Kingdom.",
+    "url": "https://en.wikipedia.org/wiki/Occupational%20therapy"
+  }
+}

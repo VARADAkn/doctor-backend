@@ -69,12 +69,14 @@ app.get('/', (req, res) => {
 const authRoutes = require('./routes/auth.routes');
 const routes = require('./routes');
 const doctorDashboardRoutes = require('./routes/doctorDashboard.routes');
+const searchRoutes = require('./routes/search.routes');
 //const auditLogRoutes = require('./routes/auditlog.routes');
 
 // Mount API routes
 app.use('/api/auth', authRoutes);
 app.use('/api', routes);
 app.use('/api', doctorDashboardRoutes);
+app.use('/api', searchRoutes);
 //app.use('/api/audit-logs', auditLogRoutes);
 
 // 404 handler

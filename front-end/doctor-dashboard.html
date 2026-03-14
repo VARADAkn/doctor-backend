@@ -648,6 +648,64 @@
             font-size: 1rem;
         }
 
+        /* Medical Search Styles */
+        .medical-search-results {
+            margin-top: 1.5rem;
+        }
+
+        .result-section {
+            margin-bottom: 2rem;
+        }
+
+        .result-section h4 {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .offline-result-item {
+            background: #f8fafc;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .online-result-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .online-result-card h5 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .wiki-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .not-medical-alert {
+            text-align: center;
+            padding: 2rem;
+            background: #fff5f5;
+            color: #c53030;
+            border-radius: 12px;
+            border: 1px solid #feb2b2;
+        }
+
         .form-textarea {
             min-height: 100px;
             resize: vertical;
@@ -2186,7 +2244,150 @@
             }
         }
 
+        // Medical Search Logic
+        function showMedicalSearchModal() {
+            const modal = document.getElementById('medical-search-modal');
+            modal.style.display = 'flex';
+            document.getElementById('medical-search-input').focus();
+        }
+
+        function closeMedicalSearchModal() {
+            const modal = document.getElementById('medical-search-modal');
+            modal.style.display = 'none';
+            document.getElementById('medical-search-input').value = '';
+            document.getElementById('medical-search-results').innerHTML = '';
+        }
+
+        async function performMedicalSearch() {
+            const query = document.getElementById('medical-search-input').value.trim();
+            if (!query) return;
+
+            const resultsContainer = document.getElementById('medical-search-results');
+            const icon = document.getElementById('med-search-icon');
+
+            // Show loading state
+            icon.className = 'fas fa-spinner fa-spin';
+            resultsContainer.innerHTML = '<div style="text-align:center; padding: 2rem;"><div class="loading" style="display:inline-block;width:20px;height:20px;border:3px solid rgba(0,0,0,.1);border-radius:50%;border-top-color:var(--primary);animation:spin 1s ease-in-out infinite;"></div><p style="margin-top:10px; color:var(--gray);">Searching databases and Wikipedia...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) throw new Error('Search failed');
+
+                const data = await response.json();
+
+                if (!data.isMedical) {
+                    resultsContainer.innerHTML = `
+                        <div class="not-medical-alert">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                            <h3>Not a Medical Term</h3>
+                            <p>${data.message}</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Render Results
+                let html = '';
+
+                // Online Results (Wikipedia)
+                html += `<div class="result-section">
+                    <h4><i class="fab fa-wikipedia-w"></i> Online Results (Wikipedia)</h4>`;
+
+                if (data.online) {
+                    const extract = data.online.extract || "No description available.";
+                    html += `
+                        <div class="online-result-card">
+                            <h5>${data.online.title}</h5>
+                            <p style="color: var(--gray); line-height: 1.5;">${extract.substring(0, 300)}${extract.length > 300 ? '...' : ''}</p>
+                            <a href="${data.online.url}" target="_blank" class="wiki-link">
+                                Read more on Wikipedia <i class="fas fa-external-link-alt" style="font-size: 0.8rem;"></i>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    html += `<p style="color: var(--gray); font-style: italic;">No specific Wikipedia article found for "${data.query}".</p>`;
+                }
+                html += `</div>`;
+
+                // Offline Results (Internal Knowledge Base)
+                html += `<div class="result-section">
+                    <h4><i class="fas fa-book-medical"></i> Internal Medical Knowledge</h4>`;
+
+                if (data.offline && data.offline.length > 0) {
+                    data.offline.forEach(item => {
+                        html += `
+                            <div class="offline-result-item" style="border-left: 4px solid var(--secondary); background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 12px;">
+                                <div style="font-weight: 700; color: var(--primary); font-size: 1.1rem; margin-bottom: 8px;">${item.term || 'Unknown Term'}</div>
+                                <div style="font-size: 0.95rem; color: #444; line-height: 1.5;">
+                                    ${item.description || 'No description available in the internal database.'}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html += `<p style="color: var(--gray); font-style: italic;">No matching terms found in the internal knowledge base.</p>`;
+                }
+                html += `</div>`;
+
+                resultsContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error('Medical search error:', error);
+                let errorMessage = 'Error performing search. Please try again.';
+                if (error.message === 'Search failed') {
+                    errorMessage = 'Search failed. Please check your connection or session.';
+                }
+
+                resultsContainer.innerHTML = `
+                    <div style="background:#fed7d7;color:#c53030;padding:12px;border-radius:8px;border-left:4px solid #c53030;text-align:left;">
+                        <i class="fas fa-exclamation-circle"></i> ${errorMessage}
+                    </div>
+                `;
+            } finally {
+                icon.className = 'fas fa-search';
+            }
+        }
+
+        // Close search modal when clicking outside
+        window.addEventListener('click', function (event) {
+            const modal = document.getElementById('medical-search-modal');
+            if (event.target === modal) {
+                closeMedicalSearchModal();
+            }
+        });
+
+        // Enter key support for search input
+        document.getElementById('medical-search-input')?.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                performMedicalSearch();
+            }
+        });
     </script>
+
+    <!-- Medical Search Modal -->
+    <div class="modal" id="medical-search-modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-microscope"></i> Medical Enquiry Search</h3>
+                <button class="close-btn" onclick="closeMedicalSearchModal()">&times;</button>
+            </div>
+            <div class="search-container">
+                <input type="text" class="search-input" id="medical-search-input"
+                    placeholder="Search diseases, treatments, medicines...">
+                <button class="search-btn" onclick="performMedicalSearch()">
+                    <i class="fas fa-search" id="med-search-icon"></i>
+                </button>
+            </div>
+            <div id="medical-search-results" class="medical-search-results">
+                <!-- Results will be injected here -->
+            </div>
+        </div>
+    </div>
 
     <div class="bottom-nav">
         <div class="nav-item active" data-page="home-view">
@@ -2197,9 +2398,9 @@
             <i class="fas fa-tasks nav-icon"></i>
             <span class="nav-label">Tasks</span>
         </div>
-        <div class="nav-item" data-page="profile-view">
-            <i class="fas fa-user-circle nav-icon"></i>
-            <span class="nav-label">Profile</span>
+        <div class="nav-item" onclick="showMedicalSearchModal()">
+            <i class="fas fa-hand-holding-medical nav-icon"></i>
+            <span class="nav-label">Search</span>
         </div>
         <div class="nav-item" data-page="chat-view" style="position: relative;">
             <i class="fas fa-comments nav-icon"></i>
@@ -2208,7 +2409,7 @@
         </div>
         <div class="nav-item" data-page="activity-view">
             <i class="fas fa-history nav-icon"></i>
-            <span class="nav-label">My Activity</span>
+            <span class="nav-label">Activity</span>
         </div>
     </div>
 </body>

@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "isMedical": true,
+  "query": "occupational",
+  "offline": [
+    {
+      "id": "e697efa7-408d-4f67-b996-6e348d8c90e7",
+      "term": "Occupational Therapy",
+      "description": "Occupational therapy is a rehabilitation treatment that helps individuals regain the ability to perform daily activities. It is often used for patients recovering from injuries, surgeries, or neurological disorders. Occupational therapists evaluate patients and design personalized therapy plans. The therapy focuses on improving physical, cognitive, and emotional abilities. Patients practice activities such as dressing, eating, and writing. Special equipment may be used to assist with movement and coordination. Occupational therapy also helps individuals adapt to disabilities. The goal is to improve independence and quality of life. Therapy sessions may take place in hospitals, clinics, or home settings. Progress is monitored regularly to adjust treatment plans. Occupational therapy is especially beneficial for stroke survivors and elderly patients. With consistent therapy, many individuals regain functional independence.",
+      "category": "Treatment",
+      "createdAt": "2026-03-14T15:45:35.675Z",
+      "updatedAt": "2026-03-14T15:45:35.675Z"
+    }
+  ],
+  "online": {
+    "title": "Employment",
+    "extract": "Employment is a relationship between two parties regulating the provision of paid labour services.  Usually based on a contract, one party, the employer, which might be a corporation, a not-for-profit organization, a co-operative, or any other entity, pays the other, the employee, in return for carrying out assigned work. Employees work in return for wages, which can be paid on the basis of an hourly rate, by piecework or an annual salary, depending on the type of work an employee does, the prevailing conditions of the sector and the bargaining power between the parties. Employees in some sectors may receive gratuities, bonus payments or stock options. In some types of employment, employees may receive benefits in addition to payment. Benefits may include health insurance, housing, and disability insurance.",
+    "url": "https://en.wikipedia.org/wiki/Employment"
+  }
+}

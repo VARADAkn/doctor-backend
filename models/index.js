@@ -31,6 +31,7 @@ db.Activity = require('./activity.js')(sequelize, DataTypes);
 //db.AuditLog = require('./auditlog.js')(sequelize, DataTypes);
 db.MedicalRecord = require('./medicalrecord.js')(sequelize, DataTypes);
 db.Message = require('./message.model.js')(sequelize, DataTypes);
+db.MedicalKnowledge = require('./medicalknowledge.js')(sequelize, DataTypes);
 
 // User <-> Doctor (One-to-One)
 db.User.hasOne(db.Doctor, { foreignKey: 'userId', as: 'doctorProfile' });
