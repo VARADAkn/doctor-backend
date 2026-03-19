@@ -1,0 +1,21 @@
+# Ignore dependencies
+**/node_modules/
+
+# Environment variables
+.env
+**/.env
+
+# Build folders
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

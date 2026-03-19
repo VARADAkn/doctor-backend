@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard | MedCollab</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="skin-ai.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="skin-ai.js" defer></script>
+    <script src="search.js"></script>
+    <script src="appointments.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            /* Brand – Neutral Black & White */
+            --primary: #1F1F1F;
+            /* Near Black */
+            --primary-light: #F5F5F5;
+            /* Soft White */
+
+            --secondary: #3A3A3A;
+            /* Dark Gray */
+            --accent: #8B5E3C;
+            /* Warm Brown (optional accent) */
+
+            /* Surface & Background */
+            --light: #FFFFFF;
+            /* Pure White */
+            --surface: #F2F2F2;
+            /* Light Gray */
+
+            /* Text */
+            --dark: #111111;
+            /* True Dark */
+            --gray: #6A6A6A;
+            /* Neutral Gray */
+
+            /* Status */
+            --success: #2F7D32;
+            /* Neutral Green */
+            --warning: #C89B3C;
+            /* Warm Amber */
+            --danger: #B3261E;
+            /* Deep Red */
+        }
+
+
+
+
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+
+        .header {
+            background: linear-gradient(135deg,
+                    #121212,
+                    #1F1F1F,
+                    #2A2A2A);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-details h3 {
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            display: none;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 1rem 0;
+            flex-grow: 1;
+        }
+
+        .nav-links li {
+            margin-bottom: 5px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 0;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left: 4px solid white;
+        }
+
+        .nav-links i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .stat-card.primary::before {
+            background: var(--primary);
+        }
+
+        .stat-card.success::before {
+            background: var(--success);
+        }
+
+        .stat-card.warning::before {
+            background: var(--warning);
+        }
+
+        .stat-card.danger::before {
+            background: var(--danger);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .icon-appointment {
+            background-color: var(--primary);
+        }
+
+        .icon-completed {
+            background-color: var(--success);
+        }
+
+        .icon-doctors {
+            background-color: var(--warning);
+        }
+
+        .icon-records {
+            background-color: var(--warning);
+        }
+
+        .icon-messages {
+            background-color: var(--danger);
+        }
+
+
+        /* Section Styles */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .section-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Patient Info */
+        .patient-info {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .patient-details h3 {
+            margin-bottom: 5px;
+            font-size: 1.5rem;
+        }
+
+        .patient-details p {
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: 500;
+        }
+
+        /* Doctor Info */
+        .doctor-card {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--primary-light);
+            border-radius: 8px;
+        }
+
+        .doctor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--warning);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .doctor-details h4 {
+            margin-bottom: 5px;
+        }
+
+        .doctor-details p {
+            color: var(--gray);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e5bb8;
+        }
+
+        /* Appointments */
+        .appointment-list {
+            list-style: none;
+        }
+
+        .appointment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-date {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .appointment-doctor {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .appointment-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background: #e8f6f3;
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: #fef9e7;
+            color: var(--warning);
+        }
+
+        /* Dashboard Sections */
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Coming Soon Section */
+        .coming-soon {
+            background: linear-gradient(135deg, var(--primary), #8e44ad);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .coming-soon h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .coming-soon p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 65%;
+            background: white;
+            border-radius: 3px;
+        }
+
+        /* Bottom Navigation for Mobile */
+        .bottom-nav {
+            display: flex;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            padding: 0.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 80px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item:hover {
+            background-color: var(--primary-light);
+        }
+
+        .nav-icon {
+            font-size: 1.4rem;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .dashboard-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .bottom-nav {
+                display: flex;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced Appointment Styles */
+        .appointment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid var(--primary);
+        }
+
+        .appointment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .appointment-card.status-confirmed {
+            border-left-color: var(--success);
+        }
+
+        .appointment-card.status-pending {
+            border-left-color: var(--warning);
+        }
+
+        .appointment-card.status-cancelled {
+            border-left-color: var(--danger);
+            opacity: 0.7;
+        }
+
+        .appointment-card.status-completed,
+        .appointment-card.status-processed {
+            border-left-color: var(--gray);
+            opacity: 0.85;
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .doctor-info h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doctor-info p {
+            margin: 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.completed {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .status-badge.processed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .appointment-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.7rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .appointment-reason {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border-left: 3px solid var(--primary);
+            border-radius: 4px;
+        }
+
+        .appointment-reason strong {
+            font-size: 0.8rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .appointment-reason p {
+            margin: 8px 0 0 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .appointment-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tabs .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: #e2e8f0;
+            color: var(--dark);
+        }
+
+        .filter-tabs .btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(42, 107, 201, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999 !important;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex !important;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            z-index: 10000 !important;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .page-view {
+            display: none;
+        }
+
+        .page-view.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #cbd5e0;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .doctor-item-hover:hover {
+            background: white !important;
+            border-color: var(--primary) !important;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .ward-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar with Logo and Navigation -->
+
+        <div class="main-content">
+            <!-- Header with Logo and User Info -->
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-stethoscope"></i>
+                    <h1>MedCollab</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <h3 id="patient-name">Silva</h3>
+                        <p>Patient</p>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">S</div>
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+
+                <!-- Home View -->
+                <div id="home-view" class="page-view active">
+                    <h2 class="page-title"><i class="fas fa-user-injured"></i> Patient Dashboard</h2>
+
+                    <!-- Dashboard Cards -->
+                    <div class="dashboard-cards">
+                        <div class="stat-card primary">
+                            <div class="stat-icon icon-appointment">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-value" id="upcoming-appointments-count">0</div>
+                            <div class="stat-label">Upcoming Appointments</div>
+                        </div>
+
+                        <div class="stat-card success">
+                            <div class="stat-icon icon-completed">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-value" id="completed-appointments-count">0</div>
+                            <div class="stat-label">Completed Appointments</div>
+                        </div>
+
+                        <div class="stat-card warning">
+                            <div class="stat-icon icon-doctors">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="stat-value" id="doctors-count">0</div>
+                            <div class="stat-label">Number of Doctors</div>
+                        </div>
+                        <div class="stat-card primary" onclick="showView('skin-ai-view')"
+                            style="cursor:pointer; border: 2px solid var(--primary);">
+                            <div class="stat-icon icon-ward" style="background-color: #2563eb;">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                            <div class="stat-value" style="font-size: 1.5rem; margin: 15px 0;">Skin AI</div>
+                            <div class="stat-label">Launch Tool</div>
+                        </div>
+                    </div>
+
+
+                    <!-- Dashboard Sections -->
+                    <div class="dashboard-sections">
+                        <!-- Patient Profile Section -->
+                        <div class="section" style="grid-column: 1 / -1;">
+                            <div class="section-header">
+                                <div class="section-title"><i class="fas fa-user-circle"></i> My Profile</div>
+                                <button class="btn btn-primary" onclick="openEditProfileModal()"
+                                    style="padding: 0.5rem 1rem;">
+                                    <i class="fas fa-edit"></i> Edit Profile
+                                </button>
+                            </div>
+                            <div class="patient-info"
+                                style="display: flex; gap: 2rem; align-items: flex-start; padding: 2rem; background: white; border-radius: 12px;">
+                                <div class="patient-avatar" id="profile-avatar"
+                                    style="width: 120px; height: 120px; font-size: 3rem; flex-shrink: 0;">S</div>
+                                <div class="patient-details" style="flex: 1;">
+                                    <h3 id="profile-name" style="font-size: 1.8rem; margin-bottom: 0.5rem;">Silva</h3>
+                                    <p id="profile-id" style="color: var(--gray); margin-bottom: 1.5rem;">Patient ID:
+                                        PT-1260cdea</p>
+                                    <div class="info-grid"
+                                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                                        <div class="info-item">
+                                            <div class="info-label">Date of Birth</div>
+                                            <div class="info-value" id="profile-dob">15 March 1985</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Gender</div>
+                                            <div class="info-value" id="profile-gender">Female</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Blood Type</div>
+                                            <div class="info-value" id="profile-blood">O+</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Phone</div>
+                                            <div class="info-value" id="profile-phone">(555) 123-4567</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Email</div>
+                                            <div class="info-value" id="profile-email">patient@example.com</div>
+                                        </div>
+                                        <div class="info-item">
+                                            <div class="info-label">Address</div>
+                                            <div class="info-value" id="profile-address">123 Main St, City</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assigned Doctor Section -->
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title"><i class="fas fa-user-md"></i> Assigned Doctor</div>
+                            </div>
+                            <div id="assigned-doctor-container">
+                                <div class="empty-state" style="padding: 2rem; text-align: center;">
+                                    <i class="fas fa-user-md"
+                                        style="font-size: 3rem; color: #cbd5e0; margin-bottom: 1rem;"></i>
+                                    <p style="color: var(--gray);">No doctor assigned yet</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assigned Ward Section -->
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title"><i class="fas fa-hospital"></i> Assigned Ward</div>
+                            </div>
+                            <div id="dashboard-ward-section">
+                                <div class="empty-state" style="padding: 2rem; text-align: center;">
+                                    <i class="fas fa-hospital"
+                                        style="font-size: 3rem; color: #cbd5e0; margin-bottom: 1rem;"></i>
+                                    <p style="color: var(--gray);">No ward assigned yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- End dashboard-sections -->
+                </div> <!-- End home-view -->
+
+                <!-- Appointments View -->
+                <div id="appointments-view" class="page-view" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-calendar-alt"></i> My Appointments</h2>
+                            <button class="btn btn-primary" onclick="openCreateAppointmentModal()">
+                                <i class="fas fa-plus"></i> Book New Appointment
+                            </button>
+                        </div>
+
+                        <!-- Filter Tabs -->
+                        <div class="filter-tabs">
+                            <button class="btn active" onclick="filterAppointments('all')" id="filter-all">
+                                <i class="fas fa-list"></i> All
+                            </button>
+                            <button class="btn" onclick="filterAppointments('upcoming')" id="filter-upcoming">
+                                <i class="fas fa-arrow-up"></i> Upcoming
+                            </button>
+                            <button class="btn" onclick="filterAppointments('completed')" id="filter-completed">
+                                <i class="fas fa-check"></i> Completed
+                            </button>
+                            <button class="btn" onclick="filterAppointments('cancelled')" id="filter-cancelled">
+                                <i class="fas fa-ban"></i> Cancelled
+                            </button>
+                        </div>
+
+                        <!-- Appointments Container -->
+                        <div id="appointments-container" style="display: grid; gap: 1rem;">
+                            <div class="loading-state" style="text-align:center; padding: 2rem;">
+                                <p>Loading appointments...</p>
+                            </div>
+                        </div>
+                    </div> <!-- End section wrapper -->
+                </div> <!-- End appointments-view -->
+
+                <!-- Doctors View -->
+                <div id="doctors-view" class="page-view" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-user-md"></i> Our Specialized Doctors</h2>
+                            <button class="btn btn-primary" onclick="loadAllDoctors()">
+                                <i class="fas fa-sync"></i> Refresh Doctors
+                            </button>
+                        </div>
+                        <div id="all-doctors-container" class="dashboard-cards"
+                            style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                            <div class="loading-state" style="text-align:center; padding: 2rem; grid-column: 1 / -1;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                                <p>Loading doctors directory...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Search View -->
+                <div id="search-view" class="page-view" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-search"></i> Medical Knowledge Search</h2>
+                            <p style="color: var(--gray); margin-bottom: 2rem;">Search our database and external
+                                resources for verified medical info.</p>
+                        </div>
+
+                        <div class="stat-card"
+                            style="padding: 2.5rem; margin-bottom: 2rem; border-left: 6px solid var(--primary); background: white;">
+                            <div style="display: flex; gap: 15px;">
+                                <input type="text" id="global-search" class="form-input"
+                                    placeholder="Enter medical term (e.g. Hypertension, Diabetes...)"
+                                    style="flex: 1; height: 56px; font-size: 1.1rem; border: 2px solid #eef2f6; border-radius: 12px; padding: 0 1.5rem;"
+                                    onkeypress="if(event.key==='Enter') globalSearch()">
+                                <button class="btn btn-primary" onclick="globalSearch()"
+                                    style="width: 130px; border-radius: 12px; font-weight: 700; font-size: 1rem;">
+                                    Search
+                                </button>
+                            </div>
+                            <div style="margin-top: 1.2rem; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <span style="font-size: 0.85rem; color: var(--gray);">Popular searches:</span>
+                                <a href="#"
+                                    style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;"
+                                    onclick="document.getElementById('global-search').value='Hypertension'; globalSearch();">Hypertension</a>
+                                <a href="#"
+                                    style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;"
+                                    onclick="document.getElementById('global-search').value='Diabetes'; globalSearch();">Diabetes</a>
+                                <a href="#"
+                                    style="font-size: 0.85rem; color: var(--primary); text-decoration: none; font-weight: 600;"
+                                    onclick="document.getElementById('global-search').value='Asthma'; globalSearch();">Asthma</a>
+                            </div>
+                        </div>
+
+                        <div id="search-results" style="display: grid; gap: 1.5rem;">
+                            <div class="empty-state"
+                                style="padding: 4rem 2rem; background: white; border-radius: 16px;">
+                                <i class="fas fa-book-medical"
+                                    style="font-size: 4rem; color: #cbd5e0; margin-bottom: 1.5rem;"></i>
+                                <h3 style="color: var(--dark);">Medical Dictionary</h3>
+                                <p style="max-width: 400px; margin: 0 auto; color: var(--gray);">Explore symptoms,
+                                    treatments, and detailed definitions for various medical conditions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skin AI View -->
+                <div id="skin-ai-view" class="page-view" style="display: none;">
+
+                    <!-- Horizontal Walkthrough Section -->
+                    <div class="walkthrough-container">
+                        <!-- Slide 1: Image 10 (Project Overview) -->
+                        <div class="walkthrough-slide">
+                            <img src="images/10.png" alt="SkinScan AI Introduction">
+                        </div>
+
+                        <!-- Slide 2: Image 11 (Melanoma Details) -->
+                        <div class="walkthrough-slide">
+                            <img src="images/11.png" alt="Understanding Melanoma" onclick="openMelanomaDetails()"
+                                style="cursor: pointer;">
+                            <div class="detail-hint" onclick="openMelanomaDetails()">
+                                <i class="fas fa-info-circle"></i> Learn More
+                            </div>
+                        </div>
+
+                        <!-- Slide 3: Image 12 (Diagnostic Process) -->
+                        <div class="walkthrough-slide">
+                            <img src="images/12.png" alt="Diagnostic Process" onclick="openDiagnosticDetails()"
+                                style="cursor: pointer;">
+                            <div class="detail-hint" onclick="openDiagnosticDetails()">
+                                <i class="fas fa-search"></i> View Process
+                            </div>
+                        </div>
+
+                        <!-- Slide 4: Image 13 (Technology Details) -->
+                        <div class="walkthrough-slide">
+                            <img src="images/13.png" alt="Deep Learning Technology" onclick="openTechDetails()"
+                                style="cursor: pointer;">
+                            <div class="detail-hint" onclick="openTechDetails()">
+                                <i class="fas fa-microchip"></i> How it Works
+                            </div>
+                        </div>
+
+                        <!-- Slide 5: Image 15 (Final Solution CTA) -->
+                        <div class="walkthrough-slide">
+                            <img src="images/15.png" alt="Our Solution" onclick="scrollToClassification()"
+                                style="cursor: pointer;">
+                        </div>
+                    </div>
+
+                    <!-- Classification Tool Section -->
+                    <div id="classification" class="split-container">
+                        <!-- Left Side: Brand Info -->
+                        <div class="brand-section" id="info">
+                            <div class="brand-content">
+                                <h1 class="brand-title">Classification Tool</h1>
+                                <p class="brand-subtitle">Upload and Analyze Skin Lesions</p>
+                                <div class="feature-icons">
+                                    <div class="icon-circle"><i class="fas fa-heartbeat" style="color:white;"></i></div>
+                                    <div class="icon-circle"><i class="fas fa-shield-alt" style="color:white;"></i>
+                                    </div>
+                                    <div class="icon-circle"><i class="fas fa-info-circle" style="color:white;"></i>
+                                    </div>
+                                </div>
+                                <p class="footer-note">Secure, efficient, and precise early detection assistance.</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Interaction -->
+                        <div class="interaction-section" id="tools">
+                            <div class="interaction-header">
+                                <h2>Health<span>Analysis</span></h2>
+                                <span class="status-badge">System Ready</span>
+                            </div>
+
+                            <!-- Main Content Area -->
+                            <div class="action-card">
+                                <h3>Image Analysis</h3>
+                                <p class="section-desc">Upload a skin lesion image for AI classification.</p>
+
+                                <div class="upload-zone" id="drop-area">
+                                    <input type="file" id="fileElem" accept="image/*"
+                                        onchange="handleSkinFiles(this.files)">
+                                    <div class="upload-placeholder" id="upload-placeholder">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-cloud-upload-alt" style="font-size: 24px;"></i>
+                                        </div>
+                                        <p>Click to upload or drag & drop</p>
+                                        <span>JPG, PNG (Max 5MB)</span>
+                                    </div>
+                                    <img id="preview-img" class="hidden">
+                                </div>
+
+                                <button id="crop-trigger-btn" class="hidden" onclick="openCropModal()">
+                                    <i class="fas fa-crop-alt"></i> Adjust / Crop Image
+                                </button>
+
+                                <button id="predict-btn" class="btn-primary" disabled onclick="startPrediction()">Run
+                                    Analysis</button>
+                            </div>
+
+                            <!-- Results Panel (Hidden Initially) -->
+                            <div id="loader" class="loader-container hidden">
+                                <div class="spinner"></div>
+                                <p>Analyzing image morphology...</p>
+                            </div>
+
+                            <div id="result-content" class="result-card hidden">
+                                <div class="result-header">
+                                    <h4>Diagnostic Report</h4>
+                                    <span id="risk-badge" class="risk-badge">Pending</span>
+                                </div>
+
+                                <div class="diagnosis-main">
+                                    <h2 id="top-full-name">--</h2>
+                                    <span class="confidence" id="top-confidence">--% Accuracy</span>
+                                </div>
+
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <label>Description</label>
+                                        <p id="desc-text">--</p>
+                                    </div>
+                                    <div class="info-item">
+                                        <label>Recommended Action</label>
+                                        <p id="action-text">--</p>
+                                    </div>
+                                </div>
+
+                                <div class="chart-wrapper">
+                                    <canvas id="predictionChart"></canvas>
+                                </div>
+
+                                <div id="detailed-breakdown" class="hidden" style="margin-top: 2rem;">
+                                    <h4
+                                        style="margin-bottom: 1rem; color: var(--dark); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                                        Detailed Breakdown</h4>
+                                    <div id="breakdown-list" style="display: grid; gap: 1rem;"></div>
+                                </div>
+
+                                <button class="btn-download" onclick="downloadReport()" style="margin-top: 2rem;">
+                                    <i class="fas fa-file-pdf"></i> Download Medical Report
+                                </button>
+
+                                <button class="btn-download check-disease-btn" onclick="checkDisease()"
+                                    style="margin-top: 10px; background: #3b82f6; display: flex; color: white;">
+                                    <i class="fas fa-stethoscope"></i> Check Skin Disease
+                                </button>
+                                <div class="disease-result"
+                                    style="display: none; margin-top: 15px; padding: 15px; border-radius: 8px; background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; text-align: center;">
+                                    <b style="font-size: 1.1em; display: block; margin-bottom: 5px;">Disease
+                                        Prediction:</b>
+                                    <span class="disease-name"
+                                        style="font-size: 1.25em; font-weight: bold; color: #15803d;"></span>
+                                    <br>
+                                    <span class="disease-confidence"
+                                        style="font-size: 0.9em; color: #166534; opacity: 0.8;"></span>
+                                </div>
+
+                                <button class="chatbot-trigger-btn" onclick="toggleAIChat()">
+                                    <i class="fas fa-comment-medical"></i> Consult AI Specialist
+                                </button>
+                            </div>
+
+                            <!-- AI Chatbot Drawer -->
+                            <div id="chat-overlay" class="chat-overlay" onclick="toggleAIChat()"></div>
+                            <div id="chatbot-drawer" class="chatbot-drawer">
+                                <div class="chat-header">
+                                    <div class="bot-info">
+                                        <div class="bot-avatar">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <div>
+                                            <h3>Assistant</h3>
+                                            <div class="bot-status">Online</div>
+                                        </div>
+                                    </div>
+                                    <button class="close-chat" onclick="toggleAIChat()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div id="chat-messages" class="chat-messages">
+                                    <div class="message ai">
+                                        Hello! I'm your Dermatological Assistant. I've reviewed the analysis results.
+                                        How can I help you today?
+                                    </div>
+                                </div>
+                                <div id="typing-indicator" class="typing-indicator">
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                                <div class="chat-input-area">
+                                    <input type="text" id="chat-input" placeholder="Type a message..."
+                                        onkeypress="handleChatKey(event)">
+                                    <button onclick="sendChatMessage()">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="disclaimer-text">
+                                <p>⚠️ <strong>Disclaimer:</strong> This tool is for screening purposes only and does not
+                                    replace professional medical advice.</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Modals (Copied from index.html) -->
+                    <!-- CROP MODAL -->
+                    <div class="modal-overlay" id="crop-modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Adjust Image</h3>
+                                <button onclick="closeCropModal()"
+                                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="img-container">
+                                    <img id="image-to-crop" src="" alt="Picture">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn-modal-secondary" onclick="closeCropModal()">Cancel</button>
+                                <button class="btn-modal-save" onclick="saveCrop()">Apply Crop</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WELCOME OVERVIEW MODAL -->
+                    <div class="modal-overlay info-modal" id="welcome-modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Welcome to SkinScan AI</h3>
+                                <button onclick="closeWelcomeDetails()"
+                                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Our Mission</h4>
+                                <p>SkinScan AI is a state-of-the-art dermatological screening platform designed to
+                                    assist in the early detection of skin cancer.</p>
+                                <h4>Core Capabilities</h4>
+                                <ul class="abcde-list">
+                                    <li><strong>1.</strong> Instant AI Analysis: Analyze lesions in real-time.</li>
+                                    <li><strong>2.</strong> Large-Scale Screening: Trained on 30,000+ clinical images.
+                                    </li>
+                                    <li><strong>3.</strong> Secure Platform: Your data and privacy are our top priority.
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn-modal-save" onclick="closeWelcomeDetails()">Start Exploring</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MELANOMA DETAILS MODAL -->
+                    <div class="modal-overlay info-modal" id="details-modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Furthermore: Understanding Melanoma</h3>
+                                <button onclick="closeDetailsModal()"
+                                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>The Severity of Melanoma</h4>
+                                <p>Melanoma represents only about 1% of skin cancers but causes a large majority of skin
+                                    cancer deaths.</p>
+                                <h4>Risk Factors to Consider</h4>
+                                <ul class="abcde-list">
+                                    <li><strong>UV</strong> Exposure: Sunburns and tanning beds significantly increase
+                                        risk.</li>
+                                    <li><strong>Mole</strong> Count: Having many moles or unusual moles.</li>
+                                </ul>
+                                <h4>How to Spot Potential Risks (ABCDE Rule)</h4>
+                                <ul class="abcde-list">
+                                    <li><strong>A</strong>symmetry</li>
+                                    <li><strong>B</strong>order</li>
+                                    <li><strong>C</strong>olor</li>
+                                    <li><strong>D</strong>iameter</li>
+                                    <li><strong>E</strong>volving</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn-modal-save" onclick="closeDetailsModal()">I Understand</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DIAGNOSTIC DETAILS MODAL -->
+                    <div class="modal-overlay info-modal" id="diagnostic-modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Diagnostic Challenges & Biopsy Details</h3>
+                                <button onclick="closeDiagnosticModal()"
+                                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Why the Process is Slow</h4>
+                                <p>Traditional diagnostics rely heavily on laboratory availability.</p>
+                                <h4>Traditional Process Breakdown</h4>
+                                <ul class="abcde-list">
+                                    <li><strong>1.</strong> Clinical Exam</li>
+                                    <li><strong>2.</strong> Punch Biopsy</li>
+                                    <li><strong>3.</strong> Processing (24-48 hours)</li>
+                                    <li><strong>4.</strong> Diagnosis</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn-modal-save" onclick="closeDiagnosticModal()">Got it</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TECHNOLOGY DETAILS MODAL -->
+                    <div class="modal-overlay info-modal" id="tech-modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Behind the AI: Convolutional Neural Networks</h3>
+                                <button onclick="closeTechModal()"
+                                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Architecture: EfficientNet-B4 to B7</h4>
+                                <p>Our system uses a multi-model ensemble to produce high-confidence scores.</p>
+                                <h4>Technical Metrics</h4>
+                                <ul class="abcde-list">
+                                    <li><strong>93%</strong> Accuracy</li>
+                                    <li><strong>ONNX</strong> Deployment</li>
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn-modal-save" onclick="closeTechModal()">Close</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skin AI View -->
+                    <div id="skin-ai-view" class="page-view" style="display: none;">
+                        <div class="walkthrough-container">
+                            <div class="walkthrough-slide">
+                                <img src="images/10.png" alt="SkinScan AI Introduction">
+                            </div>
+                            <div class="walkthrough-slide">
+                                <img src="images/11.png" alt="Understanding Melanoma" onclick="openMelanomaDetails()"
+                                    style="cursor: pointer;">
+                                <div class="detail-hint" onclick="openMelanomaDetails()">
+                                    <i class="fas fa-info-circle"></i> Learn More
+                                </div>
+                            </div>
+                            <div class="walkthrough-slide">
+                                <img src="images/12.png" alt="Diagnostic Process" onclick="openDiagnosticDetails()"
+                                    style="cursor: pointer;">
+                                <div class="detail-hint" onclick="openDiagnosticDetails()">
+                                    <i class="fas fa-search"></i> View Process
+                                </div>
+                            </div>
+                            <div class="walkthrough-slide">
+                                <img src="images/13.png" alt="Deep Learning Technology" onclick="openTechDetails()"
+                                    style="cursor: pointer;">
+                                <div class="detail-hint" onclick="openTechDetails()">
+                                    <i class="fas fa-microchip"></i> How it Works
+                                </div>
+                            </div>
+                            <div class="walkthrough-slide">
+                                <img src="images/15.png" alt="Our Solution" onclick="scrollToClassification()"
+                                    style="cursor: pointer;">
+                            </div>
+                        </div>
+
+                        <div id="classification" class="split-container">
+                            <div class="brand-section" id="info">
+                                <div class="brand-content">
+                                    <h1 class="brand-title">Classification Tool</h1>
+                                    <p class="brand-subtitle">Upload and Analyze Skin Lesions</p>
+                                    <div class="feature-icons">
+                                        <div class="icon-circle"><i class="fas fa-heartbeat" style="color:white;"></i>
+                                        </div>
+                                        <div class="icon-circle"><i class="fas fa-shield-alt" style="color:white;"></i>
+                                        </div>
+                                        <div class="icon-circle"><i class="fas fa-info-circle" style="color:white;"></i>
+                                        </div>
+                                    </div>
+                                    <p class="footer-note">Secure, efficient, and precise early detection assistance.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="interaction-section" id="tools">
+                                <div class="interaction-header">
+                                    <h2>Health<span>Analysis</span></h2>
+                                    <span class="status-badge">System Ready</span>
+                                </div>
+
+                                <div class="action-card">
+                                    <h3>Image Analysis</h3>
+                                    <p class="section-desc">Upload a skin lesion image for AI classification.</p>
+
+                                    <div class="upload-zone" id="drop-area">
+                                        <input type="file" id="fileElem" accept="image/*">
+                                        <div class="upload-placeholder" id="upload-placeholder">
+                                            <div class="upload-icon">
+                                                <i class="fas fa-cloud-upload-alt" style="font-size: 24px;"></i>
+                                            </div>
+                                            <p>Click to upload or drag & drop</p>
+                                            <span>JPG, PNG (Max 5MB)</span>
+                                        </div>
+                                        <img id="preview-img" class="hidden">
+                                    </div>
+
+                                    <button id="crop-trigger-btn" class="hidden" onclick="openCropModal()">
+                                        <i class="fas fa-crop-alt"></i> Adjust / Crop Image
+                                    </button>
+
+                                    <button id="predict-btn" class="btn-primary" disabled
+                                        onclick="startPrediction()">Run Analysis</button>
+                                </div>
+
+                                <div id="loader" class="loader-container hidden">
+                                    <div class="spinner"></div>
+                                    <p>Analyzing image morphology...</p>
+                                </div>
+
+                                <div id="result-content" class="result-card hidden">
+                                    <div class="result-header">
+                                        <h4>Diagnostic Report</h4>
+                                        <span id="risk-badge" class="risk-badge">Pending</span>
+                                    </div>
+
+                                    <div class="diagnosis-main">
+                                        <h2 id="top-full-name">--</h2>
+                                        <span class="confidence" id="top-confidence">--% Accuracy</span>
+                                    </div>
+
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <label>Description</label>
+                                            <p id="desc-text">--</p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Recommended Action</label>
+                                            <p id="action-text">--</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="chart-wrapper">
+                                        <canvas id="predictionChart"></canvas>
+                                    </div>
+
+                                    <div id="detailed-breakdown" class="hidden" style="margin-top: 2rem;">
+                                        <h4
+                                            style="margin-bottom: 1rem; color: var(--dark); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                                            Detailed Breakdown</h4>
+                                        <div id="breakdown-list" style="display: grid; gap: 1rem;"></div>
+                                    </div>
+
+                                    <button class="btn-download" onclick="downloadReport()" style="margin-top: 2rem;">
+                                        <i class="fas fa-file-pdf"></i> Download Medical Report
+                                    </button>
+
+                                    <button class="btn-download check-disease-btn" onclick="checkDisease()"
+                                        style="margin-top: 10px; background: #3b82f6; display: flex; color: white;">
+                                        <i class="fas fa-stethoscope"></i> Check Skin Disease
+                                    </button>
+                                    <div class="disease-result"
+                                        style="display: none; margin-top: 15px; padding: 15px; border-radius: 8px; background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; text-align: center;">
+                                        <b style="font-size: 1.1em; display: block; margin-bottom: 5px;">Disease
+                                            Prediction:</b>
+                                        <span class="disease-name"
+                                            style="font-size: 1.25em; font-weight: bold; color: #15803d;"></span>
+                                        <br>
+                                        <span class="disease-confidence"
+                                            style="font-size: 0.9em; color: #166534; opacity: 0.8;"></span>
+                                    </div>
+
+                                    <button class="chatbot-trigger-btn" onclick="toggleAIChat()">
+                                        <i class="fas fa-comment-medical"></i> Consult AI Specialist
+                                    </button>
+                                </div>
+
+                                <!-- AI Chatbot Drawer -->
+                                <div id="chat-overlay" class="chat-overlay" onclick="toggleAIChat()"></div>
+                                <div id="chatbot-drawer" class="chatbot-drawer">
+                                    <div class="chat-header">
+                                        <div class="bot-info">
+                                            <div class="bot-avatar"><i class="fas fa-robot"></i></div>
+                                            <div>
+                                                <h3>Assistant</h3>
+                                                <div class="bot-status">Online</div>
+                                            </div>
+                                        </div>
+                                        <button class="close-chat" onclick="toggleAIChat()"><i
+                                                class="fas fa-times"></i></button>
+                                    </div>
+                                    <div id="chat-messages" class="chat-messages">
+                                        <div class="message ai">Hello! I'm your Dermatological Assistant. I've reviewed
+                                            the analysis results. How can I help you today?</div>
+                                    </div>
+                                    <div id="typing-indicator" class="typing-indicator">
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                        <div class="dot"></div>
+                                    </div>
+                                    <div class="chat-input-area">
+                                        <input type="text" id="chat-input" placeholder="Type a message..."
+                                            onkeypress="handleChatKey(event)">
+                                        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="disclaimer-text">
+                                    <p>⚠️ <strong>Disclaimer:</strong> This tool is for screening purposes only and does
+                                        not replace professional medical advice.</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Ward View -->
+                    <div id="ward-view" class="page-view" style="display: none;">
+                        <h2 class="page-title"><i class="fas fa-hospital"></i> My Assigned Ward</h2>
+                        <div id="ward-info-container">
+                            <div class="empty-state">
+                                <i class="fas fa-hospital-user"></i>
+                                <p>You haven't been assigned to a ward yet. Book an appointment to get started.</p>
+                            </div>
+                        </div>
+                    </div> <!-- End ward-view -->
+                </div> <!-- End content-area -->
+            </div> <!-- End main-content -->
+        </div> <!-- End container -->
+
+        <!-- Create Appointment Modal -->
+        <div id="appointment-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Book New Appointment</h3>
+                    <button onclick="closeAppointmentModal()"
+                        style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="appointment-form" onsubmit="submitAppointment(event)">
+
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Select Doctor</label>
+                            <select id="doctor-select" required
+                                style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                                <option value="">Choose a doctor...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Appointment Date</label>
+                            <input type="date" id="appointment-date" required
+                                style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;"
+                                onchange="loadAvailableSlots()">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Available Time Slots</label>
+                            <select id="appointment-time" required
+                                style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                                <option value="">Select date first...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Appointment Type</label>
+                            <select id="appointment-type"
+                                style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                                <option value="routine">Routine Checkup</option>
+                                <option value="follow-up">Follow-up</option>
+                                <option value="consultation">Consultation</option>
+                                <option value="emergency">Emergency</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label class="form-label">Reason for Visit</label>
+                            <textarea id="appointment-reason" rows="3"
+                                style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;"
+                                placeholder="Describe your symptoms or reason for visit..."></textarea>
+                        </div>
+
+                        <div class="modal-footer"
+                            style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1.5rem;">
+                            <button type="button" class="btn" onclick="closeAppointmentModal()"
+                                style="background: #e2e8f0; color: var(--dark);">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Book Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Details Modal -->
+        <div id="doctor-details-modal" class="modal" style="display: none; z-index: 2000;">
+            <div class="modal-content" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 20px;">
+                <div
+                    style="background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 3rem 2rem; text-align: center; position: relative;">
+                    <button onclick="closeDoctorDetailsModal()"
+                        style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; color: white; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center;">&times;</button>
+                    <div id="detail-doctor-avatar" class="user-avatar"
+                        style="width: 100px; height: 100px; margin: 0 auto 1rem; border: 4px solid rgba(255,255,255,0.3); font-size: 2.5rem; background: white; color: var(--primary);">
+                        D</div>
+                    <h3 id="detail-doctor-name" style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;">Dr. Name
+                    </h3>
+                    <div id="detail-doctor-specialization"
+                        style="background: rgba(255,255,255,0.2); color: white; padding: 4px 16px; border-radius: 20px; display: inline-block; font-size: 0.85rem; font-weight: 500;">
+                        Specialization</div>
+                </div>
+                <div style="padding: 2.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                        <div>
+                            <div
+                                style="color: var(--gray); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">
+                                Experience</div>
+                            <div id="detail-doctor-experience" style="font-weight: 700; color: var(--dark);">8 Years
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                style="color: var(--gray); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;">
+                                Rating</div>
+                            <div style="font-weight: 700; color: #f59e0b;"><i class="fas fa-star"></i> 4.9 (120+)</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <div
+                            style="color: var(--gray); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.8rem;">
+                            Contact Information</div>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div
+                                    style="width: 36px; height: 36px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div id="detail-doctor-email" style="font-size: 0.9rem; color: var(--gray);">
+                                    email@example.com</div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div
+                                    style="width: 36px; height: 36px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div id="detail-doctor-phone" style="font-size: 0.9rem; color: var(--gray);">+1 234 567
+                                    890</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="book-from-details"
+                        style="width: 100%; height: 50px; border-radius: 12px; font-weight: 600; font-size: 1rem;">
+                        <i class="fas fa-calendar-alt" style="margin-right: 8px;"></i> Book Appointment Now
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div id="edit-profile-modal" class="modal" style="display: none;">
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                    <button onclick="closeEditProfileModal()"
+                        style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-profile-form" onsubmit="saveProfile(event)">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="edit-name" required
+                                    style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" id="edit-dob" required
+                                    style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Gender</label>
+                                <select id="edit-gender" required
+                                    style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                                    <option value="">Select...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Blood Type</label>
+                                <select id="edit-blood" required
+                                    style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                                    <option value="">Select...</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone</label>
+                                <input type="tel" id="edit-phone" required
+                                    style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="edit-email" required
+                                    style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label class="form-label">Address</label>
+                            <textarea id="edit-address" rows="2"
+                                style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #e2e8f0;"></textarea>
+                        </div>
+                        <div class="modal-footer"
+                            style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 1.5rem;">
+                            <button type="button" class="btn" onclick="closeEditProfileModal()"
+                                style="background: #e2e8f0; color: var(--dark);">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" data-page="dashboard">
+                <i class="fas fa-th-large nav-icon"></i>
+                <span class="nav-label">Dashboard</span>
+            </div>
+            <div class="nav-item" data-page="doctors">
+                <i class="fas fa-user-md nav-icon"></i>
+                <span class="nav-label">Doctors</span>
+            </div>
+            <div class="nav-item" data-page="appointments">
+                <i class="fas fa-calendar-alt nav-icon"></i>
+                <span class="nav-label">Appointments</span>
+            </div>
+            <div class="nav-item" data-page="search-view">
+                <i class="fas fa-search nav-icon"></i>
+                <span class="nav-label">Search</span>
+            </div>
+
+            <div class="nav-item" data-page="skin-ai-view">
+                <i class="fas fa-microscope nav-icon"></i>
+                <span class="nav-label">Skin AI</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        const API_BASE_URL = '/api';
+
+        function showView(viewId) {
+            console.log('Switching to view:', viewId);
+
+            // Map simple names to IDs
+            const viewMap = {
+                'dashboard': 'home-view',
+                'appointments': 'appointments-view',
+                'search-view': 'search-view',
+                'skin-ai-view': 'skin-ai-view',
+                'doctors': 'doctors-view'
+            };
+
+            const targetId = viewMap[viewId] || viewId;
+
+            // Hide all views
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.style.display = 'none';
+                view.classList.remove('active');
+            });
+
+            // Show target view
+            const targetView = document.getElementById(targetId);
+            if (targetView) {
+                targetView.style.display = 'block';
+                targetView.classList.add('active');
+
+                // Update nav links active state
+                document.querySelectorAll('.nav-links a').forEach(link => {
+                    const onclickStr = link.getAttribute('onclick') || '';
+                    if (onclickStr.includes(`'${viewId}'`)) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+
+                // Update bottom nav active state
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+                    if (item.getAttribute('data-page') === viewId) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                // Load data for specific views
+                if (targetId === 'appointments-view' && typeof loadAppointments === 'function') {
+                    loadAppointments();
+                }
+
+                if (targetId === 'ward-view' && typeof loadMyWardDetails === 'function') {
+                    loadMyWardDetails();
+                }
+                if (targetId === 'doctors-view' && typeof loadAllDoctors === 'function') {
+                    loadAllDoctors();
+                }
+                if (targetId === 'home-view') {
+                    loadPatientProfile();
+                    loadDashboardStats();
+                }
+            } else {
+                console.error('View not found:', targetId);
+            }
+        }
+
+        // Load user data from localStorage
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default user data if not available
+            let user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                user = {
+                    name: "Silva",
+                    id: "1260cdea",
+                    phone: "(555) 123-4567",
+                    role: "patient"
+                };
+                localStorage.setItem('user', JSON.stringify(user));
+            }
+
+            // Navigation functionality
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        document.querySelectorAll('.page-view').forEach(view => {
+                            view.style.display = 'none';
+                            view.classList.remove('active');
+                        });
+                        const targetView = document.getElementById(pageId);
+                        if (targetView) {
+                            targetView.style.display = 'block';
+                            targetView.classList.add('active');
+
+                            // Load appointments when appointments view is shown
+                            if (pageId === 'appointments-view' && typeof loadAppointments === 'function') {
+                                loadAppointments();
+                            }
+
+
+                        }
+                    }
+                });
+            });
+
+            // Bottom Nav functionality
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    const pageId = this.getAttribute('data-page');
+                    showView(pageId);
+                });
+            });
+
+            // Bottom navigation for mobile
+            const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        showView(pageId);
+                    }
+                });
+            });
+
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', function () {
+                if (confirm('Are you sure you want to logout?')) {
+                    // Call logout API
+                    fetch('/api/auth/logout', {
+                        method: 'POST',
+                        credentials: 'include'
+                    })
+                        .then(() => {
+                            localStorage.removeItem('user');
+                            window.location.href = '/';  // Changed from 'login.html'
+                        })
+                        .catch(error => {
+                            console.error('Logout error:', error);
+                            localStorage.removeItem('user');
+                            window.location.href = '/';  // Changed from 'login.html'
+                        });
+                }
+            });
+
+            // Check if user is actually a patient
+            if (user.role !== 'patient') {
+                alert('Access denied. This dashboard is for patients only.');
+                window.location.href = '/';
+            }
+            // Start loading patient data immediately
+            loadPatientProfile();
+            loadDashboardStats();
+        });
+
+        // ---------------------------------------------------------
+        // Dashboard Stats Functionality
+        // ---------------------------------------------------------
+        async function loadDashboardStats(existingPatient = null) {
+            console.log('📊 loadDashboardStats called');
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) return;
+
+            try {
+                const patientId = existingPatient ? existingPatient.id : (user.profileId || user.id);
+
+                // 1. Fetch appointments for counts
+                const aptRes = await fetch('/api/appointments/patient-appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patientId })
+                });
+
+                if (aptRes.ok) {
+                    const appointments = await aptRes.json();
+
+                    // Filter counts accurately
+                    const todayStr = new Date().toISOString().split('T')[0];
+
+                    const upcomingCount = appointments.filter(apt => {
+                        const aptDateStr = apt.appointmentDate.split('T')[0];
+                        return (apt.status === 'pending' || apt.status === 'confirmed') && aptDateStr >= todayStr;
+                    }).length;
+
+                    const completedCount = appointments.filter(apt =>
+                        apt.status === 'completed' || apt.status === 'processed'
+                    ).length;
+
+                    document.getElementById('upcoming-appointments-count').textContent = upcomingCount;
+                    document.getElementById('completed-appointments-count').textContent = completedCount;
+                }
+
+                // 2. Fetch/Update doctor count from workspace
+                let patient = existingPatient;
+                if (!patient) {
+                    const profileRes = await fetch('/api/patients/profile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: user.id })
+                    });
+                    if (profileRes.ok) patient = await profileRes.json();
+                }
+
+                if (patient && patient.workSpaceId) {
+                    const wsRes = await fetch(`/api/workspaces/${patient.workSpaceId}/details`);
+                    if (wsRes.ok) {
+                        const ws = await wsRes.json();
+                        document.getElementById('doctors-count').textContent = ws.Doctors ? ws.Doctors.length : 0;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // ---------------------------------------------------------
+        // Patient Profile Management
+        // ---------------------------------------------------------
+        let currentPatientData = null;
+
+        async function loadPatientProfile() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) return;
+
+            try {
+                const response = await fetch('/api/patients/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id })
+                });
+
+                if (response.ok) {
+                    const patient = await response.json();
+                    currentPatientData = patient;
+
+                    // Update profile display
+                    document.getElementById('profile-name').textContent = patient.name || 'N/A';
+                    document.getElementById('profile-id').textContent = `Patient ID: PT-${patient.id.substring(0, 8)}`;
+                    document.getElementById('profile-dob').textContent = patient.dateOfBirth ? new Date(patient.dateOfBirth).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not set';
+                    document.getElementById('profile-gender').textContent = patient.gender || 'Not set';
+                    document.getElementById('profile-blood').textContent = patient.bloodType || 'Not set';
+                    document.getElementById('profile-phone').textContent = patient.phoneNumber || user.phone || 'Not set';
+                    document.getElementById('profile-email').textContent = patient.email || user.email || 'Not set';
+                    document.getElementById('profile-address').textContent = patient.address || 'Not set';
+
+                    // Update avatar
+                    const initials = patient.name ? patient.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'P';
+                    document.getElementById('profile-avatar').textContent = initials;
+                    document.getElementById('user-avatar').textContent = initials;
+                    document.getElementById('patient-name').textContent = patient.name || user.name;
+
+                    // Load subordinate data
+                    loadAssignedDoctorCard(patient);
+                    loadMyWardDetails('dashboard-ward-section', patient);
+                    loadDashboardStats(patient);
+                }
+            } catch (error) {
+                console.error('Error loading patient profile:', error);
+            }
+        }
+
+        async function loadAssignedDoctorCard(patient) {
+            const container = document.getElementById('assigned-doctor-container');
+            if (!container) return;
+
+            try {
+                const response = await fetch('/api/patients/my-doctors', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patientId: patient.id })
+                });
+
+                if (response.ok) {
+                    const doctors = await response.json();
+
+                    if (doctors && doctors.length > 0) {
+                        const doctor = doctors[0];
+                        container.innerHTML = `
+                            <div class="doctor-card" style="display: flex; gap: 1.5rem; padding: 1.5rem; background: white; border-radius: 12px; align-items: center;">
+                                <div class="doctor-avatar" style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; flex-shrink: 0;">
+                                    ${doctor.name ? doctor.name.charAt(0) : 'D'}
+                                </div>
+                                <div class="doctor-details" style="flex: 1;">
+                                    <h4 style="margin: 0 0 0.5rem 0; font-size: 1.2rem;">Dr. ${doctor.name || 'Unknown'}</h4>
+                                    <p style="margin: 0 0 0.3rem 0; color: var(--primary); font-weight: 600;">${doctor.specialization || 'Specialist'}</p>
+                                    <p style="margin: 0 0 1rem 0; color: var(--gray); font-size: 0.9rem;">${doctor.experience || 0} years of experience</p>
+                                    <div style="display: flex; gap: 0.5rem;">
+                                        <button class="btn btn-primary" style="padding: 0.5rem 1rem;" onclick="showView('appointments')">
+                                            <i class="fas fa-calendar-alt"></i> Book Appointment
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = `
+                            <div class="empty-state" style="padding: 2rem; text-align: center;">
+                                <i class="fas fa-user-md" style="font-size: 3rem; color: #cbd5e0; margin-bottom: 1rem;"></i>
+                                <p style="color: var(--gray);">No doctor assigned yet</p>
+                                <button class="btn btn-primary" style="margin-top: 1rem;" onclick="showView('doctors')">
+                                    <i class="fas fa-search"></i> Find a Doctor
+                                </button>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading assigned doctor:', error);
+            }
+        }
+
+        function openEditProfileModal() {
+            if (!currentPatientData) {
+                alert('Please wait for profile data to load');
+                return;
+            }
+
+            document.getElementById('edit-name').value = currentPatientData.name || '';
+            document.getElementById('edit-dob').value = currentPatientData.dateOfBirth ? currentPatientData.dateOfBirth.split('T')[0] : '';
+            document.getElementById('edit-gender').value = currentPatientData.gender || '';
+            document.getElementById('edit-blood').value = currentPatientData.bloodType || '';
+            document.getElementById('edit-phone').value = currentPatientData.phoneNumber || '';
+            document.getElementById('edit-email').value = currentPatientData.email || '';
+            document.getElementById('edit-address').value = currentPatientData.address || '';
+
+            document.getElementById('edit-profile-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('edit-profile-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        async function saveProfile(event) {
+            event.preventDefault();
+
+            const updatedData = {
+                id: currentPatientData.id,
+                name: document.getElementById('edit-name').value,
+                dateOfBirth: document.getElementById('edit-dob').value,
+                gender: document.getElementById('edit-gender').value,
+                bloodType: document.getElementById('edit-blood').value,
+                phoneNumber: document.getElementById('edit-phone').value,
+                email: document.getElementById('edit-email').value,
+                address: document.getElementById('edit-address').value
+            };
+
+            try {
+                const response = await fetch('/api/patients/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+
+                if (response.ok) {
+                    alert('Profile updated successfully!');
+                    closeEditProfileModal();
+                    loadPatientProfile();
+                } else {
+                    const error = await response.json();
+                    alert('Failed to update profile: ' + (error.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('Failed to save profile. Please try again.');
+            }
+        }
+
+
+        // ---------------------------------------------------------
+        // Assigned Doctor Functionality
+        // ---------------------------------------------------------
+        async function loadAssignedDoctor() {
+            const container = document.querySelector('.right-column');
+            // We'll target the existing .doctor-card inside .right-column .section
+            // But to be safer/cleaner, let's find or create a dedicated container logic
+            // For now, let's just update the existing static HTML if found, or log error
+
+            const user = JSON.parse(localStorage.getItem('user'));
+            const patientId = user.profileId || user.id;
+
+            if (!patientId) return;
+
+            try {
+                const response = await fetch('/api/patients/my-doctors', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patientId: patientId })
+                });
+
+                const doctors = await response.json();
+
+                // Find the doctor card element
+                const doctorCard = document.querySelector('.doctor-card');
+
+                if (doctors && doctors.length > 0) {
+                    const doc = doctors[0]; // Display primary doctor
+
+                    if (doctorCard) {
+                        doctorCard.innerHTML = `
+                            <div class="doctor-avatar">${doc.name.charAt(0).toUpperCase()}</div>
+                            <div class="doctor-details">
+                                <h4>Dr. ${doc.name}</h4>
+                                <p>${doc.specialization || 'General Practitioner'}</p>
+                                <p>${doc.experience !== undefined && doc.experience !== null ? doc.experience + ' years exp.' : 'Experience not specified'}</p>
+                                <button class="btn btn-primary" onclick="alert('Contact feature coming soon!')">
+                                    <i class="fas fa-comment"></i> Contact
+                                </button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    if (doctorCard) {
+                        doctorCard.innerHTML = `
+                             <div style="text-align:center; width:100%; color:var(--gray);">
+                                <p>No doctor assigned yet.</p>
+                             </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error("Failed to load doctor info", error);
+            }
+        }
+
+        // ---------------------------------------------------------
+        // Appointments Functionality
+        // ---------------------------------------------------------
+        // Appointment loading and filter logic is handled in appointments.js
+
+        async function loadMyWardDetails(containerId = 'ward-info-container', existingProfile = null, showDetails = false) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) return;
+
+            const container = document.getElementById(containerId);
+            if (!container) {
+                console.error('❌ Container not found:', containerId);
+                return;
+            }
+            console.log('✅ Container found:', containerId);
+
+            if (containerId === 'ward-info-container' && !showDetails) {
+                container.innerHTML = '<div style="text-align:center; padding:3rem;"><i class="fas fa-spinner fa-spin" style="font-size:2rem; color:var(--primary);"></i><p style="margin-top:1rem; color:var(--gray);">Loading ward status...</p></div>';
+            }
+
+            try {
+                let profile = existingProfile;
+                if (!profile) {
+                    console.log('📡 Fetching patient profile from API...');
+                    const profileRes = await fetch('/api/patients/profile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: user.id })
+                    });
+                    console.log('📡 Profile API response status:', profileRes.status);
+                    if (profileRes.ok) {
+                        profile = await profileRes.json();
+                        console.log('✅ Patient profile loaded:', profile);
+                    } else {
+                        console.error('❌ Failed to fetch profile:', await profileRes.text());
+                    }
+                }
+
+                if (!profile || !profile.workSpaceId) {
+                    console.warn('⚠️ No workSpaceId found. Profile:', profile);
+                    if (containerId === 'ward-info-container') {
+                        container.innerHTML = `
+                            <div class="empty-state" style="padding: 4rem 2rem;">
+                                <i class="fas fa-hospital-user" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 2rem;"></i>
+                                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">No Ward Assigned Yet</h3>
+                                <p style="max-width: 400px; margin: 0 auto 2rem; color: var(--gray);">Once your registration or appointment is processed, you'll be assigned to a specific medical ward.</p>
+                                <button class="btn btn-primary" onclick="showView('appointments')">
+                                    <i class="fas fa-calendar-plus"></i> Book Initial Appointment
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = '';
+                    }
+                    return;
+                }
+
+                console.log('📡 Fetching ward details for workSpaceId:', profile.workSpaceId);
+                const wardRes = await fetch(`/api/workspaces/${profile.workSpaceId}/details`);
+                console.log('📡 Ward API response status:', wardRes.status);
+
+                if (!wardRes.ok) {
+                    console.error('❌ Failed to fetch ward:', await wardRes.text());
+                    throw new Error('Failed to load ward details');
+                }
+
+                const ward = await wardRes.json();
+                console.log('✅ Ward data loaded:', ward);
+
+                if (containerId === 'dashboard-ward-section' || (containerId === 'ward-info-container' && !showDetails)) {
+                    console.log('🎨 Rendering ward overview card...');
+                    const isDashboard = containerId === 'dashboard-ward-section';
+                    container.innerHTML = `
+                        <div class="section" style="margin-top: ${isDashboard ? '1.5rem' : '0'}; animation: slideUp 0.6s ease-out;">
+                            ${!isDashboard ? '<p style="margin-bottom: 2rem; color: var(--gray);">Click on the card below to see your medical team and facility details.</p>' : ''}
+                            <div class="ward-card" style="display: flex; gap: 1.5rem; background: ${isDashboard ? 'var(--primary-light)' : 'white'}; padding: 2rem; border-radius: 16px; border-left: 6px solid var(--primary); transition: all 0.3s; cursor: pointer; box-shadow: ${isDashboard ? 'none' : 'var(--shadow)'};" 
+                                 onclick="${isDashboard ? "showView('ward-view')" : `loadMyWardDetails('ward-info-container', null, true)`}">
+                                <div class="ward-icon" style="font-size: 2.5rem; color: var(--primary); display: flex; align-items: center; justify-content: center; background: ${isDashboard ? 'white' : 'var(--primary-light)'}; width: 70px; height: 70px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-hospital"></i>
+                                </div>
+                                <div class="ward-info">
+                                    <h4 style="margin-bottom: 0.5rem; font-size: 1.25rem; color: var(--dark);">${ward.name}</h4>
+                                    <p style="font-size: 0.95rem; color: var(--gray); margin-bottom: 1rem; line-height: 1.5;">${ward.description || 'Specialized medical facility'}</p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 0.85rem; color: var(--gray);">
+                                        <span><i class="fas fa-map-marker-alt" style="color: var(--primary); margin-right: 6px;"></i> ${ward.address || 'N/A'}</span>
+                                        <span><i class="fas fa-phone" style="color: var(--primary); margin-right: 6px;"></i> ${ward.phoneNumber || 'N/A'}</span>
+                                        <span><i class="fas fa-users" style="color: var(--primary); margin-right: 6px;"></i> ${ward.Doctors ? ward.Doctors.length : 0} Doctors</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    console.log('✅ Ward overview card rendered');
+                } else if (showDetails) {
+                    console.log('🎨 Rendering detailed ward view...');
+                    container.innerHTML = `
+                        <div class="section" style="animation: fadeIn 0.5s ease;">
+                            <button class="btn btn-secondary" style="margin-bottom: 1.5rem; background: #f1f5f9;" onclick="loadMyWardDetails('ward-info-container', null, false)">
+                                <i class="fas fa-arrow-left"></i> Back to Overview
+                            </button>
+                            <div class="glass-card" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; padding: 2.5rem; background: white; border-radius: 24px; box-shadow: var(--shadow);">
+                                <div style="border-right: 1px solid #f0f0f0; padding-right: 2.5rem;">
+                                    <h2 style="color: var(--dark); font-size: 2rem; margin-bottom: 1.5rem;">${ward.name}</h2>
+                                    <div style="margin-bottom: 2rem;">
+                                        <h4 style="color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; font-weight: 700;">Facility Information</h4>
+                                        <p style="line-height: 1.7; color: var(--gray); margin-bottom: 1.5rem;">${ward.description || 'This ward provides specialized care with 24/7 monitoring and modern medical equipment.'}</p>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                            <div class="info-item">
+                                                <div class="info-label">Current Address</div>
+                                                <div class="info-value" style="font-size: 0.95rem; font-weight: 600;">${ward.address || 'Not Provided'}</div>
+                                            </div>
+                                            <div class="info-item">
+                                                <div class="info-label">Contact Line</div>
+                                                <div class="info-value" style="font-size: 0.95rem; font-weight: 600;">${ward.phoneNumber || 'Not Provided'}</div>
+                                            </div>
+                                            <div class="info-item">
+                                                <div class="info-label">Official Email</div>
+                                                <div class="info-value" style="font-size: 0.95rem; font-weight: 600;">${ward.email || 'Not Provided'}</div>
+                                            </div>
+                                            <div class="info-item">
+                                                <div class="info-label">Patient Access</div>
+                                                <div class="info-value" style="font-size: 0.95rem; font-weight: 600; color: #10b981;"><i class="fas fa-check-circle"></i> Authorized</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--primary); margin-bottom: 1.5rem; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; font-weight: 700;">Assigned Medical Team</h4>
+                                    <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 1.5rem;">Click on a doctor to view their full professional profile and experience.</p>
+                                    <div style="display: flex; flex-direction: column; gap: 1.2rem; max-height: 450px; overflow-y: auto; padding-right: 10px;">
+                                        ${ward.Doctors && ward.Doctors.length > 0 ? ward.Doctors.map(d => `
+                                            <div class="doctor-item-hover" style="display: flex; align-items: center; gap: 1rem; padding: 15px; background: #f8fafc; border-radius: 16px; border: 1px solid transparent; cursor: pointer; transition: all 0.2s;" 
+                                                 onclick='showDoctorDetails(${JSON.stringify(d).replace(/'/g, "&apos;")})'>
+                                                <div class="user-avatar" style="width: 50px; height: 50px; font-size: 1.25rem; background: white; color: var(--primary); border: 1px solid var(--primary-light);">
+                                                    ${d.name ? d.name.charAt(0) : '?'}
+                                                </div>
+                                                <div style="flex: 1;">
+                                                    <div style="font-weight: 800; font-size: 1rem; color: var(--dark);">Dr. ${d.name || 'Unknown'}</div>
+                                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 600;">${d.specialization || 'Specialist'}</div>
+                                                </div>
+                                                <i class="fas fa-chevron-right" style="color: #cbd5e0; font-size: 0.8rem;"></i>
+                                            </div>
+                                        `).join('') : '<p style="color: var(--gray); font-style: italic; padding: 1rem; text-align: center;">No doctors currently roaming this ward.</p>'}
+                                    </div>
+                                    <button class="btn btn-primary" style="width: 100%; margin-top: 2rem; height: 52px; border-radius: 14px; font-weight: 700;" onclick="openQuickAppointment('${ward.id}')">
+                                        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Request Appointment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Ward loading error:', error);
+                if (containerId === 'ward-info-container') {
+                    container.innerHTML = '<div class="alert alert-error" style="padding: 2rem; border-radius: 16px; background: #fee2e2; color: #b91c1c;"><i class="fas fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 1rem;"></i><br><b>Connection Error:</b> Unable to securely load ward details. Please try refreshing your dashboard.</div>';
+                }
+            }
+        }
+
+        // --- DOCTOR DETAILS MODAL LOGIC ---
+        function showDoctorDetails(doctor) {
+            console.log('Opening details for:', doctor);
+            document.getElementById('detail-doctor-name').textContent = `Dr. ${doctor.name}`;
+            document.getElementById('detail-doctor-specialization').textContent = doctor.specialization || 'Professional Specialist';
+            document.getElementById('detail-doctor-experience').textContent = (doctor.yearOfExperience || doctor.experience || '8') + ' Years';
+            document.getElementById('detail-doctor-avatar').textContent = doctor.name.charAt(0);
+
+            // Email and Phone from nested User object or fallback
+            const email = (doctor.User && doctor.User.email) || 'contact@hospital.com';
+            const phone = (doctor.User && doctor.User.phone) || '+1 (555) 000-0000';
+
+            document.getElementById('detail-doctor-email').textContent = email;
+            document.getElementById('detail-doctor-phone').textContent = phone;
+
+            // Update book button
+            const bookBtn = document.getElementById('book-from-details');
+            bookBtn.onclick = () => {
+                closeDoctorDetailsModal();
+                bookWithDoctor(doctor.id);
+            };
+
+            document.getElementById('doctor-details-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeDoctorDetailsModal() {
+            document.getElementById('doctor-details-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function openQuickAppointment(wardId) {
+            showView('appointments');
+            setTimeout(() => {
+                openCreateAppointmentModal();
+                // Pre-select the ward
+                setTimeout(() => {
+                    const wardSelect = document.getElementById('ward-select');
+                    if (wardSelect) {
+                        wardSelect.value = wardId;
+                        if (typeof loadDoctorsByWard === 'function') {
+                            loadDoctorsByWard(wardId);
+                        }
+                    }
+                }, 500);
+            }, 100);
+        }
+
+        async function loadAllDoctors() {
+            const container = document.getElementById('all-doctors-container');
+            container.innerHTML = '<div style="text-align:center; padding:2rem; grid-column: 1 / -1;"><i class="fas fa-spinner fa-spin" style="font-size:2rem; color:var(--primary);"></i><p>Loading doctors...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/doctors/get`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch doctors');
+                const doctors = await response.json();
+
+                if (doctors.length === 0) {
+                    container.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:2rem;"><h3>No Doctors Available</h3><p>Check back later.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = doctors.map(doc => `
+                    <div class="stat-card" style="padding: 1.5rem; border-left: 4px solid var(--primary); cursor: pointer;" onclick='showDoctorDetails(${JSON.stringify(doc).replace(/'/g, "&apos;")})'>
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                            <div class="user-avatar" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                                ${doc.name ? doc.name.charAt(0) : '?'}
+                            </div>
+                            <div>
+                                <h3 style="font-size: 1.1rem; color: var(--dark);">Dr. ${doc.name || 'Unknown'}</h3>
+                                <p style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">${doc.specialization || 'General Surgeon'}</p>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--gray); margin-bottom: 1rem;">
+                            <p><i class="fas fa-briefcase" style="width: 20px;"></i> ${doc.yearOfExperience !== undefined && doc.yearOfExperience !== null ? doc.yearOfExperience : '0'} years experience</p>
+                            <p><i class="fas fa-envelope" style="width: 20px;"></i> ${doc.User ? doc.User.email : 'N/A'}</p>
+                            <p><i class="fas fa-phone" style="width: 20px;"></i> ${doc.User ? doc.User.phone : 'N/A'}</p>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="event.stopPropagation(); bookWithDoctor('${doc.id}')">
+                            <i class="fas fa-calendar-plus"></i> Book Appointment
+                        </button>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading doctors:', error);
+                container.innerHTML = '<div style="grid-column: 1 / -1; color: var(--danger); text-align:center;">Failed to load doctors directory.</div>';
+            }
+        }
+
+        function bookWithDoctor(doctorId) {
+            showView('appointments');
+            setTimeout(() => {
+                openCreateAppointmentModal();
+                // Note: We can pre-select doctor if we implement pre-selection logic in appointments.js
+            }, 100);
+        }
+        async function globalSearch() {
+            const query = document.getElementById('global-search').value.trim();
+            if (!query) return;
+
+            const resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = `
+                <div style="text-align:center; padding:4rem; background:white; border-radius: 16px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:3rem; color:var(--primary); margin-bottom: 1rem;"></i>
+                    <p style="color:var(--gray); font-weight: 500;">Searching medical database and Wikipedia...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (!data.success || !data.isMedical) {
+                    // Before giving up, try the embedded search.js offline data
+                    if (typeof offlineSearch === 'function') {
+                        const localResults = offlineSearch(query);
+                        if (localResults.length > 0) {
+                            let offlineHtml = '<div style="padding: 1rem; background: #f8d7da; color: #721c24; border-radius: 8px; margin-bottom: 1rem;"><i class="fas fa-wifi"></i> You are offline. Showing results from local search database.</div>';
+                            offlineHtml += '<h4 style="margin: 2rem 0 1rem; color: var(--dark); font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 15px;"><i class="fas fa-database" style="margin-right: 8px; color: var(--primary);"></i> Offline Search (Local Database)</h4>';
+                            offlineHtml += localResults.map(item => `
+                                <div class="stat-card" style="padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 4px solid var(--primary);">
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                                            <h3 style="font-size: 1.6rem; color: var(--dark); margin-bottom: 5px; margin-top:0;">${item.term}</h3>
+                                            <span style="background: #eff6ff; color: #2563eb; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">${item.category || 'Medical'}</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: grid; gap: 2rem;">
+                                        <div>
+                                            <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 8px;">Definition</label>
+                                            <p style="font-size: 1.1rem; line-height: 1.7; color: #334155; margin:0;">${item.definition || item.description}</p>
+                                        </div>
+                                        ${item.symptoms ? `
+                                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px;">
+                                            <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Primary Symptoms</label>
+                                            <p style="color: #475569; line-height: 1.6; margin:0;">${item.symptoms}</p>
+                                        </div>` : ''}
+                                        ${item.treatment ? `
+                                        <div>
+                                            <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Common Treatment Protocol</label>
+                                            <p style="color: #475569; line-height: 1.6; margin:0;">${item.treatment}</p>
+                                        </div>` : ''}
+                                    </div>
+                                </div>
+                            `).join('');
+                            resultsContainer.innerHTML = offlineHtml;
+                            return;
+                        }
+                    }
+                    resultsContainer.innerHTML = `
+                        <div class="empty-state" style="padding: 4rem 2rem; background: white; border-radius: 16px;">
+                            <i class="fas fa-search-minus" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 1.5rem;"></i>
+                            <h3 style="color: var(--dark); margin-bottom: 1rem;">Information Not Found</h3>
+                            <p style="max-width: 450px; margin: 0 auto 2rem; color: var(--gray);">${data.message || `We couldn't find verified medical info for "${query}". Try refining your search or checking online.`}</p>
+                            <button class="btn btn-secondary" style="border: 2px solid #e2e8f0;" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(query + ' medical definition')}', '_blank')">
+                                <i class="fas fa-globe"></i> Search Google Resources
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let resultsHtml = '';
+
+                // Handle Online/Offline explicitly
+                if (navigator.onLine && data.online) {
+                    // Online Search: Link to Wikipedia showing details
+                    resultsHtml += '<h4 style="margin: 3rem 0 1rem; color: var(--dark); font-size: 1.1rem; border-left: 4px solid #3b82f6; padding-left: 15px;"><i class="fab fa-wikipedia-w" style="margin-right: 8px; color: #3b82f6;"></i> Online Search (Wikipedia)</h4>';
+                    resultsHtml += `
+                        <div class="stat-card" style="padding: 2rem; background: white; border-radius: 16px; border-top: 4px solid #3b82f6;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1.5rem;">
+                                <h3 style="font-size: 1.6rem; color: #1e40af; margin:0;">${data.online.title}</h3>
+                                <button class="btn btn-secondary" style="height: 40px; background: #f1f5f9; color: #475569; border: none; padding: 0 15px;" onclick="window.open('${data.online.url}', '_blank')">
+                                    <i class="fas fa-external-link-alt"></i> Full Article
+                                </button>
+                            </div>
+                            <p style="font-size: 1.1rem; line-height: 1.8; color: #334155; margin-bottom: 1.5rem;">${data.online.extract}</p>
+                            <div style="display: flex; align-items:center; gap: 8px; font-size: 0.85rem; color: var(--gray);">
+                                <i class="fas fa-wifi"></i>
+                                <span>Online search using Wikipedia API.</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (!data.online && navigator.onLine) {
+                    resultsHtml += `<div style="padding: 1rem; background: #fff3cd; color: #856404; border-radius: 8px; margin-bottom: 1rem;">
+                        <i class="fas fa-exclamation-triangle"></i> No online details found on Wikipedia, checking local database.
+                    </div>`;
+                } else if (!navigator.onLine) {
+                    resultsHtml += '<div style="padding: 1rem; background: #f8d7da; color: #721c24; border-radius: 8px; margin-bottom: 1rem;"><i class="fas fa-wifi"></i> You are offline. Fetching details from the local database...</div>';
+                }
+
+                // Database display
+                if (data.offline && data.offline.length > 0) {
+                    resultsHtml += '<h4 style="margin: 2rem 0 1rem; color: var(--dark); font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 15px;"><i class="fas fa-database" style="margin-right: 8px; color: var(--primary);"></i> Offline Search (Local Database)</h4>';
+                    resultsHtml += data.offline.map(item => `
+                        <div class="stat-card" style="padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 4px solid var(--primary);">
+                            <div style="margin-bottom: 1.5rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <h3 style="font-size: 1.6rem; color: var(--dark); margin-bottom: 5px; margin-top:0;">${item.term}</h3>
+                                    <span style="background: #eff6ff; color: #2563eb; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">${item.category || 'Medical'}</span>
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; gap: 2rem;">
+                                <div>
+                                    <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 8px;">Definition</label>
+                                    <p style="font-size: 1.1rem; line-height: 1.7; color: #334155; margin:0;">${item.definition || item.description}</p>
+                                </div>
+                                
+                                ${item.symptoms ? `
+                                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px;">
+                                    <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Primary Symptoms</label>
+                                    <p style="color: #475569; line-height: 1.6; margin:0;">${item.symptoms}</p>
+                                </div>` : ''}
+
+                                ${item.treatment ? `
+                                <div>
+                                    <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Common Treatment Protocol</label>
+                                    <p style="color: #475569; line-height: 1.6; margin:0;">${item.treatment}</p>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    `).join('');
+                } else if (!data.online) {
+                    // No online AND no DB results — try embedded search.js data
+                    if (typeof offlineSearch === 'function') {
+                        const localResults = offlineSearch(query);
+                        if (localResults.length > 0) {
+                            resultsHtml += '<h4 style="margin: 2rem 0 1rem; color: var(--dark); font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 15px;"><i class="fas fa-database" style="margin-right: 8px; color: var(--primary);"></i> Offline Search (Local Database)</h4>';
+                            resultsHtml += localResults.map(item => `
+                                <div class="stat-card" style="padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 4px solid var(--primary);">
+                                    <div style="margin-bottom: 1.5rem;">
+                                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                                            <h3 style="font-size: 1.6rem; color: var(--dark); margin-bottom: 5px; margin-top:0;">${item.term}</h3>
+                                            <span style="background: #eff6ff; color: #2563eb; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">${item.category || 'Medical'}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: grid; gap: 2rem;">
+                                        <div>
+                                            <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 8px;">Definition</label>
+                                            <p style="font-size: 1.1rem; line-height: 1.7; color: #334155; margin:0;">${item.definition || item.description}</p>
+                                        </div>
+                                        
+                                        ${item.symptoms ? `
+                                        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px;">
+                                            <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Primary Symptoms</label>
+                                            <p style="color: #475569; line-height: 1.6; margin:0;">${item.symptoms}</p>
+                                        </div>` : ''}
+
+                                        ${item.treatment ? `
+                                        <div>
+                                            <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Common Treatment Protocol</label>
+                                            <p style="color: #475569; line-height: 1.6; margin:0;">${item.treatment}</p>
+                                        </div>` : ''}
+                                    </div>
+                                </div>
+                            `).join('');
+                        } else {
+                            resultsHtml += `
+                                <div class="empty-state" style="padding: 4rem 2rem; background: white; border-radius: 16px;">
+                                    <i class="fas fa-database" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 1.5rem;"></i>
+                                    <h3 style="color: var(--dark); margin-bottom: 1rem;">Term Not Found</h3>
+                                    <p style="max-width: 450px; margin: 0 auto 2rem; color: var(--gray);">The term "${query}" was not found in any local database. Please connect to the internet for online search.</p>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+
+                resultsContainer.innerHTML = resultsHtml;
+
+            } catch (error) {
+                console.error('Search error:', error);
+                // OFFLINE FALLBACK: Use embedded search.js data when server is unreachable
+                if (typeof offlineSearch === 'function') {
+                    const localResults = offlineSearch(query);
+                    if (localResults.length > 0) {
+                        let offlineHtml = '<div style="padding: 1rem; background: #f8d7da; color: #721c24; border-radius: 8px; margin-bottom: 1rem;"><i class="fas fa-wifi"></i> You are offline. Showing results from local search database.</div>';
+                        offlineHtml += '<h4 style="margin: 2rem 0 1rem; color: var(--dark); font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 15px;"><i class="fas fa-database" style="margin-right: 8px; color: var(--primary);"></i> Offline Search (Local Database)</h4>';
+                        offlineHtml += localResults.map(item => `
+                            <div class="stat-card" style="padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 4px solid var(--primary);">
+                                <div style="margin-bottom: 1.5rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                                        <h3 style="font-size: 1.6rem; color: var(--dark); margin-bottom: 5px; margin-top:0;">${item.term}</h3>
+                                        <span style="background: #eff6ff; color: #2563eb; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">${item.category || 'Medical'}</span>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; gap: 2rem;">
+                                    <div>
+                                        <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 8px;">Definition</label>
+                                        <p style="font-size: 1.1rem; line-height: 1.7; color: #334155; margin:0;">${item.definition || item.description}</p>
+                                    </div>
+                                    
+                                    ${item.symptoms ? `
+                                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px;">
+                                        <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Primary Symptoms</label>
+                                        <p style="color: #475569; line-height: 1.6; margin:0;">${item.symptoms}</p>
+                                    </div>` : ''}
+
+                                    ${item.treatment ? `
+                                    <div>
+                                        <label style="display:block; font-size: 0.75rem; text-transform: uppercase; color: var(--gray); letter-spacing: 1px; font-weight: 700; margin-bottom: 10px;">Common Treatment Protocol</label>
+                                        <p style="color: #475569; line-height: 1.6; margin:0;">${item.treatment}</p>
+                                    </div>` : ''}
+                                </div>
+                            </div>
+                        `).join('');
+                        resultsContainer.innerHTML = offlineHtml;
+                    } else {
+                        resultsContainer.innerHTML = `
+                            <div class="empty-state" style="padding: 4rem 2rem; background: white; border-radius: 16px;">
+                                <i class="fas fa-database" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 1.5rem;"></i>
+                                <h3 style="color: var(--dark); margin-bottom: 1rem;">Term Not Found Offline</h3>
+                                <p style="max-width: 450px; margin: 0 auto 2rem; color: var(--gray);">The term "${query}" was not found in the local offline database. Please connect to the internet for online search.</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div style="padding: 3rem; background: #fee2e2; border-radius: 16px; text-align: center; color: #b91c1c;">
+                            <i class="fas fa-wifi" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <h3>Connectivity Issue</h3>
+                            <p>We're having trouble reaching the medical server. Please try again in a moment.</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
