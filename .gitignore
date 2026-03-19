@@ -34,3 +34,7 @@ doctor-backend/uploads/
 # OS
 .DS_Store
 Thumbs.db
+# ML Models
+*.h5
+*.keras
+*.weights
