@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinScan AI | Skin Cancer Classification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=3.0">
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Cropper.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <!-- Styles & Scripts are centrally managed in static/css/style.css -->
+</head>
+
+<body>
+    <!-- Horizontal Walkthrough Section -->
+    <div class="walkthrough-container">
+        <!-- Slide 1: Image 10 (Project Overview) -->
+        <div class="walkthrough-slide">
+            <img src="{{ url_for('static', filename='images/10.png') }}" alt="SkinScan AI Introduction">
+        </div>
+
+        <!-- Slide 2: Image 11 (Melanoma Details) -->
+        <div class="walkthrough-slide">
+            <img src="{{ url_for('static', filename='images/11.png') }}" alt="Understanding Melanoma"
+                onclick="openMelanomaDetails()" style="cursor: pointer;">
+            <div class="detail-hint" onclick="openMelanomaDetails()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Learn More
+            </div>
+        </div>
+
+        <!-- Slide 3: Image 12 (Diagnostic Process) -->
+        <div class="walkthrough-slide">
+            <img src="{{ url_for('static', filename='images/12.png') }}" alt="Diagnostic Process"
+                onclick="openDiagnosticDetails()" style="cursor: pointer;">
+            <div class="detail-hint" onclick="openDiagnosticDetails()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                View Process
+            </div>
+        </div>
+
+        <!-- Slide 4: Image 13 (Technology Details) -->
+        <div class="walkthrough-slide">
+            <img src="{{ url_for('static', filename='images/13.png') }}" alt="Deep Learning Technology"
+                onclick="openTechDetails()" style="cursor: pointer;">
+            <div class="detail-hint" onclick="openTechDetails()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                How it Works
+            </div>
+        </div>
+
+        <!-- Slide 5: Image 15 (Final Solution CTA) -->
+        <div class="walkthrough-slide">
+            <img src="{{ url_for('static', filename='images/15.png') }}" alt="Our Solution"
+                onclick="scrollToClassification()" style="cursor: pointer;">
+        </div>
+    </div>
+
+    <!-- Classification Tool Section -->
+    <div id="classification" class="split-container" style="min-height: 100vh;">
+        <!-- Left Side: Brand Info -->
+        <div class="brand-section" id="info">
+            <div class="brand-content">
+                <h1 class="brand-title">Classification Tool</h1>
+                <p class="brand-subtitle">Upload and Analyze Skin Lesions</p>
+                <div class="feature-icons">
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                        </svg>
+                    </div>
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <div class="icon-circle">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12" y2="8"></line>
+                        </svg>
+                    </div>
+                </div>
+                <p class="footer-note">Secure, efficient, and precise early detection assistance.</p>
+            </div>
+        </div>
+
+        <!-- Right Side: Interaction -->
+        <div class="interaction-section" id="tools">
+            <div class="interaction-header">
+                <h2>Health<span>Analysis</span></h2>
+                <span class="status-badge">System Ready</span>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="action-card">
+                <h3>Image Analysis</h3>
+                <p class="section-desc">Upload a skin lesion image for AI classification.</p>
+
+                <div class="upload-zone" id="drop-area">
+                    <input type="file" id="fileElem" accept="image/*" onchange="handleFiles(this.files)">
+                    <div class="upload-placeholder" id="upload-placeholder">
+                        <div class="upload-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                        </div>
+                        <p>Click to upload or drag & drop</p>
+                        <span>JPG, PNG (Max 5MB)</span>
+                    </div>
+                    <img id="preview-img" class="hidden">
+                </div>
+
+                <button id="crop-trigger-btn" class="hidden" onclick="openCropModal()">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"></path>
+                        <path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"></path>
+                    </svg>
+                    Adjust / Crop Image
+                </button>
+
+                <button id="predict-btn" class="btn-primary" disabled onclick="startPrediction()">Run Analysis</button>
+            </div>
+
+            <!-- Results Panel (Hidden Initially) -->
+            <div id="loader" class="loader-container hidden">
+                <div class="spinner"></div>
+                <p>Analyzing image morphology...</p>
+            </div>
+
+            <div id="result-content" class="result-card hidden">
+                <div class="result-header">
+                    <h4>Diagnostic Report</h4>
+                    <span id="risk-badge" class="risk-badge">Pending</span>
+                </div>
+
+                <div class="diagnosis-main">
+                    <h2 id="top-full-name">--</h2>
+                    <span class="confidence" id="top-confidence">--% Accuracy</span>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Description</label>
+                        <p id="desc-text">--</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Recommended Action</label>
+                        <p id="action-text">--</p>
+                    </div>
+                </div>
+
+                <div class="chart-wrapper">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+
+                <button class="btn-download" id="check-disease-btn" onclick="checkDisease()"
+                    style="margin-top: 10px; background: #3b82f6; display: flex;">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Check Skin Disease
+                </button>
+                <div id="disease-result"
+                    style="display: none; margin-top: 15px; padding: 15px; border-radius: 8px; background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; text-align: center;">
+                    <b style="font-size: 1.1em; display: block; margin-bottom: 5px;">Disease Prediction:</b>
+                    <span id="disease-name" style="font-size: 1.25em; font-weight: bold; color: #15803d;"></span>
+                    <br>
+                    <span id="disease-confidence" style="font-size: 0.9em; color: #166534; opacity: 0.8;"></span>
+                </div>
+                <button class="btn-download" onclick="downloadReport()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download Medical Report
+                </button>
+            </div>
+
+            <div class="disclaimer-text">
+                <p>⚠️ <strong>Disclaimer:</strong> This tool is for screening purposes only and does not replace
+                    professional medical advice.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CROP MODAL -->
+    <div class="modal-overlay" id="crop-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adjust Image</h3>
+                <button onclick="closeCropModal()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <img id="image-to-crop" src="" alt="Picture">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-secondary" onclick="closeCropModal()">Cancel</button>
+                <button class="btn-modal-save" onclick="saveCrop()">Apply Crop</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WELCOME OVERVIEW MODAL -->
+    <div class="modal-overlay info-modal" id="welcome-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Welcome to SkinScan AI</h3>
+                <button onclick="closeWelcomeDetails()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>Our Mission</h4>
+                <p>SkinScan AI is a state-of-the-art dermatological screening platform designed to assist in the early
+                    detection of skin cancer. Our goal is to bridge the gap between initial concern and clinical
+                    diagnosis using advanced Artificial Intelligence.</p>
+
+                <h4>Core Capabilities</h4>
+                <ul class="abcde-list">
+                    <li><strong>1.</strong> Instant AI Analysis: Analyze lesions in real-time.</li>
+                    <li><strong>2.</strong> Large-Scale Screening: Trained on 30,000+ clinical images.</li>
+                    <li><strong>3.</strong> Secure Platform: Your data and privacy are our top priority.</li>
+                </ul>
+
+                <p>Furthermore, our solution is designed to be highly accessible, providing dermatologists and
+                    individuals with a reliable "second opinion" that can be accessed anytime, anywhere.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-save" onclick="closeWelcomeDetails()">Start Exploring</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MELANOMA DETAILS MODAL -->
+    <div class="modal-overlay info-modal" id="details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Furthermore: Understanding Melanoma</h3>
+                <button onclick="closeDetailsModal()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>The Severity of Melanoma</h4>
+                <p>Melanoma represents only about 1% of skin cancers but causes a large majority of skin cancer deaths.
+                    It emerges when melanocytes start growing out of control.</p>
+
+                <h4>Risk Factors to Consider</h4>
+                <ul class="abcde-list">
+                    <li><strong>UV</strong> Exposure: Sunburns and tanning beds significantly increase risk.</li>
+                    <li><strong>Mole</strong> Count: Having many moles or unusual moles (dysplastic nevi).</li>
+                    <li><strong>Genetics</strong>: Family history of melanoma doubles the risk.</li>
+                    <li><strong>Immune</strong> System: Weakened immunity can make detection harder.</li>
+                </ul>
+
+                <h4>How to Spot Potential Risks (ABCDE Rule)</h4>
+                <ul class="abcde-list">
+                    <li><strong>A</strong>symmetry: One half of the mole does not match the other.</li>
+                    <li><strong>B</strong>order: Edges are irregular, ragged, notched, or blurred.</li>
+                    <li><strong>C</strong>olor: Pigmentation is not uniform (multiple shades).</li>
+                    <li><strong>D</strong>iameter: Spot is larger than 6 millimeters.</li>
+                    <li><strong>E</strong>volving: Mole is changing in size, shape, or color.</li>
+                </ul>
+
+                <p style="margin-top: 20px; font-style: italic; font-size: 13px;">*Early detection leads to a 99% 5-year
+                    survival rate. Don't wait.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-save" onclick="closeDetailsModal()">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIAGNOSTIC DETAILS MODAL -->
+    <div class="modal-overlay info-modal" id="diagnostic-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Diagnostic Challenges & Biopsy Details</h3>
+                <button onclick="closeDiagnosticModal()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>Why the Process is Slow</h4>
+                <p>Furthermore, traditional diagnostics rely heavily on laboratory availability and pathology experts. A
+                    single biopsy specimen must be fixed in formalin, embedded in paraffin, and sliced by a microtome
+                    before a doctor can even see it.</p>
+
+                <h4>Traditional Process Breakdown</h4>
+                <ul class="abcde-list">
+                    <li><strong>1.</strong> Clinical Exam: Physical inspection of the lesion.</li>
+                    <li><strong>2.</strong> Punch Biopsy: A circular tool removes a "core" of the lesion.</li>
+                    <li><strong>3.</strong> Processing: Chemical fixing takes 24-48 hours.</li>
+                    <li><strong>4.</strong> Diagnosis: A pathologist issues the final report of malignancy.</li>
+                </ul>
+
+                <p><strong>Impact of Delay:</strong> For aggressive lesions, waiting over **10 days** can mean the
+                    difference between a localized cancer and one that has entered the lymphatic system.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-save" onclick="closeDiagnosticModal()">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TECHNOLOGY DETAILS MODAL -->
+    <div class="modal-overlay info-modal" id="tech-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Behind the AI: Convolutional Neural Networks</h3>
+                <button onclick="closeTechModal()"
+                    style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>Architecture: EfficientNet-B4 to B7</h4>
+                <p>Furthermore, our system uses a multi-model ensemble. Instead of relying on one model, we aggregate
+                    predictions from three different specialized architectures to produce a final, high-confidence
+                    score.</p>
+
+                <h4>Technical Metrics</h4>
+                <ul class="abcde-list">
+                    <li><strong>93%</strong> Accuracy achieved on validation datasets.</li>
+                    <li><strong>ONNX</strong> Deployment for 3x faster inference speeds.</li>
+                    <li><strong>14+</strong> Metadata features integrated for robustness.</li>
+                    <li><strong>Mobile</strong>-Ready architecture for clinical deployment.</li>
+                </ul>
+
+                <p style="margin-top:20px;">The CNN "sees" features like pigment networks, blue-white veils, and
+                    vascular patterns to differentiate malignant melanoma from benign nevi with clinical-grade
+                    precision.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal-save" onclick="closeTechModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        let selectedFile = null;
+        let chart = null;
+        let currentImageFile = null;
+        let cropper = null;
+        const cropModal = document.getElementById('crop-modal');
+        const imageToCrop = document.getElementById('image-to-crop');
+        const cropTriggerBtn = document.getElementById('crop-trigger-btn');
+
+        const welcomeModal = document.getElementById('welcome-modal');
+        const detailsModal = document.getElementById('details-modal');
+        const diagnosticModal = document.getElementById('diagnostic-modal');
+        const techModal = document.getElementById('tech-modal');
+
+        function openWelcomeDetails() { welcomeModal.classList.add('active'); }
+        function closeWelcomeDetails() { welcomeModal.classList.remove('active'); }
+
+        function openMelanomaDetails() { detailsModal.classList.add('active'); }
+        function closeDetailsModal() { detailsModal.classList.remove('active'); }
+
+        function openDiagnosticDetails() { diagnosticModal.classList.add('active'); }
+        function closeDiagnosticModal() { diagnosticModal.classList.remove('active'); }
+
+        function openTechDetails() { techModal.classList.add('active'); }
+        function closeTechModal() { techModal.classList.remove('active'); }
+
+        // Function to scroll to classification tool
+        function scrollToClassification() {
+            // Enable vertical scroll on body
+            document.body.style.overflowY = 'auto';
+
+            const classificationSection = document.getElementById('classification');
+            classificationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                setupNewFile(file);
+            }
+        }
+
+        function setupNewFile(file) {
+            selectedFile = file;
+            const preview = document.getElementById('preview-img');
+            const placeholder = document.getElementById('upload-placeholder');
+            const btn = document.getElementById('predict-btn');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+                cropTriggerBtn.classList.remove('hidden');
+                imageToCrop.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            btn.disabled = false;
+
+            // Hide previous results if any
+            document.getElementById('result-content').classList.add('hidden');
+        }
+
+        function openCropModal() {
+            cropModal.classList.add('active');
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: 1,
+                viewMode: 1,
+            });
+        }
+
+        function closeCropModal() {
+            cropModal.classList.remove('active');
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }
+
+        function saveCrop() {
+            if (!cropper) return;
+            cropper.getCroppedCanvas({ width: 224, height: 224 }).toBlob((blob) => {
+                const newFile = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
+                selectedFile = newFile;
+                const preview = document.getElementById('preview-img');
+                preview.src = URL.createObjectURL(blob);
+                imageToCrop.src = URL.createObjectURL(blob);
+                closeCropModal();
+            }, 'image/jpeg');
+        }
+
+        async function startPrediction() {
+            if (!selectedFile) return;
+
+            const loader = document.getElementById('loader');
+            const resultContent = document.getElementById('result-content');
+            const diseaseResult = document.getElementById('disease-result');
+            const btn = document.getElementById('predict-btn');
+
+            loader.classList.remove('hidden');
+            resultContent.classList.add('hidden');
+            if (diseaseResult) diseaseResult.style.display = 'none';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert('Server Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Connection error.');
+            } finally {
+                loader.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            const resultContent = document.getElementById('result-content');
+            resultContent.classList.remove('hidden');
+            resultContent.scrollIntoView({ behavior: 'smooth' });
+
+            currentImageFile = data.image_file;
+
+            document.getElementById('top-full-name').textContent = data.top_full_name;
+            document.getElementById('top-confidence').textContent = data.top_prob + '% Confidence';
+            document.getElementById('desc-text').textContent = data.top_desc;
+            document.getElementById('action-text').textContent = data.top_action;
+
+            const badge = document.getElementById('risk-badge');
+            badge.className = 'risk-badge';
+            const diseaseBtn = document.getElementById('check-disease-btn');
+            const diseaseResultDiv = document.getElementById('disease-result');
+
+            if (data.is_cancer) {
+                badge.classList.add('risk-high');
+                badge.textContent = 'High Priority';
+                diseaseBtn.style.display = 'none'; // HIDE for cancer
+                if (diseaseResultDiv) diseaseResultDiv.style.display = 'none';
+            } else {
+                if (data.top_risk === 'Low' || data.top_class === 'NON_CANCER') {
+                    badge.classList.add('risk-low');
+                    badge.textContent = 'Low Risk';
+                } else {
+                    badge.textContent = 'Inconclusive';
+                }
+
+                // If the backend suggested a disease, show it immediately
+                if (data.suggested_disease) {
+                    const nameSpan = document.getElementById('disease-name');
+                    const confSpan = document.getElementById('disease-confidence');
+                    if (nameSpan && confSpan) {
+                        nameSpan.textContent = data.suggested_disease.replace(/_/g, ' ');
+                        confSpan.textContent = data.disease_confidence + '% Confidence (Auto-detected)';
+                        diseaseResultDiv.style.display = 'block';
+                        diseaseBtn.style.display = 'none'; // Hide button as we already have results
+                    }
+                } else {
+                    diseaseBtn.style.display = 'flex';
+                }
+            }
+
+            const labels = data.predictions.slice(0, 5).map(p => p.class);
+            const probs = data.predictions.slice(0, 5).map(p => p.probability);
+
+            if (chart) chart.destroy();
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Probability (%)',
+                        data: probs,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { display: false, max: 100 },
+                        y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function downloadReport() {
+            if (!currentImageFile) return;
+            window.location.href = `/download_report?file=${encodeURIComponent(currentImageFile)}`;
+        }
+
+        async function checkDisease() {
+            if (!selectedFile) return;
+
+            const btn = document.getElementById('check-disease-btn');
+            btn.disabled = true;
+            btn.innerHTML = 'Analyzing...';
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch('/predict_disease', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                const resultDiv = document.getElementById('disease-result');
+                const nameSpan = document.getElementById('disease-name');
+                const confSpan = document.getElementById('disease-confidence');
+
+                if (data.disease) {
+                    nameSpan.textContent = data.disease.replace(/_/g, ' ');
+                    confSpan.textContent = data.confidence + '% Confidence';
+                    resultDiv.style.display = 'block';
+                } else {
+                    alert('Could not predict the disease.');
+                }
+            } catch (err) {
+                alert('Connection error. Ensure the secondary Skin Disease model server is running on port 5001.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Check Skin Disease
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>
