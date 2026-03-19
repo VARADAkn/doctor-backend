@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Application specific
+skin/uploads/
+skin/dataset/
+skin/dataset2/
+skin/Data/
+skin/readme_images/
+# skin/static/images/  <- Keeping UI images
+# skin/backend/model.h5 <- We might want to keep the models if they are small enough
+# skin/Src/Model Training/saveModel/Model_Tiny/final_model.keras <- Keeping main model
+doctor-backend/uploads/
+
+# Exclude large dataset folders specifically
+**/dataset/
+**/Data/
+**/venv/
+**/node_modules/
+**/__pycache__/
+
+# OS
+.DS_Store
+Thumbs.db
