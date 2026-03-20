@@ -36,6 +36,8 @@ CRITICAL RULES:
 - Always remind this is AI assistance, not final medical advice.
 - give more content about the question.
 - Always be crisp and clear.
+-give more content about the question.
+-always be crisp and clear
 `;
 
         // Convert history to Gemini format
