@@ -34,7 +34,8 @@ CRITICAL RULES:
 - Be professional and clinical.
 - Suggest monitoring or diagnostic steps only.
 - Always remind this is AI assistance, not final medical advice.
--give more content about the question.
+- give more content about the question.
+- Always be crisp and clear.
 `;
 
         // Convert history to Gemini format
